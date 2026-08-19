@@ -151,10 +151,10 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT MULAI DI SINI -->
+    <!-- SCRIPT FIX TERBARU -->
     <script>
-        // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-        const API_URL = "AKfycbyVCaO2X02swIUlwnZdf2nh93tWTpbAD7351BVHBjZYCjJVWaJ_4dzFSN0Q6H5MYRg3";
+        // TEMPELKAN URL APPS SCRIPT ANDA DI BAWAH INI
+        const API_URL = "https://script.google.com/macros/s/AKfycbyVCaO2X02swIUlwnZdf2nh93tWTpbAD7351BVHBjZYCjJVWaJ_4dzFSN0Q6H5MYRg3/exec";
 
         let currentData = [];
 
@@ -165,7 +165,7 @@
                 renderTable(currentData);
                 renderMetrics(currentData);
             } catch (e) {
-                alert("Gagal memuat data dari Google Sheets!");
+                console.error(e);
             }
         }
 
@@ -173,7 +173,7 @@
             const tbody = document.getElementById("table-body");
             tbody.innerHTML = "";
             
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-slate-400">Belum ada data temuan.</td></tr>`;
                 return;
             }
@@ -188,14 +188,14 @@
                 }
 
                 const nominalFormat = item.Jenis === 'Keuangan' 
-                    ? 'Rp ' + Number(item.Nominal_Rp).toLocaleString('id-ID') 
+                    ? 'Rp ' + Number(item.Nominal_Rp || 0).toLocaleString('id-ID') 
                     : '-';
 
                 const disetorFormat = item.Jenis === 'Keuangan'
-                    ? `Rp ${Number(item.Total_Disetor).toLocaleString('id-ID')} (${progress}%)`
+                    ? `Rp ${Number(item.Total_Disetor || 0).toLocaleString('id-ID')} (${progress}%)`
                     : `${progress}%`;
 
-                tbody.innerHTML += `
+                const row = `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
                         <td class="p-3 font-semibold text-slate-700">${item.Sumber}</td>
                         <td class="p-3">${item.Jenis}</td>
@@ -209,10 +209,12 @@
                         </td>
                     </tr>
                 `;
+                tbody.innerHTML += row;
             });
         }
 
         function renderMetrics(data) {
+            if(!data) return;
             document.getElementById("total-temuan").innerText = data.length;
             document.getElementById("total-selesai").innerText = data.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100).length;
             document.getElementById("total-proses").innerText = data.filter(d => d.Status === "On Progress" && parseInt(d.Progress_Percent) < 100).length;
@@ -247,10 +249,10 @@
                         <div class="p-3 border rounded-lg bg-slate-50 space-y-1">
                             <div class="flex justify-between items-center">
                                 <span class="font-bold text-sm">#${idx+1} No. Bukti: ${r.No_Bukti}</span>
-                                <span class="text-xs text-slate-500">${r.Tanggal ? r.Tanggal.split('T')[0] : ''}</span>
+                                <span class="text-xs text-slate-500">${r.Tanggal ? String(r.Tanggal).split('T')[0] : ''}</span>
                             </div>
                             <div class="text-xs text-slate-600">
-                                Setoran: <b class="text-emerald-700">Rp ${Number(r.Nominal_Setor).toLocaleString('id-ID')}</b> | ${r.Keterangan}
+                                Setoran: <b class="text-emerald-700">Rp ${Number(r.Nominal_Setor || 0).toLocaleString('id-ID')}</b> | ${r.Keterangan}
                             </div>
                             <div class="pt-1">${linkFile}</div>
                         </div>
