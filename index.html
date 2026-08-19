@@ -394,22 +394,29 @@
         }
 
         function calcSumberMetrics(data, sumberName, prefix) {
-            const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
-            document.getElementById(`badge-${prefix}`).innerText = `${subset.length} Temuan`;
-            
-            if (activeTab === 'Keuangan') {
-                document.getElementById(`lbl-${prefix}`).innerText = "Progres Setoran:";
-                const totalNominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
-                const totalDisetor = subset.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
-                const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(0) : 0;
-                document.getElementById(`${prefix}-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
-            } else {
-                document.getElementById(`lbl-${prefix}`).innerText = "Dokumen Lengkap:";
-                const selesaiCount = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)).length;
-                const percent = subset.length > 0 ? ((selesaiCount / subset.length) * 100).toFixed(0) : 0;
-                document.getElementById(`${prefix}-info`).innerText = `${selesaiCount} / ${subset.length} (${percent}%)`;
-            }
-        }
+    const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
+    
+    if (activeTab === 'Keuangan') {
+        const totalNominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+        const totalDisetor = subset.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+        const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(1) : 0;
+
+        // Tampilkan Nominal Temuan di Badge Atas
+        document.getElementById(`badge-${prefix}`).innerText = `Rp ${totalNominal.toLocaleString('id-ID')}`;
+        
+        // Tampilkan Disetor & Persentase di Baris Bawah
+        document.getElementById(`lbl-${prefix}`).innerText = "Disetor:";
+        document.getElementById(`${prefix}-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
+    } else {
+        const totalDokumen = subset.length;
+        const selesaiCount = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)).length;
+        const percent = totalDokumen > 0 ? ((selesaiCount / totalDokumen) * 100).toFixed(0) : 0;
+
+        document.getElementById(`badge-${prefix}`).innerText = `${totalDokumen} Dokumen`;
+        document.getElementById(`lbl-${prefix}`).innerText = "Dokumen Lengkap:";
+        document.getElementById(`${prefix}-info`).innerText = `${selesaiCount} / ${totalDokumen} (${percent}%)`;
+    }
+}
 
         function renderTable(data) {
             const tbody = document.getElementById("table-body");
@@ -721,18 +728,7 @@
     }
 }
 
-    // Reset input setelah disimpan
-    document.getElementById("id-baru").value = "";
-    document.getElementById("judul-baru").value = "";
-    document.getElementById("pj-baru").value = "";
-    document.getElementById("nominal-baru").value = "";
-
-    btn.innerText = "Simpan Temuan";
-    btn.disabled = false;
-    closeModal("modal-tambah-temuan");
-    fetchData();
-}
-        const toBase64 = file => new Promise((resolve, reject) => {
+    const toBase64 = file => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => resolve(reader.result);
