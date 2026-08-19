@@ -59,37 +59,49 @@
         </div>
 
         <!-- Metric Cards Rincian per Sumber Audit -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="font-bold text-slate-700">🏛️ Temuan BPK</span>
-                    <span id="badge-bpk" class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
-                </div>
-                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span id="lbl-bpk">Progres Setoran:</span> <b id="bpk-info" class="text-slate-700">Rp 0 (0%)</b></div>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="font-bold text-slate-700">🏢 Temuan BPKP</span>
-                    <span id="badge-bpkp" class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
-                </div>
-                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span id="lbl-bpkp">Progres Setoran:</span> <b id="bpkp-info" class="text-slate-700">Rp 0 (0%)</b></div>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="font-bold text-slate-700">🔍 Temuan Inspektorat</span>
-                    <span id="badge-inspektorat" class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
-                </div>
-                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span id="lbl-inspektorat">Progres Setoran:</span> <b id="inspektorat-info" class="text-slate-700">Rp 0 (0%)</b></div>
-                </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- BPK -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-slate-700">🏛️ Temuan BPK</span>
+            <span id="badge-bpk" class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+        </div>
+        <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
+            <div class="flex justify-between">
+                <span id="lbl-bpk">Disetor:</span> 
+                <b id="bpk-info" class="text-slate-700">Rp 0 (0%)</b>
             </div>
         </div>
+    </div>
+
+    <!-- BPKP -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-slate-700">🏢 Temuan BPKP</span>
+            <span id="badge-bpkp" class="bg-purple-100 text-purple-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+        </div>
+        <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
+            <div class="flex justify-between">
+                <span id="lbl-bpkp">Disetor:</span> 
+                <b id="bpkp-info" class="text-slate-700">Rp 0 (0%)</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inspektorat -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex justify-between items-center mb-1">
+            <span class="font-bold text-slate-700">🔍 Temuan Inspektorat</span>
+            <span id="badge-inspektorat" class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+        </div>
+        <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
+            <div class="flex justify-between">
+                <span id="lbl-inspektorat">Disetor:</span> 
+                <b id="inspektorat-info" class="text-slate-700">Rp 0 (0%)</b>
+            </div>
+        </div>
+    </div>
+</div>
 
         <!-- Tabel Utama -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
