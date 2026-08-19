@@ -7,6 +7,7 @@
     
     <!-- CSS & Frameworks -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     
     <!-- Pustaka Export Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -19,11 +20,11 @@
     <div id="login-overlay" class="fixed inset-0 bg-slate-900/90 z-[999] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6 border border-slate-100">
             <div class="text-center space-y-2">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_Kementerian_Agama_RI.png" 
+                <img src="https://cms2023.kemenag.go.id/storage/files/shares/Logo/Kementerian_Agama_new_logo%20(2).png" 
                      alt="Logo Kemenag" 
                      class="w-16 h-16 mx-auto object-contain drop-shadow">
                 <h2 class="text-xl font-extrabold text-emerald-900">Akses e-TLHP Kemenag Banten</h2>
-                <p class="text-xs text-slate-500">Masukkan kata sandi untuk mengakses dashboard monitoring.</p>
+                <p class="text-xs text-slate-500">Masukkan kata sandi dan verifikasi captcha untuk mengakses dashboard monitoring.</p>
             </div>
 
             <form onsubmit="handleLogin(event)" class="space-y-4">
@@ -31,6 +32,12 @@
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi / Password</label>
                     <input type="password" id="login-password" required placeholder="Masukkan password..." 
                            class="w-full border border-slate-300 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+                </div>
+
+                <!-- Google reCAPTCHA Container -->
+                <!-- Ganti data-sitekey di bawah dengan Site Key Anda -->
+                <div class="flex justify-center my-2">
+                    <div class="g-recaptcha" data-sitekey="6Lffoo0tAAAAAN3gtuoW-D1x8OCQ8kWa1-IxYEEM"></div>
                 </div>
 
                 <button type="submit" id="btn-login" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg text-sm shadow transition">
@@ -206,6 +213,7 @@
         async function handleLogin(e) {
             e.preventDefault();
             const password = document.getElementById("login-password").value;
+            const captchaResponse = typeof grecaptcha !== "undefined" ? grecaptcha.getResponse() : "";
 
             const btn = document.getElementById("btn-login");
             btn.innerText = "Memverifikasi...";
@@ -217,7 +225,8 @@
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         action: "login_verify",
-                        password: password
+                        password: password,
+                        captchaToken: captchaResponse
                     })
                 });
 
@@ -230,6 +239,7 @@
                     fetchData();
                 } else {
                     alert("❌ " + res.message);
+                    if (typeof grecaptcha !== "undefined") grecaptcha.reset();
                 }
             } catch (err) {
                 alert("Gagal memproses login: " + err.message);
