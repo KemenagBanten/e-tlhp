@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <!-- Metric Cards -->
+        <!-- Metric Cards Utama -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 border border-slate-100">
                 <p class="text-xs text-slate-500 font-semibold">TOTAL TEMUAN</p>
@@ -41,11 +41,59 @@
             </div>
         </div>
 
-        <!-- Tabel Utama -->
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
-            <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                <h2 class="font-bold text-slate-700">Daftar Rekomendasi Audit</h2>
+        <!-- Metric Cards Khusus Rincian per Sumber Audit -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-slate-700">🏛️ Temuan BPK</span>
+                    <span id="badge-bpk" class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
+                </div>
+                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
+                    <div class="flex justify-between"><span>Selesai:</span> <b id="bpk-selesai" class="text-emerald-600">0</b></div>
+                    <div class="flex justify-between"><span>On Progress:</span> <b id="bpk-proses" class="text-amber-600">0</b></div>
+                    <div class="flex justify-between"><span>Nilai Temuan:</span> <b id="bpk-nominal" class="text-slate-800">Rp 0</b></div>
+                </div>
             </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-slate-700">🏢 Temuan BPKP</span>
+                    <span id="badge-bpkp" class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
+                </div>
+                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
+                    <div class="flex justify-between"><span>Selesai:</span> <b id="bpkp-selesai" class="text-emerald-600">0</b></div>
+                    <div class="flex justify-between"><span>On Progress:</span> <b id="bpkp-proses" class="text-amber-600">0</b></div>
+                    <div class="flex justify-between"><span>Nilai Temuan:</span> <b id="bpkp-nominal" class="text-slate-800">Rp 0</b></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-slate-700">🔍 Temuan Inspektorat</span>
+                    <span id="badge-inspektorat" class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
+                </div>
+                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
+                    <div class="flex justify-between"><span>Selesai:</span> <b id="inspektorat-selesai" class="text-emerald-600">0</b></div>
+                    <div class="flex justify-between"><span>On Progress:</span> <b id="inspektorat-proses" class="text-amber-600">0</b></div>
+                    <div class="flex justify-between"><span>Nilai Temuan:</span> <b id="inspektorat-nominal" class="text-slate-800">Rp 0</b></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Utama dengan Filter Tombol -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <h2 class="font-bold text-slate-700">Daftar Rekomendasi Audit</h2>
+                
+                <!-- Filter Tab -->
+                <div class="flex flex-wrap gap-1 bg-slate-200 p-1 rounded-lg text-xs font-semibold">
+                    <button onclick="filterTable('ALL')" id="btn-filter-all" class="px-3 py-1.5 rounded-md bg-white text-slate-800 shadow-sm transition">Semua</button>
+                    <button onclick="filterTable('BPK')" id="btn-filter-bpk" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">BPK</button>
+                    <button onclick="filterTable('BPKP')" id="btn-filter-bpkp" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">BPKP</button>
+                    <button onclick="filterTable('Inspektorat')" id="btn-filter-inspektorat" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">Inspektorat</button>
+                </div>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
                     <thead class="bg-slate-100 text-slate-700 font-semibold border-b">
@@ -67,7 +115,7 @@
         </div>
     </div>
 
-    <!-- MODAL 1: Input Bukti Bayar / Dokumen Baru -->
+    <!-- MODAL 1: Input Bukti Bayar -->
     <div id="modal-bayar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
@@ -90,7 +138,7 @@
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Upload File Dokumen/Bukti (PDF/Gambar)</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Upload File Dokumen/Bukti</label>
                 <input type="file" id="bayar-file" class="w-full text-sm border p-1 rounded-lg">
             </div>
 
@@ -106,7 +154,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: Detail Riwayat Bukti Pembayaran & Dokumen -->
+    <!-- MODAL 2: Detail Riwayat Bukti -->
     <div id="modal-riwayat" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-2xl w-full space-y-4 shadow-xl">
             <h3 class="text-lg font-bold text-slate-800 border-b pb-2">📑 Riwayat Bukti Bayar & Dokumen</h3>
@@ -151,22 +199,46 @@
         </div>
     </div>
 
-    <!-- SCRIPT FIX TERBARU -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // TEMPELKAN URL APPS SCRIPT ANDA DI BAWAH INI
-        const API_URL = "https://script.google.com/macros/s/AKfycbyVCaO2X02swIUlwnZdf2nh93tWTpbAD7351BVHBjZYCjJVWaJ_4dzFSN0Q6H5MYRg3/exec";
+        // TEMPELKAN URL WEB APP APPS SCRIPT ANDA DI SINI
+        const API_URL = "MASUKKAN_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI";
 
         let currentData = [];
+        let activeFilter = 'ALL';
 
         async function fetchData() {
             try {
                 const res = await fetch(API_URL);
                 currentData = await res.json();
-                renderTable(currentData);
                 renderMetrics(currentData);
+                filterTable(activeFilter);
             } catch (e) {
                 console.error(e);
             }
+        }
+
+        function filterTable(sumber) {
+            activeFilter = sumber;
+            
+            // Update Tampilan Tombol Tab Filter
+            ['all', 'bpk', 'bpkp', 'inspektorat'].forEach(s => {
+                const btn = document.getElementById(`btn-filter-${s}`);
+                if (btn) {
+                    btn.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition";
+                }
+            });
+            const activeBtn = document.getElementById(`btn-filter-${sumber.toLowerCase()}`);
+            if (activeBtn) {
+                activeBtn.className = "px-3 py-1.5 rounded-md bg-white text-slate-800 shadow-sm font-bold transition";
+            }
+
+            // Filter Data
+            let filtered = currentData;
+            if (sumber !== 'ALL') {
+                filtered = currentData.filter(d => String(d.Sumber).toUpperCase() === sumber.toUpperCase());
+            }
+            renderTable(filtered);
         }
 
         function renderTable(data) {
@@ -174,7 +246,7 @@
             tbody.innerHTML = "";
             
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-slate-400">Belum ada data temuan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-slate-400">Belum ada data temuan untuk filter ini.</td></tr>`;
                 return;
             }
 
@@ -195,7 +267,7 @@
                     ? `Rp ${Number(item.Total_Disetor || 0).toLocaleString('id-ID')} (${progress}%)`
                     : `${progress}%`;
 
-                const row = `
+                tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
                         <td class="p-3 font-semibold text-slate-700">${item.Sumber}</td>
                         <td class="p-3">${item.Jenis}</td>
@@ -209,18 +281,36 @@
                         </td>
                     </tr>
                 `;
-                tbody.innerHTML += row;
             });
         }
 
         function renderMetrics(data) {
             if(!data) return;
+            
+            // Total Keseluruhan
             document.getElementById("total-temuan").innerText = data.length;
             document.getElementById("total-selesai").innerText = data.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100).length;
-            document.getElementById("total-proses").innerText = data.filter(d => d.Status === "On Progress" && parseInt(d.Progress_Percent) < 100).length;
-            
+            document.getElementById("total-proses").innerText = data.filter(d => (d.Status === "On Progress" || !d.Status) && parseInt(d.Progress_Percent || 0) < 100).length;
             const totalUang = data.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
             document.getElementById("total-keuangan").innerText = "Rp " + totalUang.toLocaleString('id-ID');
+
+            // Hitung Rincian Per Sumber (BPK, BPKP, Inspektorat)
+            calcSumberMetrics(data, "BPK", "bpk");
+            calcSumberMetrics(data, "BPKP", "bpkp");
+            calcSumberMetrics(data, "Inspektorat", "inspektorat");
+        }
+
+        function calcSumberMetrics(data, sumberName, prefix) {
+            const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
+            const total = subset.length;
+            const selesai = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100).length;
+            const proses = subset.filter(d => (d.Status === "On Progress" || !d.Status) && parseInt(d.Progress_Percent || 0) < 100).length;
+            const nominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+
+            document.getElementById(`badge-${prefix}`).innerText = `${total} Temuan`;
+            document.getElementById(`${prefix}-selesai`).innerText = selesai;
+            document.getElementById(`${prefix}-proses`).innerText = proses;
+            document.getElementById(`${prefix}-nominal`).innerText = "Rp " + nominal.toLocaleString('id-ID');
         }
 
         function openModalBayar(id) {
@@ -275,22 +365,16 @@
             btn.innerText = "Mengunggah...";
             btn.disabled = true;
 
-            const id = document.getElementById("bayar-id-temuan").value;
-            const nobukti = document.getElementById("bayar-nobukti").value;
-            const tgl = document.getElementById("bayar-tanggal").value;
-            const nominal = document.getElementById("bayar-nominal").value;
-            const ket = document.getElementById("bayar-keterangan").value;
-            const fileInput = document.getElementById("bayar-file");
-
-            let payload = {
+            const payload = {
                 action: "add_payment",
-                ID_Temuan: id,
-                No_Bukti: nobukti,
-                Tanggal: tgl,
-                Nominal_Setor: nominal,
-                Keterangan: ket
+                ID_Temuan: document.getElementById("bayar-id-temuan").value,
+                No_Bukti: document.getElementById("bayar-nobukti").value,
+                Tanggal: document.getElementById("bayar-tanggal").value,
+                Nominal_Setor: document.getElementById("bayar-nominal").value,
+                Keterangan: document.getElementById("bayar-keterangan").value
             };
 
+            const fileInput = document.getElementById("bayar-file");
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 payload.fileData = await toBase64(file);
@@ -298,10 +382,7 @@
                 payload.fileMimeType = file.type;
             }
 
-            await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            });
+            await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
 
             btn.innerText = "Simpan Bukti";
             btn.disabled = false;
@@ -322,10 +403,7 @@
                 Nominal_Rp: document.getElementById("nominal-baru").value
             };
 
-            await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            });
+            await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
 
             btn.innerText = "Simpan Temuan";
             btn.disabled = false;
