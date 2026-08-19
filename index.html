@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>e-TLHP - Monitoring Penyelesaian Audit</title>
+    <title>e-TLHP - Kanwil Kemenag Provinsi Banten</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Pustaka untuk Export Excel & PDF -->
@@ -14,45 +14,50 @@
 <body class="bg-slate-100 p-4 md:p-6 text-slate-800">
     <div class="max-w-7xl mx-auto space-y-6">
         
-        <!-- Header -->
-        <div class="bg-white p-6 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border border-slate-200">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-900">Aplikasi e-TLHP (Monitoring Audit)</h1>
-                <p class="text-slate-500 text-sm">Pelacakan Rekomendasi Audit BPK, Inspektorat, dan BPKP</p>
+        <!-- Header dengan Logo Kemenag -->
+        <div class="bg-white p-6 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t-4 border-emerald-600 border-x border-b border-slate-200">
+            <div class="flex items-center gap-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_Kementerian_Agama_RI.png" 
+                     alt="Logo Kemenag" 
+                     class="w-16 h-16 object-contain flex-shrink-0 drop-shadow-sm">
+                <div>
+                    <h1 class="text-2xl font-extrabold text-emerald-900 tracking-tight">e-TLHP Kanwil Kemenag Provinsi Banten</h1>
+                    <p class="text-slate-600 text-sm font-medium">Sistem Monitoring Tindak Lanjut Hasil Pemeriksaan Audit (BPK, BPKP, & Inspektorat Jenderal)</p>
+                </div>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <button onclick="openModalTambahTemuan()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-semibold shadow">➕ Tambah Temuan</button>
-                <button onclick="fetchData()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-semibold shadow">🔄 Refresh Data</button>
+            <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
+                <button onclick="openModalTambahTemuan()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition">➕ Tambah Temuan</button>
+                <button onclick="fetchData()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition">🔄 Refresh Data</button>
             </div>
         </div>
 
         <!-- NAVIGATION TABS -->
         <div class="flex border-b border-slate-300 gap-2">
-            <button onclick="switchTab('Keuangan')" id="tab-keuangan" class="px-6 py-3 font-bold text-sm rounded-t-xl border-t border-l border-r bg-white text-purple-700 border-slate-300 shadow-sm transition">
+            <button onclick="switchTab('Keuangan')" id="tab-keuangan" class="px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition">
                 💰 Temuan Keuangan
             </button>
-            <button onclick="switchTab('Dokumen')" id="tab-dokumen" class="px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-slate-700 transition">
+            <button onclick="switchTab('Dokumen')" id="tab-dokumen" class="px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition">
                 📄 Temuan Dokumen
             </button>
         </div>
 
         <!-- Metric Cards Utama -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 border border-slate-100">
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border border-slate-100">
                 <p id="label-total-temuan" class="text-xs text-slate-500 font-semibold">TOTAL NOMINAL TEMUAN</p>
                 <h3 id="total-temuan" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500 border border-slate-100">
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500 border border-slate-100">
                 <p id="label-total-selesai" class="text-xs text-slate-500 font-semibold">NOMINAL SELESAI (LUNAS)</p>
                 <h3 id="total-selesai" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500 border border-slate-100">
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500 border border-slate-100">
                 <p id="label-total-proses" class="text-xs text-slate-500 font-semibold">SISA BELUM DISETOR</p>
                 <h3 id="total-proses" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
             </div>
-            <div id="card-dynamic" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500 border border-slate-100">
+            <div id="card-dynamic" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-700 border border-slate-100">
                 <p id="dynamic-title" class="text-xs text-slate-500 font-semibold">PROGRES SETORAN KAS NEGARA</p>
-                <h3 id="dynamic-main-text" class="text-2xl font-bold text-purple-700">0% Disetor</h3>
+                <h3 id="dynamic-main-text" class="text-2xl font-bold text-emerald-700">0% Disetor</h3>
                 <p id="dynamic-sub-text" class="text-xs text-slate-500 mt-1">Rp 0 dari Rp 0</p>
             </div>
         </div>
@@ -63,7 +68,7 @@
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-1">
                     <span class="font-bold text-slate-700">🏛️ Temuan BPK</span>
-                    <span id="badge-bpk" class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+                    <span id="badge-bpk" class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
                     <div class="flex justify-between">
@@ -77,7 +82,7 @@
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-1">
                     <span class="font-bold text-slate-700">🏢 Temuan BPKP</span>
-                    <span id="badge-bpkp" class="bg-purple-100 text-purple-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+                    <span id="badge-bpkp" class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
                     <div class="flex justify-between">
@@ -90,8 +95,8 @@
             <!-- Inspektorat -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-1">
-                    <span class="font-bold text-slate-700">🔍 Temuan Inspektorat</span>
-                    <span id="badge-inspektorat" class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+                    <span class="font-bold text-slate-700">🔍 Temuan Itjen Kemenag</span>
+                    <span id="badge-inspektorat" class="bg-teal-100 text-teal-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
                     <div class="flex justify-between">
@@ -105,25 +110,25 @@
         <!-- Tabel Utama -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
             <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                <h2 id="table-title" class="font-bold text-slate-700">Daftar Rekomendasi Audit - Keuangan</h2>
+                <h2 id="table-title" class="font-bold text-emerald-900">Daftar Rekomendasi Audit - Keuangan</h2>
                 
                 <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
                     <div class="relative flex-1 md:w-64">
-                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="🔍 Cari Penanggung Jawab / Judul..." class="w-full pl-3 pr-8 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="🔍 Cari Penanggung Jawab / Judul..." class="w-full pl-3 pr-8 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none">
                     </div>
 
                     <div class="flex bg-slate-200 p-1 rounded-lg text-xs font-semibold">
                         <button onclick="filterSumber('ALL')" id="btn-sumber-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua</button>
                         <button onclick="filterSumber('BPK')" id="btn-sumber-bpk" class="px-3 py-1 rounded-md text-slate-600 transition">BPK</button>
                         <button onclick="filterSumber('BPKP')" id="btn-sumber-bpkp" class="px-3 py-1 rounded-md text-slate-600 transition">BPKP</button>
-                        <button onclick="filterSumber('Inspektorat')" id="btn-sumber-inspektorat" class="px-3 py-1 rounded-md text-slate-600 transition">Inspektorat</button>
+                        <button onclick="filterSumber('Inspektorat')" id="btn-sumber-inspektorat" class="px-3 py-1 rounded-md text-slate-600 transition">Itjen</button>
                     </div>
 
                     <div class="flex gap-1">
-                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
+                        <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
                             📊 Excel
                         </button>
-                        <button onclick="exportToPDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
+                        <button onclick="exportToPDF()" class="bg-rose-700 hover:bg-rose-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
                             📄 PDF
                         </button>
                     </div>
@@ -132,7 +137,7 @@
 
             <div class="overflow-x-auto">
                 <table id="main-table" class="w-full text-left text-sm">
-                    <thead class="bg-slate-100 text-slate-700 font-semibold border-b">
+                    <thead class="bg-emerald-900 text-white font-semibold">
                         <tr>
                             <th class="p-3">ID</th>
                             <th class="p-3">Sumber</th>
@@ -155,7 +160,7 @@
     <!-- MODAL 1: Input Bukti Bayar / Dokumen -->
     <div id="modal-bayar" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
-            <h3 id="modal-bayar-title" class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
+            <h3 id="modal-bayar-title" class="text-lg font-bold text-emerald-900 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
             <input type="hidden" id="bayar-id-temuan">
             
             <div>
@@ -186,7 +191,7 @@
 
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('modal-bayar')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
-                <button onclick="submitPembayaran()" id="btn-save-bayar" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">Simpan Bukti</button>
+                <button onclick="submitPembayaran()" id="btn-save-bayar" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Bukti</button>
             </div>
         </div>
     </div>
@@ -195,8 +200,8 @@
     <div id="modal-riwayat" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-2xl w-full space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="text-lg font-bold text-slate-800">📑 Riwayat Bukti Bayar & Dokumen</h3>
-                <span id="modal-riwayat-id" class="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">ID Temuan: -</span>
+                <h3 class="text-lg font-bold text-emerald-900">📑 Riwayat Bukti Bayar & Dokumen</h3>
+                <span id="modal-riwayat-id" class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md">ID Temuan: -</span>
             </div>
             <div id="riwayat-content" class="max-h-80 overflow-y-auto space-y-2"></div>
             <div class="flex justify-end pt-2">
@@ -208,7 +213,7 @@
     <!-- MODAL 3: Tambah Temuan -->
     <div id="modal-tambah-temuan" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
-            <h3 class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Temuan Audit</h3>
+            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2">➕ Tambah Temuan Audit</h3>
             
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">ID Temuan <span class="text-rose-500">*</span></label>
@@ -235,8 +240,8 @@
                 <input type="text" id="judul-baru" placeholder="Masukan judul temuan..." class="w-full border p-2 rounded-lg text-sm" required>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Penanggung Jawab (OPD / Nama Unit) <span class="text-rose-500">*</span></label>
-                <input type="text" id="pj-baru" placeholder="Contoh: Dinas PU / Bidang Bina Marga" class="w-full border p-2 rounded-lg text-sm" required>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Penanggung Jawab (Satker / Kankemenag) <span class="text-rose-500">*</span></label>
+                <input type="text" id="pj-baru" placeholder="Contoh: Kankemenag Serang / Bidang PAKIS" class="w-full border p-2 rounded-lg text-sm" required>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Temuan (Rp) [Khusus Keuangan]</label>
@@ -244,7 +249,7 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('modal-tambah-temuan')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
-                <button onclick="submitTemuanBaru()" id="btn-save-temuan" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold">Simpan Temuan</button>
+                <button onclick="submitTemuanBaru()" id="btn-save-temuan" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Temuan</button>
             </div>
         </div>
     </div>
@@ -276,11 +281,11 @@
             const tabDokumen = document.getElementById('tab-dokumen');
 
             if (jenis === 'Keuangan') {
-                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t border-l border-r bg-white text-purple-700 border-slate-300 shadow-sm transition";
-                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-slate-700 transition";
+                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition";
+                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition";
             } else {
-                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t border-l border-r bg-white text-blue-700 border-slate-300 shadow-sm transition";
-                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-slate-700 transition";
+                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition";
+                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition";
             }
 
             renderTab();
@@ -292,7 +297,7 @@
                 const btn = document.getElementById(`btn-sumber-${s}`);
                 if (btn) btn.className = "px-3 py-1 rounded-md text-slate-600 transition";
             });
-            document.getElementById(`btn-sumber-${sumber.toLowerCase()}`).className = "px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm font-bold transition";
+            document.getElementById(`btn-sumber-${sumber.toLowerCase()}`).className = "px-3 py-1 rounded-md bg-white text-emerald-900 shadow-sm font-bold transition";
             renderTab();
         }
 
@@ -344,10 +349,10 @@
                 document.getElementById("label-total-proses").innerText = "SISA BELUM DISETOR";
                 document.getElementById("total-proses").innerText = `Rp ${totalSisaSelesai.toLocaleString('id-ID')}`;
 
-                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500 border border-slate-100";
+                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border border-slate-100";
                 document.getElementById("dynamic-title").innerText = "PROGRES SETORAN KAS NEGARA";
                 document.getElementById("dynamic-main-text").innerText = `${percent}% Disetor`;
-                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-purple-700";
+                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-emerald-700";
                 document.getElementById("dynamic-sub-text").innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} dari Rp ${totalNominal.toLocaleString('id-ID')}`;
 
                 document.getElementById("th-nominal").style.display = "";
@@ -369,10 +374,10 @@
                 document.getElementById("label-total-proses").innerText = "DOKUMEN ON PROGRESS";
                 document.getElementById("total-proses").innerText = prosesCount;
 
-                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 border border-slate-100";
+                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500 border border-slate-100";
                 document.getElementById("dynamic-title").innerText = "PROGRES KELENGKAPAN DOKUMEN";
                 document.getElementById("dynamic-main-text").innerText = `${percentDokumen}% Selesai`;
-                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-blue-700";
+                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-amber-600";
                 document.getElementById("dynamic-sub-text").innerText = `${selesaiCount} dari ${totalDokumen} Dokumen Dilengkapi`;
 
                 document.getElementById("th-nominal").style.display = "none";
@@ -433,12 +438,12 @@
                     : `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">On Progress</span>`;
 
                 const colNominal = activeTab === 'Keuangan' 
-                    ? `<td class="p-3 font-semibold">Rp ${totalNominal.toLocaleString('id-ID')}</td>` 
+                    ? `<td class="p-3 font-semibold text-slate-800">Rp ${totalNominal.toLocaleString('id-ID')}</td>` 
                     : '';
 
                 const colDisetor = activeTab === 'Keuangan'
                     ? `Rp ${totalDisetor.toLocaleString('id-ID')}`
-                    : (hasFile ? `<span class="text-emerald-600 font-semibold">Sudah Diunggah</span>` : `<span class="text-slate-400 italic">Belum Ada Berkas</span>`);
+                    : (hasFile ? `<span class="text-emerald-700 font-semibold">Sudah Diunggah</span>` : `<span class="text-slate-400 italic">Belum Ada Berkas</span>`);
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
@@ -450,8 +455,8 @@
                         <td class="p-3">${colDisetor}</td>
                         <td class="p-3">${statusBadge}</td>
                         <td class="p-3 text-center space-x-1 action-col">
-                            <button onclick="openModalBayar('${item.ID}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs">➕ Input Bukti</button>
-                            <button onclick="openModalRiwayat('${item.ID}')" class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-xs">📑 Lihat Bukti (${item.Riwayat_Bayar ? item.Riwayat_Bayar.length : 0})</button>
+                            <button onclick="openModalBayar('${item.ID}')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2 py-1 rounded text-xs transition">➕ Input Bukti</button>
+                            <button onclick="openModalRiwayat('${item.ID}')" class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-xs transition">📑 Lihat Bukti (${item.Riwayat_Bayar ? item.Riwayat_Bayar.length : 0})</button>
                         </td>
                     </tr>
                 `;
@@ -495,7 +500,7 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, `Temuan_${activeTab}`);
             
-            const filename = `eTLHP_Laporan_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            const filename = `eTLHP_KemenagBanten_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.xlsx`;
             XLSX.writeFile(workbook, filename);
         }
 
@@ -505,7 +510,7 @@
             const doc = new jsPDF();
 
             doc.setFontSize(14);
-            doc.text(`Laporan Monitoring Audit e-TLHP - ${activeTab}`, 14, 15);
+            doc.text(`Kanwil Kemenag Banten - Laporan e-TLHP (${activeTab})`, 14, 15);
             doc.setFontSize(10);
             doc.text(`Filter Sumber: ${activeSumber} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 22);
 
@@ -552,14 +557,14 @@
                 startY: 28,
                 theme: 'grid',
                 styles: { fontSize: 7.5 },
-                headStyles: { fillColor: activeTab === 'Keuangan' ? [126, 34, 206] : [29, 78, 216] }
+                headStyles: { fillColor: activeTab === 'Keuangan' ? [0, 104, 55] : [217, 119, 6] }
             });
 
-            const filename = `eTLHP_Laporan_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.pdf`;
+            const filename = `eTLHP_KemenagBanten_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.pdf`;
             doc.save(filename);
         }
 
-        // BUKA DAN TUTUP MODAL FIX
+        // BUKA DAN TUTUP MODAL
         function openModalTambahTemuan() {
             const modal = document.getElementById("modal-tambah-temuan");
             modal.classList.remove("hidden");
@@ -597,7 +602,7 @@
             } else {
                 item.Riwayat_Bayar.forEach((r, idx) => {
                     const linkFile = r.Link_Dokumen 
-                        ? `<a href="${r.Link_Dokumen}" target="_blank" class="text-blue-600 font-semibold hover:underline text-xs">📄 Buka File Dokumen</a>`
+                        ? `<a href="${r.Link_Dokumen}" target="_blank" class="text-emerald-700 font-semibold hover:underline text-xs">📄 Buka File Dokumen</a>`
                         : `<span class="text-slate-400 text-xs">Tanpa File</span>`;
                     
                     const setoranText = activeTab === 'Keuangan'
@@ -607,7 +612,7 @@
                     container.innerHTML += `
                         <div class="p-3 border rounded-lg bg-slate-50 space-y-1">
                             <div class="flex justify-between items-center">
-                                <span class="font-bold text-sm">#${idx+1} No. Bukti/Surat: ${r.No_Bukti}</span>
+                                <span class="font-bold text-sm text-slate-800">#${idx+1} No. Bukti/Surat: ${r.No_Bukti}</span>
                                 <span class="text-xs text-slate-500">${r.Tanggal ? String(r.Tanggal).split('T')[0] : ''}</span>
                             </div>
                             <div class="text-xs text-slate-600">
@@ -629,7 +634,7 @@
             modal.classList.remove("flex");
         }
 
-        // KONSISTENSI UTILS FUNCTION
+        // UTILS FUNCTION
         function toBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -700,7 +705,6 @@
             const pj = document.getElementById("pj-baru").value.trim();
             let nominal = document.getElementById("nominal-baru").value;
 
-            // Bebaskan input nominal untuk jenis Dokumen
             if (jenis === "Dokumen" && nominal === "") {
                 nominal = 0;
             }
