@@ -1,0 +1,53 @@
+function renderTable(data) {
+    const tbody = document.getElementById("table-body");
+    tbody.innerHTML = "";
+    
+    if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-slate-400">Belum ada data temuan.</td></tr>`;
+        return;
+    }
+
+    data.forEach(item => {
+        const progress = parseInt(item.Progress_Percent) || 0;
+        const statusText = item.Status || (progress === 100 ? "Selesai" : "On Progress");
+        
+        // Render Badge sesuai Nilai Status
+        let statusBadge = `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">On Progress</span>`;
+        if (statusText === "Selesai" || progress === 100) {
+            statusBadge = `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-semibold">Selesai</span>`;
+        }
+
+        const nominalFormat = item.Jenis === 'Keuangan' 
+            ? 'Rp ' + Number(item.Nominal_Rp).toLocaleString('id-ID') 
+            : '-';
+
+        const disetorFormat = item.Jenis === 'Keuangan'
+            ? `Rp ${Number(item.Total_Disetor).toLocaleString('id-ID')} (${progress}%)`
+            : `${progress}%`;
+
+        tbody.innerHTML += `
+            <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                <td class="p-3 font-semibold text-slate-700">${item.Sumber}</td>
+                <td class="p-3">${item.Jenis}</td>
+                <td class="p-3 font-medium text-slate-900">${item.Judul_Temuan}</td>
+                <td class="p-3 font-semibold">${nominalFormat}</td>
+                <td class="p-3">${disetorFormat}</td>
+                <td class="p-3">${statusBadge}</td>
+                <td class="p-3 text-center space-x-1">
+                    <button onclick="openModalBayar(${item.ID})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs">➕ Input Bukti</button>
+                    <button onclick="openModalRiwayat(${item.ID})" class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-xs">📑 Lihat Bukti (${item.Riwayat_Bayar ? item.Riwayat_Bayar.length : 0})</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderMetrics(data) {
+    document.getElementById("total-temuan").innerText = data.length;
+    // Hitung berdasarkan status Selesai & On Progress
+    document.getElementById("total-selesai").innerText = data.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100).length;
+    document.getElementById("total-proses").innerText = data.filter(d => d.Status === "On Progress" && parseInt(d.Progress_Percent) < 100).length;
+    
+    const totalUang = data.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+    document.getElementById("total-keuangan").innerText = "Rp " + totalUang.toLocaleString('id-ID');
+}
