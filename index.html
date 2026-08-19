@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>e-TLHP - Monitoring Penyelesaian Audit</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Pustaka untuk Export Excel & PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="bg-slate-100 p-4 md:p-6 text-slate-800">
     <div class="max-w-7xl mx-auto space-y-6">
@@ -15,13 +20,23 @@
                 <h1 class="text-2xl font-bold text-slate-900">Aplikasi e-TLHP (Monitoring Audit)</h1>
                 <p class="text-slate-500 text-sm">Pelacakan Rekomendasi Audit BPK, Inspektorat, dan BPKP</p>
             </div>
-            <div class="flex gap-2">
-                <button onclick="openModalTambahTemuan()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow">➕ Tambah Temuan</button>
-                <button onclick="fetchData()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow">🔄 Refresh Data</button>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="openModalTambahTemuan()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-semibold shadow">➕ Tambah Temuan</button>
+                <button onclick="fetchData()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-semibold shadow">🔄 Refresh Data</button>
             </div>
         </div>
 
-        <!-- Metric Cards Utama (Metrik Ringkasan) -->
+        <!-- NAVIGATION TABS -->
+        <div class="flex border-b border-slate-300 gap-2">
+            <button onclick="switchTab('Keuangan')" id="tab-keuangan" class="px-6 py-3 font-bold text-sm rounded-t-xl border-t border-l border-r bg-white text-purple-700 border-slate-300 shadow-sm transition">
+                💰 Temuan Keuangan
+            </button>
+            <button onclick="switchTab('Dokumen')" id="tab-dokumen" class="px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-slate-700 transition">
+                📄 Temuan Dokumen
+            </button>
+        </div>
+
+        <!-- Metric Cards Utama -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 border border-slate-100">
                 <p class="text-xs text-slate-500 font-semibold">TOTAL TEMUAN</p>
@@ -35,11 +50,11 @@
                 <p class="text-xs text-slate-500 font-semibold">ON PROGRESS</p>
                 <h3 id="total-proses" class="text-2xl font-bold text-slate-800">0</h3>
             </div>
-            <!-- Ringkasan Khusus Setoran Keuangan -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500 border border-slate-100">
-                <p class="text-xs text-slate-500 font-semibold">PROSES SETORAN KAS NEGARA</p>
-                <h3 id="keuangan-percent-text" class="text-2xl font-bold text-purple-700">0%</h3>
-                <p id="keuangan-sub-text" class="text-xs text-slate-500 mt-1">Rp 0 / Rp 0</p>
+            <!-- Metrik Ringkasan Khusus Tab -->
+            <div id="card-dynamic" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500 border border-slate-100">
+                <p id="dynamic-title" class="text-xs text-slate-500 font-semibold">PROGRES SETORAN KAS NEGARA</p>
+                <h3 id="dynamic-main-text" class="text-2xl font-bold text-purple-700">0%</h3>
+                <p id="dynamic-sub-text" class="text-xs text-slate-500 mt-1">Rp 0 / Rp 0</p>
             </div>
         </div>
 
@@ -51,8 +66,7 @@
                     <span id="badge-bpk" class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span>Keuangan:</span> <b id="bpk-keuangan-info" class="text-slate-700">Rp 0 (0%)</b></div>
-                    <div class="flex justify-between"><span>Dokumen:</span> <b id="bpk-dokumen-info" class="text-slate-700">0 Temuan</b></div>
+                    <div class="flex justify-between"><span id="lbl-bpk">Progres Setoran:</span> <b id="bpk-info" class="text-slate-700">Rp 0 (0%)</b></div>
                 </div>
             </div>
 
@@ -62,8 +76,7 @@
                     <span id="badge-bpkp" class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span>Keuangan:</span> <b id="bpkp-keuangan-info" class="text-slate-700">Rp 0 (0%)</b></div>
-                    <div class="flex justify-between"><span>Dokumen:</span> <b id="bpkp-dokumen-info" class="text-slate-700">0 Temuan</b></div>
+                    <div class="flex justify-between"><span id="lbl-bpkp">Progres Setoran:</span> <b id="bpkp-info" class="text-slate-700">Rp 0 (0%)</b></div>
                 </div>
             </div>
 
@@ -73,46 +86,48 @@
                     <span id="badge-inspektorat" class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span>Keuangan:</span> <b id="inspektorat-keuangan-info" class="text-slate-700">Rp 0 (0%)</b></div>
-                    <div class="flex justify-between"><span>Dokumen:</span> <b id="inspektorat-dokumen-info" class="text-slate-700">0 Temuan</b></div>
+                    <div class="flex justify-between"><span id="lbl-inspektorat">Progres Setoran:</span> <b id="inspektorat-info" class="text-slate-700">Rp 0 (0%)</b></div>
                 </div>
             </div>
         </div>
 
-        <!-- Tabel Utama dengan Multi-Filter -->
+        <!-- Tabel Utama -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
             <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                <h2 class="font-bold text-slate-700">Daftar Rekomendasi Audit</h2>
+                <h2 id="table-title" class="font-bold text-slate-700">Daftar Rekomendasi Audit - Keuangan</h2>
                 
-                <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                    <!-- Filter Jenis -->
-                    <div class="flex bg-slate-200 p-1 rounded-lg">
-                        <button onclick="filterJenis('ALL')" id="btn-jenis-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua Jenis</button>
-                        <button onclick="filterJenis('Keuangan')" id="btn-jenis-keuangan" class="px-3 py-1 rounded-md text-slate-600 transition">💰 Keuangan</button>
-                        <button onclick="filterJenis('Dokumen')" id="btn-jenis-dokumen" class="px-3 py-1 rounded-md text-slate-600 transition">📄 Dokumen</button>
-                    </div>
-
-                    <!-- Filter Sumber -->
-                    <div class="flex bg-slate-200 p-1 rounded-lg">
-                        <button onclick="filterSumber('ALL')" id="btn-sumber-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua Sumber</button>
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Filter Sumber Audit -->
+                    <div class="flex bg-slate-200 p-1 rounded-lg text-xs font-semibold">
+                        <button onclick="filterSumber('ALL')" id="btn-sumber-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua</button>
                         <button onclick="filterSumber('BPK')" id="btn-sumber-bpk" class="px-3 py-1 rounded-md text-slate-600 transition">BPK</button>
                         <button onclick="filterSumber('BPKP')" id="btn-sumber-bpkp" class="px-3 py-1 rounded-md text-slate-600 transition">BPKP</button>
                         <button onclick="filterSumber('Inspektorat')" id="btn-sumber-inspektorat" class="px-3 py-1 rounded-md text-slate-600 transition">Inspektorat</button>
+                    </div>
+
+                    <!-- Tombol Export -->
+                    <div class="flex gap-1">
+                        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
+                            📊 Excel
+                        </button>
+                        <button onclick="exportToPDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
+                            📄 PDF
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
+                <table id="main-table" class="w-full text-left text-sm">
                     <thead class="bg-slate-100 text-slate-700 font-semibold border-b">
                         <tr>
+                            <th class="p-3">ID Temuan</th>
                             <th class="p-3">Sumber</th>
-                            <th class="p-3">Jenis</th>
                             <th class="p-3">Judul Temuan</th>
-                            <th class="p-3">Nilai Temuan</th>
-                            <th class="p-3">Disetor / Progress</th>
+                            <th id="th-nominal" class="p-3">Nilai Temuan</th>
+                            <th id="th-disetor" class="p-3">Total Disetor</th>
                             <th class="p-3">Status</th>
-                            <th class="p-3 text-center">Aksi Admin</th>
+                            <th class="p-3 text-center action-col">Aksi Admin</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-slate-100">
@@ -126,7 +141,7 @@
     <!-- MODAL 1: Input Bukti -->
     <div id="modal-bayar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
-            <h3 class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
+            <h3 id="modal-bayar-title" class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
             <input type="hidden" id="bayar-id-temuan">
             
             <div>
@@ -136,10 +151,10 @@
 
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Bayar</label>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
                     <input type="date" id="bayar-tanggal" class="w-full border p-2 rounded-lg text-sm">
                 </div>
-                <div>
+                <div id="field-nominal-container">
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Setor (Rp)</label>
                     <input type="number" id="bayar-nominal" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
                 </div>
@@ -152,7 +167,7 @@
 
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan</label>
-                <textarea id="bayar-keterangan" placeholder="Contoh: Pembayaran Tahap 1" class="w-full border p-2 rounded-lg text-sm" rows="2"></textarea>
+                <textarea id="bayar-keterangan" placeholder="Contoh: Pembayaran Tahap 1 / Penyerahan SOP" class="w-full border p-2 rounded-lg text-sm" rows="2"></textarea>
             </div>
 
             <div class="flex justify-end gap-2 pt-2">
@@ -165,7 +180,10 @@
     <!-- MODAL 2: Detail Riwayat -->
     <div id="modal-riwayat" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-2xl w-full space-y-4 shadow-xl">
-            <h3 class="text-lg font-bold text-slate-800 border-b pb-2">📑 Riwayat Bukti Bayar & Dokumen</h3>
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-lg font-bold text-slate-800">📑 Riwayat Bukti Bayar & Dokumen</h3>
+                <span id="modal-riwayat-id" class="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">ID Temuan: -</span>
+            </div>
             <div id="riwayat-content" class="max-h-80 overflow-y-auto space-y-2"></div>
             <div class="flex justify-end pt-2">
                 <button onclick="closeModal('modal-riwayat')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm">Tutup</button>
@@ -209,32 +227,38 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // TEMPELKAN URL WEB APP APPS SCRIPT ANDA DI SINI
         const API_URL = "MASUKKAN_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI";
 
         let currentData = [];
-        let activeJenis = 'ALL';
+        let activeTab = 'Keuangan'; 
         let activeSumber = 'ALL';
+        let displayedData = [];
 
         async function fetchData() {
             try {
                 const res = await fetch(API_URL);
                 currentData = await res.json();
-                renderMetrics(currentData);
-                applyFilters();
+                renderTab();
             } catch (e) {
                 console.error(e);
             }
         }
 
-        function filterJenis(jenis) {
-            activeJenis = jenis;
-            ['all', 'keuangan', 'dokumen'].forEach(j => {
-                const btn = document.getElementById(`btn-jenis-${j}`);
-                if (btn) btn.className = "px-3 py-1 rounded-md text-slate-600 transition";
-            });
-            document.getElementById(`btn-jenis-${jenis.toLowerCase()}`).className = "px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm font-bold transition";
-            applyFilters();
+        function switchTab(jenis) {
+            activeTab = jenis;
+            
+            const tabKeuangan = document.getElementById('tab-keuangan');
+            const tabDokumen = document.getElementById('tab-dokumen');
+
+            if (jenis === 'Keuangan') {
+                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t border-l border-r bg-white text-purple-700 border-slate-300 shadow-sm transition";
+                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-slate-700 transition";
+            } else {
+                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t border-l border-r bg-white text-blue-700 border-slate-300 shadow-sm transition";
+                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-slate-700 transition";
+            }
+
+            renderTab();
         }
 
         function filterSumber(sumber) {
@@ -244,18 +268,81 @@
                 if (btn) btn.className = "px-3 py-1 rounded-md text-slate-600 transition";
             });
             document.getElementById(`btn-sumber-${sumber.toLowerCase()}`).className = "px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm font-bold transition";
-            applyFilters();
+            renderTab();
         }
 
-        function applyFilters() {
-            let filtered = currentData;
-            if (activeJenis !== 'ALL') {
-                filtered = filtered.filter(d => String(d.Jenis).toLowerCase() === activeJenis.toLowerCase());
-            }
+        function renderTab() {
+            const tabData = currentData.filter(d => String(d.Jenis).toLowerCase() === activeTab.toLowerCase());
+            
+            renderMetrics(tabData);
+
+            displayedData = tabData;
             if (activeSumber !== 'ALL') {
-                filtered = filtered.filter(d => String(d.Sumber).toUpperCase() === activeSumber.toUpperCase());
+                displayedData = tabData.filter(d => String(d.Sumber).toUpperCase() === activeSumber.toUpperCase());
             }
-            renderTable(filtered);
+
+            renderTable(displayedData);
+        }
+
+        function renderMetrics(data) {
+            document.getElementById("total-temuan").innerText = data.length;
+            
+            const selesaiCount = data.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0 && activeTab === 'Dokumen')).length;
+            document.getElementById("total-selesai").innerText = selesaiCount;
+            document.getElementById("total-proses").innerText = data.length - selesaiCount;
+
+            if (activeTab === 'Keuangan') {
+                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500 border border-slate-100";
+                document.getElementById("dynamic-title").innerText = "PROGRES SETORAN KAS NEGARA";
+                
+                const totalNominal = data.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+                const totalDisetor = data.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+                const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(1) : 0;
+
+                document.getElementById("dynamic-main-text").innerText = `${percent}% Disetor`;
+                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-purple-700";
+                document.getElementById("dynamic-sub-text").innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} / Rp ${totalNominal.toLocaleString('id-ID')}`;
+
+                document.getElementById("th-nominal").style.display = "";
+                document.getElementById("th-disetor").innerText = "Total Disetor (Rp)";
+                document.getElementById("table-title").innerText = "Daftar Rekomendasi Audit - Keuangan";
+            } else {
+                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 border border-slate-100";
+                document.getElementById("dynamic-title").innerText = "PROGRES KELENGKAPAN DOKUMEN";
+                
+                const totalDokumen = data.length;
+                const percentDokumen = totalDokumen > 0 ? ((selesaiCount / totalDokumen) * 100).toFixed(1) : 0;
+
+                document.getElementById("dynamic-main-text").innerText = `${percentDokumen}% Selesai`;
+                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-blue-700";
+                document.getElementById("dynamic-sub-text").innerText = `${selesaiCount} dari ${totalDokumen} Dokumen Dilengkapi`;
+
+                document.getElementById("th-nominal").style.display = "none";
+                document.getElementById("th-disetor").innerText = "Kelengkapan Berkas";
+                document.getElementById("table-title").innerText = "Daftar Rekomendasi Audit - Dokumen";
+            }
+
+            calcSumberMetrics(data, "BPK", "bpk");
+            calcSumberMetrics(data, "BPKP", "bpkp");
+            calcSumberMetrics(data, "Inspektorat", "inspektorat");
+        }
+
+        function calcSumberMetrics(data, sumberName, prefix) {
+            const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
+            document.getElementById(`badge-${prefix}`).innerText = `${subset.length} Temuan`;
+            
+            if (activeTab === 'Keuangan') {
+                document.getElementById(`lbl-${prefix}`).innerText = "Progres Setoran:";
+                const totalNominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+                const totalDisetor = subset.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+                const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(0) : 0;
+                document.getElementById(`${prefix}-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
+            } else {
+                document.getElementById(`lbl-${prefix}`).innerText = "Dokumen Lengkap:";
+                const selesaiCount = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)).length;
+                const percent = subset.length > 0 ? ((selesaiCount / subset.length) * 100).toFixed(0) : 0;
+                document.getElementById(`${prefix}-info`).innerText = `${selesaiCount} / ${subset.length} (${percent}%)`;
+            }
         }
 
         function renderTable(data) {
@@ -263,36 +350,43 @@
             tbody.innerHTML = "";
             
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-slate-400">Belum ada data temuan untuk filter ini.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-6 text-slate-400">Tidak ada data temuan ${activeTab}.</td></tr>`;
                 return;
             }
 
             data.forEach(item => {
-                const progress = parseInt(item.Progress_Percent) || 0;
-                const statusText = item.Status || (progress === 100 ? "Selesai" : "On Progress");
-                
-                let statusBadge = `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">On Progress</span>`;
-                if (statusText === "Selesai" || progress === 100) {
-                    statusBadge = `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-semibold">Selesai</span>`;
+                const totalDisetor = Number(item.Total_Disetor || 0);
+                const totalNominal = Number(item.Nominal_Rp || 0);
+                const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
+
+                let isSelesai = false;
+                if (activeTab === 'Keuangan') {
+                    isSelesai = totalNominal > 0 && totalDisetor >= totalNominal;
+                } else {
+                    isSelesai = hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100;
                 }
 
-                const nominalFormat = item.Jenis === 'Keuangan' 
-                    ? 'Rp ' + Number(item.Nominal_Rp || 0).toLocaleString('id-ID') 
-                    : '-';
+                let statusBadge = isSelesai 
+                    ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-semibold">Selesai</span>`
+                    : `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">On Progress</span>`;
 
-                const disetorFormat = item.Jenis === 'Keuangan'
-                    ? `Rp ${Number(item.Total_Disetor || 0).toLocaleString('id-ID')} (${progress}%)`
-                    : `${progress}%`;
+                const colNominal = activeTab === 'Keuangan' 
+                    ? `<td class="p-3 font-semibold">Rp ${totalNominal.toLocaleString('id-ID')}</td>` 
+                    : '';
+
+                const colDisetor = activeTab === 'Keuangan'
+                    ? `Rp ${totalDisetor.toLocaleString('id-ID')}`
+                    : (hasFile ? `<span class="text-emerald-600 font-semibold">Sudah Diunggah</span>` : `<span class="text-slate-400 italic">Belum Ada Berkas</span>`);
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3 font-mono font-semibold text-slate-500 text-xs">#${item.ID}</td>
                         <td class="p-3 font-semibold text-slate-700">${item.Sumber}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-semibold ${item.Jenis === 'Keuangan' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}">${item.Jenis}</span></td>
                         <td class="p-3 font-medium text-slate-900">${item.Judul_Temuan}</td>
-                        <td class="p-3 font-semibold">${nominalFormat}</td>
-                        <td class="p-3">${disetorFormat}</td>
+                        ${colNominal}
+                        <td class="p-3">${colDisetor}</td>
                         <td class="p-3">${statusBadge}</td>
-                        <td class="p-3 text-center space-x-1">
+                        <td class="p-3 text-center space-x-1 action-col">
                             <button onclick="openModalBayar(${item.ID})" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs">➕ Input Bukti</button>
                             <button onclick="openModalRiwayat(${item.ID})" class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-xs">📑 Lihat Bukti (${item.Riwayat_Bayar ? item.Riwayat_Bayar.length : 0})</button>
                         </td>
@@ -301,44 +395,101 @@
             });
         }
 
-        function renderMetrics(data) {
-            if(!data) return;
-            
-            // Metrik Umum
-            document.getElementById("total-temuan").innerText = data.length;
-            document.getElementById("total-selesai").innerText = data.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100).length;
-            document.getElementById("total-proses").innerText = data.filter(d => (d.Status === "On Progress" || !d.Status) && parseInt(d.Progress_Percent || 0) < 100).length;
+        // FUNGSI EXPORT KE EXCEL
+        function exportToExcel() {
+            const dataToExport = displayedData.map(item => {
+                const totalDisetor = Number(item.Total_Disetor || 0);
+                const totalNominal = Number(item.Nominal_Rp || 0);
+                const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
+                
+                let isSelesai = activeTab === 'Keuangan' 
+                    ? (totalNominal > 0 && totalDisetor >= totalNominal)
+                    : (hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100);
 
-            // Kalkulasi Khusus Setoran Keuangan
-            const dataKeuangan = data.filter(d => String(d.Jenis).toLowerCase() === 'keuangan');
-            const totalNominalUang = dataKeuangan.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
-            const totalDisetorUang = dataKeuangan.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
-            
-            const totalPercentUang = totalNominalUang > 0 ? ((totalDisetorUang / totalNominalUang) * 100).toFixed(1) : 0;
-            
-            document.getElementById("keuangan-percent-text").innerText = `${totalPercentUang}% Disetor`;
-            document.getElementById("keuangan-sub-text").innerText = `Rp ${totalDisetorUang.toLocaleString('id-ID')} / Rp ${totalNominalUang.toLocaleString('id-ID')}`;
+                if (activeTab === 'Keuangan') {
+                    return {
+                        "ID Temuan": item.ID,
+                        "Sumber Audit": item.Sumber,
+                        "Judul Temuan": item.Judul_Temuan,
+                        "Nilai Temuan (Rp)": totalNominal,
+                        "Total Disetor (Rp)": totalDisetor,
+                        "Status": isSelesai ? "Selesai" : "On Progress"
+                    };
+                } else {
+                    return {
+                        "ID Temuan": item.ID,
+                        "Sumber Audit": item.Sumber,
+                        "Judul Temuan": item.Judul_Temuan,
+                        "Kelengkapan Berkas": hasFile ? "Sudah Diunggah" : "Belum Ada Berkas",
+                        "Status": isSelesai ? "Selesai" : "On Progress"
+                    };
+                }
+            });
 
-            // Rincian per Sumber
-            calcSumberMetrics(data, "BPK", "bpk");
-            calcSumberMetrics(data, "BPKP", "bpkp");
-            calcSumberMetrics(data, "Inspektorat", "inspektorat");
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, `Temuan_${activeTab}`);
+            
+            const filename = `eTLHP_Laporan_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(workbook, filename);
         }
 
-        function calcSumberMetrics(data, sumberName, prefix) {
-            const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
-            const total = subset.length;
-            
-            const keuangan = subset.filter(d => String(d.Jenis).toLowerCase() === 'keuangan');
-            const totalNominal = keuangan.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
-            const totalDisetor = keuangan.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
-            const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(0) : 0;
+        // FUNGSI EXPORT KE PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-            const dokumenCount = subset.filter(d => String(d.Jenis).toLowerCase() === 'dokumen').length;
+            doc.setFontSize(14);
+            doc.text(`Laporan Monitoring Audit e-TLHP - ${activeTab}`, 14, 15);
+            doc.setFontSize(10);
+            doc.text(`Filter Sumber: ${activeSumber} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 22);
 
-            document.getElementById(`badge-${prefix}`).innerText = `${total} Temuan`;
-            document.getElementById(`${prefix}-keuangan-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
-            document.getElementById(`${prefix}-dokumen-info`).innerText = `${dokumenCount} Temuan`;
+            let headers = [];
+            let rows = [];
+
+            if (activeTab === 'Keuangan') {
+                headers = [["ID", "Sumber", "Judul Temuan", "Nilai Temuan", "Total Disetor", "Status"]];
+                rows = displayedData.map(item => {
+                    const totalDisetor = Number(item.Total_Disetor || 0);
+                    const totalNominal = Number(item.Nominal_Rp || 0);
+                    const isSelesai = totalNominal > 0 && totalDisetor >= totalNominal;
+                    
+                    return [
+                        `#${item.ID}`,
+                        item.Sumber,
+                        item.Judul_Temuan,
+                        `Rp ${totalNominal.toLocaleString('id-ID')}`,
+                        `Rp ${totalDisetor.toLocaleString('id-ID')}`,
+                        isSelesai ? "Selesai" : "On Progress"
+                    ];
+                });
+            } else {
+                headers = [["ID", "Sumber", "Judul Temuan", "Kelengkapan Berkas", "Status"]];
+                rows = displayedData.map(item => {
+                    const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
+                    const isSelesai = hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100;
+                    
+                    return [
+                        `#${item.ID}`,
+                        item.Sumber,
+                        item.Judul_Temuan,
+                        hasFile ? "Sudah Diunggah" : "Belum Ada Berkas",
+                        isSelesai ? "Selesai" : "On Progress"
+                    ];
+                });
+            }
+
+            doc.autoTable({
+                head: headers,
+                body: rows,
+                startY: 28,
+                theme: 'grid',
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: activeTab === 'Keuangan' ? [126, 34, 206] : [29, 78, 216] }
+            });
+
+            const filename = `eTLHP_Laporan_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(filename);
         }
 
         function openModalBayar(id) {
@@ -347,30 +498,44 @@
             document.getElementById("bayar-nominal").value = "";
             document.getElementById("bayar-keterangan").value = "";
             document.getElementById("bayar-file").value = "";
+
+            if(activeTab === 'Dokumen') {
+                document.getElementById("field-nominal-container").style.display = "none";
+                document.getElementById("modal-bayar-title").innerText = `➕ Upload Dokumen (ID: #${id})`;
+            } else {
+                document.getElementById("field-nominal-container").style.display = "";
+                document.getElementById("modal-bayar-title").innerText = `➕ Tambah Bukti Bayar (ID: #${id})`;
+            }
+
             document.getElementById("modal-bayar").classList.remove("hidden");
         }
 
         function openModalRiwayat(id) {
             const item = currentData.find(d => String(d.ID) === String(id));
             const container = document.getElementById("riwayat-content");
+            document.getElementById("modal-riwayat-id").innerText = `ID Temuan: #${id}`;
             container.innerHTML = "";
 
             if (!item || !item.Riwayat_Bayar || item.Riwayat_Bayar.length === 0) {
-                container.innerHTML = `<p class="text-sm text-slate-500 italic">Belum ada riwayat pembayaran / dokumen yang diunggah.</p>`;
+                container.innerHTML = `<p class="text-sm text-slate-500 italic">Belum ada riwayat bukti yang diunggah.</p>`;
             } else {
                 item.Riwayat_Bayar.forEach((r, idx) => {
                     const linkFile = r.Link_Dokumen 
                         ? `<a href="${r.Link_Dokumen}" target="_blank" class="text-blue-600 font-semibold hover:underline text-xs">📄 Buka File Dokumen</a>`
                         : `<span class="text-slate-400 text-xs">Tanpa File</span>`;
                     
+                    const setoranText = activeTab === 'Keuangan'
+                        ? `Setoran: <b class="text-emerald-700">Rp ${Number(r.Nominal_Setor || 0).toLocaleString('id-ID')}</b> | `
+                        : '';
+
                     container.innerHTML += `
                         <div class="p-3 border rounded-lg bg-slate-50 space-y-1">
                             <div class="flex justify-between items-center">
-                                <span class="font-bold text-sm">#${idx+1} No. Bukti: ${r.No_Bukti}</span>
+                                <span class="font-bold text-sm">#${idx+1} No. Bukti/Surat: ${r.No_Bukti}</span>
                                 <span class="text-xs text-slate-500">${r.Tanggal ? String(r.Tanggal).split('T')[0] : ''}</span>
                             </div>
                             <div class="text-xs text-slate-600">
-                                Setoran: <b class="text-emerald-700">Rp ${Number(r.Nominal_Setor || 0).toLocaleString('id-ID')}</b> | ${r.Keterangan}
+                                ${setoranText}${r.Keterangan}
                             </div>
                             <div class="pt-1">${linkFile}</div>
                         </div>
@@ -398,7 +563,7 @@
                 ID_Temuan: document.getElementById("bayar-id-temuan").value,
                 No_Bukti: document.getElementById("bayar-nobukti").value,
                 Tanggal: document.getElementById("bayar-tanggal").value,
-                Nominal_Setor: document.getElementById("bayar-nominal").value,
+                Nominal_Setor: document.getElementById("bayar-nominal").value || 0,
                 Keterangan: document.getElementById("bayar-keterangan").value
             };
 
