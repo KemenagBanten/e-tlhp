@@ -405,10 +405,10 @@
             if (activeTab === 'Keuangan') {
                 const totalNominal = data.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
                 
-                const dataSelesai = data.filter(d => Number(d.Nominal_Rp || 0) > 0 && Number(d.Total_Disetor || 0) >= Number(d.Nominal_Rp || 0));
-                const totalSelesaiNominal = dataSelesai.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
-
+                // --- PERUBAHAN DI SINI ---
+                // Menghitung total uang yang sudah benar-benar disetor (akumulasi dari semua bukti bayar)
                 const totalDisetor = data.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+                
                 const totalSisaSelesai = Math.max(0, totalNominal - totalDisetor);
 
                 const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(1) : 0;
@@ -416,8 +416,9 @@
                 document.getElementById("label-total-temuan").innerText = "TOTAL NOMINAL TEMUAN";
                 document.getElementById("total-temuan").innerText = `Rp ${totalNominal.toLocaleString('id-ID')}`;
 
-                document.getElementById("label-total-selesai").innerText = "NOMINAL SELESAI (LUNAS)";
-                document.getElementById("total-selesai").innerText = `Rp ${totalSelesaiNominal.toLocaleString('id-ID')}`;
+                // Label dan nilai diubah menampilkan total yang sudah disetor
+                document.getElementById("label-total-selesai").innerText = "TOTAL SUDAH DISETOR";
+                document.getElementById("total-selesai").innerText = `Rp ${totalDisetor.toLocaleString('id-ID')}`;
 
                 document.getElementById("label-total-proses").innerText = "SISA BELUM DISETOR";
                 document.getElementById("total-proses").innerText = `Rp ${totalSisaSelesai.toLocaleString('id-ID')}`;
