@@ -4,439 +4,767 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>e-TLHP - Kanwil Kemenag Provinsi Banten</title>
-    
-    <!-- CSS & Frameworks -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     
-    <!-- Pustaka Export Excel & PDF -->
+    <!-- Pustaka untuk Export Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
-
-    <!-- OVERLAY MODAL LOGIN -->
-    <div id="login-overlay" class="fixed inset-0 bg-slate-900/90 z-[999] flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6 border border-slate-100">
-            <div class="text-center space-y-2">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_Kementerian_Agama_RI.png" 
-                     alt="Logo Kemenag" 
-                     class="w-16 h-16 mx-auto object-contain drop-shadow">
-                <h2 class="text-xl font-extrabold text-emerald-900">Akses e-TLHP Kemenag Banten</h2>
-                <p class="text-xs text-slate-500">Masukkan kata sandi dan verifikasi captcha untuk mengakses dashboard monitoring.</p>
-            </div>
-
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi / Password</label>
-                    <input type="password" id="login-password" required placeholder="Masukkan password..." 
-                           class="w-full border border-slate-300 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none">
-                </div>
-
-                <!-- Google reCAPTCHA Container -->
-                <!-- Ganti data-sitekey di bawah dengan Site Key Anda -->
-                <div class="flex justify-center my-2">
-                    <div class="g-recaptcha" data-sitekey="6Ld_XpYqAAAAANJ-2M88-v9YgWd2hO8c0c9K_0A_"></div>
-                </div>
-
-                <button type="submit" id="btn-login" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg text-sm shadow transition">
-                    Masuk Aplikasi
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ISI UTAMA APLIKASI WEB -->
-    <div id="app-content" class="hidden max-w-7xl mx-auto space-y-6 p-4 md:p-6">
+<body class="bg-slate-100 p-4 md:p-6 text-slate-800">
+    <div class="max-w-7xl mx-auto space-y-6">
         
-        <!-- Header Aplikasi -->
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 gap-4">
+        <!-- Header dengan Logo Kemenag -->
+        <div class="bg-white p-6 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t-4 border-emerald-600 border-x border-b border-slate-200">
             <div class="flex items-center gap-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_Kementerian_Agama_RI.png" class="w-12 h-12 object-contain" alt="Kemenag Logo">
+                <img src="https://cms2023.kemenag.go.id/storage/files/shares/Logo/Kementerian_Agama_new_logo%20(2).png" 
+                     alt="Logo Kemenag" 
+                     class="w-16 h-16 object-contain flex-shrink-0 drop-shadow-sm">
                 <div>
-                    <h1 class="text-xl font-extrabold text-emerald-900">Sistem Monitoring e-TLHP</h1>
-                    <p class="text-xs text-slate-500">Kanwil Kementerian Agama Provinsi Banten</p>
+                    <h1 class="text-2xl font-extrabold text-emerald-900 tracking-tight">e-TLHP Kanwil Kemenag Provinsi Banten</h1>
+                    <p class="text-slate-600 text-sm font-medium">Sistem Monitoring Tindak Lanjut Hasil Pemeriksaan Audit (BPK, BPKP, & Inspektorat Jenderal)</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="openModalFinding()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow transition">
-                    + Tambah Temuan
-                </button>
-                <button onclick="handleLogout()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-2 rounded-lg text-xs font-semibold transition">
-                    Keluar
-                </button>
-            </div>
-        </header>
-
-        <!-- Ringkasan Statistik Metrik -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-1">
-                <p class="text-xs font-medium text-slate-500">Total Nominal Temuan</p>
-                <h3 id="stat-total" class="text-lg font-bold text-slate-800">Rp 0</h3>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-1">
-                <p class="text-xs font-medium text-slate-500">Total Telah Disetor</p>
-                <h3 id="stat-disetor" class="text-lg font-bold text-emerald-600">Rp 0</h3>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-1">
-                <p class="text-xs font-medium text-slate-500">Sisa / Selisih Belum Disetor</p>
-                <h3 id="stat-sisa" class="text-lg font-bold text-amber-600">Rp 0</h3>
+            <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
+                <button onclick="openModalTambahTemuan()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition">➕ Tambah Temuan</button>
+                <button onclick="fetchData()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition">🔄 Refresh Data</button>
             </div>
         </div>
 
-        <!-- Tabel Data Temuan -->
-        <main class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                <h2 class="font-bold text-slate-700 text-sm">Daftar Temuan Audit</h2>
-                <div class="flex gap-2">
-                    <button onclick="exportExcel()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md text-xs font-medium transition">
-                        Export Excel
-                    </button>
-                    <button onclick="exportPDF()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md text-xs font-medium transition">
-                        Export PDF
-                    </button>
+        <!-- NAVIGATION TABS -->
+        <div class="flex border-b border-slate-300 gap-2">
+            <button onclick="switchTab('Keuangan')" id="tab-keuangan" class="px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition">
+                💰 Temuan Keuangan
+            </button>
+            <button onclick="switchTab('Dokumen')" id="tab-dokumen" class="px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition">
+                📄 Temuan Dokumen
+            </button>
+        </div>
+
+        <!-- Metric Cards Utama -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border border-slate-100">
+                <p id="label-total-temuan" class="text-xs text-slate-500 font-semibold">TOTAL NOMINAL TEMUAN</p>
+                <h3 id="total-temuan" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500 border border-slate-100">
+                <p id="label-total-selesai" class="text-xs text-slate-500 font-semibold">NOMINAL SELESAI (LUNAS)</p>
+                <h3 id="total-selesai" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500 border border-slate-100">
+                <p id="label-total-proses" class="text-xs text-slate-500 font-semibold">SISA BELUM DISETOR</p>
+                <h3 id="total-proses" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
+            </div>
+            <div id="card-dynamic" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-700 border border-slate-100">
+                <p id="dynamic-title" class="text-xs text-slate-500 font-semibold">PROGRES SETORAN KAS NEGARA</p>
+                <h3 id="dynamic-main-text" class="text-2xl font-bold text-emerald-700">0% Disetor</h3>
+                <p id="dynamic-sub-text" class="text-xs text-slate-500 mt-1">Rp 0 dari Rp 0</p>
+            </div>
+        </div>
+
+        <!-- Metric Cards Rincian per Sumber Audit -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- BPK -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-slate-700">🏛️ Temuan BPK</span>
+                    <span id="badge-bpk" class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+                </div>
+                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
+                    <div class="flex justify-between">
+                        <span id="lbl-bpk">Disetor:</span> 
+                        <b id="bpk-info" class="text-slate-700">Rp 0 (0%)</b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BPKP -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-slate-700">🏢 Temuan BPKP</span>
+                    <span id="badge-bpkp" class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+                </div>
+                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
+                    <div class="flex justify-between">
+                        <span id="lbl-bpkp">Disetor:</span> 
+                        <b id="bpkp-info" class="text-slate-700">Rp 0 (0%)</b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inspektorat -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-slate-700">🔍 Temuan Itjen Kemenag</span>
+                    <span id="badge-inspektorat" class="bg-teal-100 text-teal-800 text-xs px-2.5 py-1 rounded-full font-bold">Rp 0</span>
+                </div>
+                <div class="text-xs text-slate-500 space-y-1 pt-2 border-t mt-2">
+                    <div class="flex justify-between">
+                        <span id="lbl-inspektorat">Disetor:</span> 
+                        <b id="inspektorat-info" class="text-slate-700">Rp 0 (0%)</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Utama -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <h2 id="table-title" class="font-bold text-emerald-900">Daftar Rekomendasi Audit - Keuangan</h2>
+                
+                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-64">
+                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="🔍 Cari Penanggung Jawab / Judul..." class="w-full pl-3 pr-8 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+                    </div>
+
+                    <div class="flex bg-slate-200 p-1 rounded-lg text-xs font-semibold">
+                        <button onclick="filterSumber('ALL')" id="btn-sumber-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua</button>
+                        <button onclick="filterSumber('BPK')" id="btn-sumber-bpk" class="px-3 py-1 rounded-md text-slate-600 transition">BPK</button>
+                        <button onclick="filterSumber('BPKP')" id="btn-sumber-bpkp" class="px-3 py-1 rounded-md text-slate-600 transition">BPKP</button>
+                        <button onclick="filterSumber('Inspektorat')" id="btn-sumber-inspektorat" class="px-3 py-1 rounded-md text-slate-600 transition">Itjen</button>
+                    </div>
+
+                    <div class="flex gap-1">
+                        <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
+                            📊 Excel
+                        </button>
+                        <button onclick="exportToPDF()" class="bg-rose-700 hover:bg-rose-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
+                            📄 PDF
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 text-slate-600 uppercase font-bold border-b border-slate-200">
+                <table id="main-table" class="w-full text-left text-sm">
+                    <thead class="bg-emerald-900 text-white font-semibold">
                         <tr>
                             <th class="p-3">ID</th>
-                            <th class="p-3">Sumber / Jenis</th>
+                            <th class="p-3">Sumber</th>
                             <th class="p-3">Judul Temuan</th>
                             <th class="p-3">Penanggung Jawab</th>
-                            <th class="p-3">Nominal</th>
-                            <th class="p-3">Disetor</th>
-                            <th class="p-3">Sisa</th>
+                            <th id="th-nominal" class="p-3">Nilai Temuan</th>
+                            <th id="th-disetor" class="p-3">Total Disetor</th>
                             <th class="p-3">Status</th>
-                            <th class="p-3 text-center">Aksi</th>
+                            <th class="p-3 text-center action-col">Aksi Admin</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-slate-100">
-                        <tr>
-                            <td colspan="9" class="p-4 text-center text-slate-400">Memuat data...</td>
-                        </tr>
+                        <tr><td colspan="8" class="text-center p-6 text-slate-500">Memuat data...</td></tr>
                     </tbody>
                 </table>
             </div>
-        </main>
-    </div>
-
-    <!-- MODAL: TAMBAH TEMUAN -->
-    <div id="modal-finding" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-xl space-y-4">
-            <h3 class="font-bold text-slate-800">Tambah Temuan Audit Baru</h3>
-            <form onsubmit="submitFinding(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block text-slate-600 mb-1">ID Temuan (Opsional)</label>
-                    <input type="text" id="find-id" placeholder="Biarkan kosong jika auto-number" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Sumber Audit</label>
-                    <input type="text" id="find-sumber" required placeholder="Contoh: BPK / Itjen" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Jenis Temuan</label>
-                    <input type="text" id="find-jenis" required placeholder="Contoh: Kerugian Negara / Administrasi" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Judul Temuan</label>
-                    <textarea id="find-judul" required class="w-full border p-2 rounded" rows="2"></textarea>
-                </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Penanggung Jawab</label>
-                    <input type="text" id="find-pj" required placeholder="Nama / Jabatan" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Nominal (Rp)</label>
-                    <input type="number" id="find-nominal" required class="w-full border p-2 rounded">
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModalFinding()" class="px-3 py-1.5 border rounded">Batal</button>
-                    <button type="submit" id="btn-submit-finding" class="px-3 py-1.5 bg-emerald-700 text-white rounded font-bold">Simpan</button>
-                </div>
-            </form>
         </div>
     </div>
 
-    <!-- MODAL: TAMBAH PEMBAYARAN -->
-    <div id="modal-payment" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-xl space-y-4">
-            <h3 class="font-bold text-slate-800">Setor / Tambah Pembayaran</h3>
-            <form onsubmit="submitPayment(event)" class="space-y-3 text-xs">
-                <input type="hidden" id="pay-id-temuan">
+    <!-- MODAL 1: Input Bukti Bayar / Dokumen -->
+    <div id="modal-bayar" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+            <h3 id="modal-bayar-title" class="text-lg font-bold text-emerald-900 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
+            <input type="hidden" id="bayar-id-temuan">
+            
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">No. Bukti / NTPN / No. Surat</label>
+                <input type="text" id="bayar-nobukti" placeholder="Contoh: 1111" class="w-full border p-2 rounded-lg text-sm">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="block text-slate-600 mb-1">No. Bukti / NTPN</label>
-                    <input type="text" id="pay-nobukti" required class="w-full border p-2 rounded">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                    <input type="date" id="bayar-tanggal" class="w-full border p-2 rounded-lg text-sm">
                 </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Tanggal Setor</label>
-                    <input type="date" id="pay-tanggal" required class="w-full border p-2 rounded">
+                <div id="field-nominal-container">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Setor (Rp)</label>
+                    <input type="number" id="bayar-nominal" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
                 </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Nominal Setor (Rp)</label>
-                    <input type="number" id="pay-nominal" required class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Unggah Bukti Setor (PDF/Gambar)</label>
-                    <input type="file" id="pay-file" accept="image/*,application/pdf" class="w-full border p-1 rounded">
-                </div>
-                <div>
-                    <label class="block text-slate-600 mb-1">Keterangan</label>
-                    <input type="text" id="pay-keterangan" class="w-full border p-2 rounded">
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModalPayment()" class="px-3 py-1.5 border rounded">Batal</button>
-                    <button type="submit" id="btn-submit-payment" class="px-3 py-1.5 bg-emerald-700 text-white rounded font-bold">Kirim Pembayaran</button>
-                </div>
-            </form>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Upload File Dokumen/Bukti (Maks. 5 MB)</label>
+                <input type="file" id="bayar-file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm border p-1 rounded-lg">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan</label>
+                <textarea id="bayar-keterangan" placeholder="Contoh: Pembayaran Tahap 1 / Penyerahan SOP" class="w-full border p-2 rounded-lg text-sm" rows="2"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-bayar')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
+                <button onclick="submitPembayaran()" id="btn-save-bayar" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Bukti</button>
+            </div>
         </div>
     </div>
 
-    <!-- LOGIKA SCRIPT FRONTEND -->
+    <!-- MODAL 2: Detail Riwayat -->
+    <div id="modal-riwayat" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl p-6 max-w-2xl w-full space-y-4 shadow-xl">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-lg font-bold text-emerald-900">📑 Riwayat Bukti Bayar & Dokumen</h3>
+                <span id="modal-riwayat-id" class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md">ID Temuan: -</span>
+            </div>
+            <div id="riwayat-content" class="max-h-80 overflow-y-auto space-y-2"></div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal('modal-riwayat')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Tambah Temuan -->
+    <div id="modal-tambah-temuan" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2">➕ Tambah Temuan Audit</h3>
+            
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">ID Temuan <span class="text-rose-500">*</span></label>
+                <input type="text" id="id-baru" placeholder="Contoh: T-001 / BPK-2026-01" class="w-full border p-2 rounded-lg text-sm" required>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Sumber Audit <span class="text-rose-500">*</span></label>
+                <select id="sumber-baru" class="w-full border p-2 rounded-lg text-sm" required>
+                    <option value="BPK">BPK</option>
+                    <option value="Inspektorat">Inspektorat</option>
+                    <option value="BPKP">BPKP</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Temuan <span class="text-rose-500">*</span></label>
+                <select id="jenis-baru" class="w-full border p-2 rounded-lg text-sm" required>
+                    <option value="Keuangan">Keuangan</option>
+                    <option value="Dokumen">Dokumen</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Temuan <span class="text-rose-500">*</span></label>
+                <input type="text" id="judul-baru" placeholder="Masukan judul temuan..." class="w-full border p-2 rounded-lg text-sm" required>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Penanggung Jawab (Satker / Kankemenag) <span class="text-rose-500">*</span></label>
+                <input type="text" id="pj-baru" placeholder="Contoh: Kankemenag Serang / Bidang PAKIS" class="w-full border p-2 rounded-lg text-sm" required>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Temuan (Rp) [Khusus Keuangan]</label>
+                <input type="number" id="nominal-baru" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-tambah-temuan')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
+                <button onclick="submitTemuanBaru()" id="btn-save-temuan" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Temuan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwy4_dRDOq3vfLkXqwy6D8x_futKprWZLAnUfnkyN6P4GFKxsk9q-dXlpAucL1S3jNi/exec";
-        let globalData = [];
 
-        // Inisialisasi Akses
-        window.addEventListener("DOMContentLoaded", () => {
-            if (sessionStorage.getItem("isLoggedIn") === "true") {
-                document.getElementById("login-overlay").classList.add("hidden");
-                document.getElementById("app-content").classList.remove("hidden");
-                fetchData();
+        let currentData = [];
+        let activeTab = 'Keuangan'; 
+        let activeSumber = 'ALL';
+        let searchQuery = '';
+        let displayedData = [];
+
+        async function fetchData() {
+            try {
+                const res = await fetch(API_URL);
+                currentData = await res.json();
+                renderTab();
+            } catch (e) {
+                console.error("Gagal mengambil data:", e);
             }
-        });
+        }
 
-        // Autentikasi Login
-        async function handleLogin(e) {
-            e.preventDefault();
-            const password = document.getElementById("login-password").value;
-            const captchaResponse = typeof grecaptcha !== "undefined" ? grecaptcha.getResponse() : "";
+        function switchTab(jenis) {
+            activeTab = jenis;
+            
+            const tabKeuangan = document.getElementById('tab-keuangan');
+            const tabDokumen = document.getElementById('tab-dokumen');
 
-            const btn = document.getElementById("btn-login");
-            btn.innerText = "Memverifikasi...";
+            if (jenis === 'Keuangan') {
+                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition";
+                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition";
+            } else {
+                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition";
+                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition";
+            }
+
+            renderTab();
+        }
+
+        function filterSumber(sumber) {
+            activeSumber = sumber;
+            ['all', 'bpk', 'bpkp', 'inspektorat'].forEach(s => {
+                const btn = document.getElementById(`btn-sumber-${s}`);
+                if (btn) btn.className = "px-3 py-1 rounded-md text-slate-600 transition";
+            });
+            document.getElementById(`btn-sumber-${sumber.toLowerCase()}`).className = "px-3 py-1 rounded-md bg-white text-emerald-900 shadow-sm font-bold transition";
+            renderTab();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById("search-input").value.toLowerCase();
+            renderTab();
+        }
+
+        function renderTab() {
+            const tabData = currentData.filter(d => String(d.Jenis).toLowerCase() === activeTab.toLowerCase());
+            
+            renderMetrics(tabData);
+
+            displayedData = tabData;
+            if (activeSumber !== 'ALL') {
+                displayedData = tabData.filter(d => String(d.Sumber).toUpperCase() === activeSumber.toUpperCase());
+            }
+
+            if (searchQuery.trim() !== '') {
+                displayedData = displayedData.filter(d => 
+                    (d.Penanggung_Jawab && d.Penanggung_Jawab.toLowerCase().includes(searchQuery)) ||
+                    (d.Judul_Temuan && d.Judul_Temuan.toLowerCase().includes(searchQuery)) ||
+                    (d.Sumber && d.Sumber.toLowerCase().includes(searchQuery)) ||
+                    (String(d.ID).includes(searchQuery))
+                );
+            }
+
+            renderTable(displayedData);
+        }
+
+        function renderMetrics(data) {
+            if (activeTab === 'Keuangan') {
+                const totalNominal = data.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+                
+                const dataSelesai = data.filter(d => Number(d.Nominal_Rp || 0) > 0 && Number(d.Total_Disetor || 0) >= Number(d.Nominal_Rp || 0));
+                const totalSelesaiNominal = dataSelesai.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+
+                const totalDisetor = data.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+                const totalSisaSelesai = Math.max(0, totalNominal - totalDisetor);
+
+                const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(1) : 0;
+
+                document.getElementById("label-total-temuan").innerText = "TOTAL NOMINAL TEMUAN";
+                document.getElementById("total-temuan").innerText = `Rp ${totalNominal.toLocaleString('id-ID')}`;
+
+                document.getElementById("label-total-selesai").innerText = "NOMINAL SELESAI (LUNAS)";
+                document.getElementById("total-selesai").innerText = `Rp ${totalSelesaiNominal.toLocaleString('id-ID')}`;
+
+                document.getElementById("label-total-proses").innerText = "SISA BELUM DISETOR";
+                document.getElementById("total-proses").innerText = `Rp ${totalSisaSelesai.toLocaleString('id-ID')}`;
+
+                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border border-slate-100";
+                document.getElementById("dynamic-title").innerText = "PROGRES SETORAN KAS NEGARA";
+                document.getElementById("dynamic-main-text").innerText = `${percent}% Disetor`;
+                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-emerald-700";
+                document.getElementById("dynamic-sub-text").innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} dari Rp ${totalNominal.toLocaleString('id-ID')}`;
+
+                document.getElementById("th-nominal").style.display = "";
+                document.getElementById("th-disetor").innerText = "Total Disetor (Rp)";
+                document.getElementById("table-title").innerText = "Daftar Rekomendasi Audit - Keuangan";
+
+            } else {
+                const totalDokumen = data.length;
+                const selesaiCount = data.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)).length;
+                const prosesCount = totalDokumen - selesaiCount;
+                const percentDokumen = totalDokumen > 0 ? ((selesaiCount / totalDokumen) * 100).toFixed(1) : 0;
+
+                document.getElementById("label-total-temuan").innerText = "TOTAL DOKUMEN TEMUAN";
+                document.getElementById("total-temuan").innerText = totalDokumen;
+
+                document.getElementById("label-total-selesai").innerText = "DOKUMEN SELESAI";
+                document.getElementById("total-selesai").innerText = selesaiCount;
+
+                document.getElementById("label-total-proses").innerText = "DOKUMEN ON PROGRESS";
+                document.getElementById("total-proses").innerText = prosesCount;
+
+                document.getElementById("card-dynamic").className = "bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500 border border-slate-100";
+                document.getElementById("dynamic-title").innerText = "PROGRES KELENGKAPAN DOKUMEN";
+                document.getElementById("dynamic-main-text").innerText = `${percentDokumen}% Selesai`;
+                document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-amber-600";
+                document.getElementById("dynamic-sub-text").innerText = `${selesaiCount} dari ${totalDokumen} Dokumen Dilengkapi`;
+
+                document.getElementById("th-nominal").style.display = "none";
+                document.getElementById("th-disetor").innerText = "Kelengkapan Berkas";
+                document.getElementById("table-title").innerText = "Daftar Rekomendasi Audit - Dokumen";
+            }
+
+            calcSumberMetrics(data, "BPK", "bpk");
+            calcSumberMetrics(data, "BPKP", "bpkp");
+            calcSumberMetrics(data, "Inspektorat", "inspektorat");
+        }
+
+        function calcSumberMetrics(data, sumberName, prefix) {
+            const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
+            
+            if (activeTab === 'Keuangan') {
+                const totalNominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+                const totalDisetor = subset.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+                const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(1) : 0;
+
+                document.getElementById(`badge-${prefix}`).innerText = `Rp ${totalNominal.toLocaleString('id-ID')}`;
+                document.getElementById(`lbl-${prefix}`).innerText = "Disetor:";
+                document.getElementById(`${prefix}-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
+            } else {
+                const totalDokumen = subset.length;
+                const selesaiCount = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)).length;
+                const percent = totalDokumen > 0 ? ((selesaiCount / totalDokumen) * 100).toFixed(0) : 0;
+
+                document.getElementById(`badge-${prefix}`).innerText = `${totalDokumen} Dokumen`;
+                document.getElementById(`lbl-${prefix}`).innerText = "Dokumen Lengkap:";
+                document.getElementById(`${prefix}-info`).innerText = `${selesaiCount} / ${totalDokumen} (${percent}%)`;
+            }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById("table-body");
+            tbody.innerHTML = "";
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-slate-400">Tidak ada data yang sesuai dengan pencarian/filter.</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const totalDisetor = Number(item.Total_Disetor || 0);
+                const totalNominal = Number(item.Nominal_Rp || 0);
+                const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
+
+                let isSelesai = false;
+                if (activeTab === 'Keuangan') {
+                    isSelesai = totalNominal > 0 && totalDisetor >= totalNominal;
+                } else {
+                    isSelesai = hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100;
+                }
+
+                let statusBadge = isSelesai 
+                    ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-semibold">Selesai</span>`
+                    : `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">On Progress</span>`;
+
+                const colNominal = activeTab === 'Keuangan' 
+                    ? `<td class="p-3 font-semibold text-slate-800">Rp ${totalNominal.toLocaleString('id-ID')}</td>` 
+                    : '';
+
+                const colDisetor = activeTab === 'Keuangan'
+                    ? `Rp ${totalDisetor.toLocaleString('id-ID')}`
+                    : (hasFile ? `<span class="text-emerald-700 font-semibold">Sudah Diunggah</span>` : `<span class="text-slate-400 italic">Belum Ada Berkas</span>`);
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3 font-mono font-semibold text-slate-500 text-xs">#${item.ID}</td>
+                        <td class="p-3 font-semibold text-slate-700">${item.Sumber}</td>
+                        <td class="p-3 font-medium text-slate-900">${item.Judul_Temuan}</td>
+                        <td class="p-3 text-slate-700 font-medium">${item.Penanggung_Jawab || '-'}</td>
+                        ${colNominal}
+                        <td class="p-3">${colDisetor}</td>
+                        <td class="p-3">${statusBadge}</td>
+                        <td class="p-3 text-center space-x-1 action-col">
+                            <button onclick="openModalBayar('${item.ID}')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2 py-1 rounded text-xs transition">➕ Input Bukti</button>
+                            <button onclick="openModalRiwayat('${item.ID}')" class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-xs transition">📑 Lihat Bukti (${item.Riwayat_Bayar ? item.Riwayat_Bayar.length : 0})</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // EXPORT EXCEL
+        function exportToExcel() {
+            const dataToExport = displayedData.map(item => {
+                const totalDisetor = Number(item.Total_Disetor || 0);
+                const totalNominal = Number(item.Nominal_Rp || 0);
+                const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
+                
+                let isSelesai = activeTab === 'Keuangan' 
+                    ? (totalNominal > 0 && totalDisetor >= totalNominal)
+                    : (hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100);
+
+                if (activeTab === 'Keuangan') {
+                    return {
+                        "ID Temuan": item.ID,
+                        "Sumber Audit": item.Sumber,
+                        "Judul Temuan": item.Judul_Temuan,
+                        "Penanggung Jawab": item.Penanggung_Jawab || '-',
+                        "Nilai Temuan (Rp)": totalNominal,
+                        "Total Disetor (Rp)": totalDisetor,
+                        "Status": isSelesai ? "Selesai" : "On Progress"
+                    };
+                } else {
+                    return {
+                        "ID Temuan": item.ID,
+                        "Sumber Audit": item.Sumber,
+                        "Judul Temuan": item.Judul_Temuan,
+                        "Penanggung Jawab": item.Penanggung_Jawab || '-',
+                        "Kelengkapan Berkas": hasFile ? "Sudah Diunggah" : "Belum Ada Berkas",
+                        "Status": isSelesai ? "Selesai" : "On Progress"
+                    };
+                }
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, `Temuan_${activeTab}`);
+            
+            const filename = `eTLHP_KemenagBanten_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(workbook, filename);
+        }
+
+        // EXPORT PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(14);
+            doc.text(`Kanwil Kemenag Banten - Laporan e-TLHP (${activeTab})`, 14, 15);
+            doc.setFontSize(10);
+            doc.text(`Filter Sumber: ${activeSumber} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 22);
+
+            let headers = [];
+            let rows = [];
+
+            if (activeTab === 'Keuangan') {
+                headers = [["ID", "Sumber", "Judul Temuan", "Penanggung Jawab", "Nilai Temuan", "Total Disetor", "Status"]];
+                rows = displayedData.map(item => {
+                    const totalDisetor = Number(item.Total_Disetor || 0);
+                    const totalNominal = Number(item.Nominal_Rp || 0);
+                    const isSelesai = totalNominal > 0 && totalDisetor >= totalNominal;
+                    
+                    return [
+                        `#${item.ID}`,
+                        item.Sumber,
+                        item.Judul_Temuan,
+                        item.Penanggung_Jawab || '-',
+                        `Rp ${totalNominal.toLocaleString('id-ID')}`,
+                        `Rp ${totalDisetor.toLocaleString('id-ID')}`,
+                        isSelesai ? "Selesai" : "On Progress"
+                    ];
+                });
+            } else {
+                headers = [["ID", "Sumber", "Judul Temuan", "Penanggung Jawab", "Kelengkapan Berkas", "Status"]];
+                rows = displayedData.map(item => {
+                    const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
+                    const isSelesai = hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100;
+                    
+                    return [
+                        `#${item.ID}`,
+                        item.Sumber,
+                        item.Judul_Temuan,
+                        item.Penanggung_Jawab || '-',
+                        hasFile ? "Sudah Diunggah" : "Belum Ada Berkas",
+                        isSelesai ? "Selesai" : "On Progress"
+                    ];
+                });
+            }
+
+            doc.autoTable({
+                head: headers,
+                body: rows,
+                startY: 28,
+                theme: 'grid',
+                styles: { fontSize: 7.5 },
+                headStyles: { fillColor: activeTab === 'Keuangan' ? [0, 104, 55] : [217, 119, 6] }
+            });
+
+            const filename = `eTLHP_KemenagBanten_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(filename);
+        }
+
+        // BUKA DAN TUTUP MODAL
+        function openModalTambahTemuan() {
+            const modal = document.getElementById("modal-tambah-temuan");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function openModalBayar(id) {
+            document.getElementById("bayar-id-temuan").value = id;
+            document.getElementById("bayar-nobukti").value = "";
+            document.getElementById("bayar-nominal").value = "";
+            document.getElementById("bayar-keterangan").value = "";
+            document.getElementById("bayar-file").value = "";
+
+            if(activeTab === 'Dokumen') {
+                document.getElementById("field-nominal-container").style.display = "none";
+                document.getElementById("modal-bayar-title").innerText = `➕ Upload Dokumen (ID: #${id})`;
+            } else {
+                document.getElementById("field-nominal-container").style.display = "";
+                document.getElementById("modal-bayar-title").innerText = `➕ Tambah Bukti Bayar (ID: #${id})`;
+            }
+
+            const modal = document.getElementById("modal-bayar");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function openModalRiwayat(id) {
+            const item = currentData.find(d => String(d.ID) === String(id));
+            const container = document.getElementById("riwayat-content");
+            document.getElementById("modal-riwayat-id").innerText = `ID Temuan: #${id}`;
+            container.innerHTML = "";
+
+            if (!item || !item.Riwayat_Bayar || item.Riwayat_Bayar.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-500 italic">Belum ada riwayat bukti yang diunggah.</p>`;
+            } else {
+                item.Riwayat_Bayar.forEach((r, idx) => {
+                    const linkFile = r.Link_Dokumen 
+                        ? `<a href="${r.Link_Dokumen}" target="_blank" class="text-emerald-700 font-semibold hover:underline text-xs">📄 Buka File Dokumen</a>`
+                        : `<span class="text-slate-400 text-xs">Tanpa File</span>`;
+                    
+                    const setoranText = activeTab === 'Keuangan'
+                        ? `Setoran: <b class="text-emerald-700">Rp ${Number(r.Nominal_Setor || 0).toLocaleString('id-ID')}</b> | `
+                        : '';
+
+                    container.innerHTML += `
+                        <div class="p-3 border rounded-lg bg-slate-50 space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-sm text-slate-800">#${idx+1} No. Bukti/Surat: ${r.No_Bukti}</span>
+                                <span class="text-xs text-slate-500">${r.Tanggal ? String(r.Tanggal).split('T')[0] : ''}</span>
+                            </div>
+                            <div class="text-xs text-slate-600">
+                                ${setoranText}${r.Keterangan}
+                            </div>
+                            <div class="pt-1">${linkFile}</div>
+                        </div>
+                    `;
+                });
+            }
+            const modal = document.getElementById("modal-riwayat");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        // UTILS FUNCTION FIX (Memisahkan Mime Header Base64)
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const rawBase64 = reader.result.split(',')[1];
+                    resolve(rawBase64);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function submitPembayaran() {
+            const noBukti = document.getElementById("bayar-nobukti").value.trim();
+            const tanggal = document.getElementById("bayar-tanggal").value;
+            const nominal = document.getElementById("bayar-nominal").value;
+            const keterangan = document.getElementById("bayar-keterangan").value.trim();
+            const fileInput = document.getElementById("bayar-file");
+
+            if (!noBukti || !tanggal || !keterangan || fileInput.files.length === 0) {
+                alert("⚠️ Semua kolom inputan dan unggahan file wajib diisi!");
+                return;
+            }
+
+            if (activeTab === 'Keuangan' && nominal === "") {
+                alert("⚠️ Nominal setoran wajib diisi!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            
+            // Pengecekan Ukuran File Maksimal 5MB
+            if (file.size > 5 * 1024 * 1024) {
+                alert("⚠️ Ukuran file terlalu besar! Maksimal ukuran file adalah 5 MB.");
+                return;
+            }
+
+            const btn = document.getElementById("btn-save-bayar");
+            btn.innerText = "Mengunggah...";
             btn.disabled = true;
 
             try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
+                const base64Data = await toBase64(file);
+
+                const payload = {
+                    action: "add_payment",
+                    ID_Temuan: document.getElementById("bayar-id-temuan").value,
+                    No_Bukti: noBukti,
+                    Tanggal: tanggal,
+                    Nominal_Setor: Number(nominal) || 0,
+                    Keterangan: keterangan,
+                    fileData: base64Data,
+                    fileName: file.name,
+                    fileMimeType: file.type
+                };
+
+                const response = await fetch(API_URL, { 
+                    method: "POST", 
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({
-                        action: "login_verify",
-                        password: password,
-                        captchaToken: captchaResponse
-                    })
+                    body: JSON.stringify(payload) 
                 });
 
-                const res = await response.json();
+                closeModal("modal-bayar");
+                await fetchData();
+                alert("✅ Bukti berhasil diunggah!");
 
-                if (res.status === "success") {
-                    sessionStorage.setItem("isLoggedIn", "true");
-                    document.getElementById("login-overlay").classList.add("hidden");
-                    document.getElementById("app-content").classList.remove("hidden");
-                    fetchData();
-                } else {
-                    alert("❌ " + res.message);
-                    if (typeof grecaptcha !== "undefined") grecaptcha.reset();
-                }
-            } catch (err) {
-                alert("Gagal memproses login: " + err.message);
+            } catch (error) {
+                alert("Gagal menyimpan bukti: " + error.message);
             } finally {
-                btn.innerText = "Masuk Aplikasi";
+                btn.innerText = "Simpan Bukti";
                 btn.disabled = false;
             }
         }
 
-        function handleLogout() {
-            sessionStorage.removeItem("isLoggedIn");
-            location.reload();
-        }
+        async function submitTemuanBaru() {
+            const idTemuan = document.getElementById("id-baru").value.trim();
+            const sumber = document.getElementById("sumber-baru").value;
+            const jenis = document.getElementById("jenis-baru").value;
+            const judul = document.getElementById("judul-baru").value.trim();
+            const pj = document.getElementById("pj-baru").value.trim();
+            let nominal = document.getElementById("nominal-baru").value;
 
-        // Fetch & Render Data
-        async function fetchData() {
-            try {
-                const res = await fetch(API_URL);
-                globalData = await res.json();
-                renderTable();
-                renderMetrics();
-            } catch (err) {
-                console.error("Gagal mengambil data:", err);
+            if (jenis === "Dokumen" && nominal === "") {
+                nominal = 0;
             }
-        }
 
-        function renderMetrics() {
-            let total = 0, disetor = 0;
-            globalData.forEach(item => {
-                total += item.Nominal_Rp || 0;
-                disetor += item.Total_Disetor || 0;
-            });
-            const sisa = total - disetor;
-
-            document.getElementById("stat-total").innerText = "Rp " + total.toLocaleString("id-ID");
-            document.getElementById("stat-disetor").innerText = "Rp " + disetor.toLocaleString("id-ID");
-            document.getElementById("stat-sisa").innerText = "Rp " + sisa.toLocaleString("id-ID");
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById("table-body");
-            tbody.innerHTML = "";
-
-            if (!globalData || globalData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-400">Belum ada data temuan.</td></tr>`;
+            if (!idTemuan || !sumber || !jenis || !judul || !pj || (jenis === "Keuangan" && nominal === "")) {
+                alert("⚠️ Semua kolom inputan wajib diisi!");
                 return;
             }
 
-            globalData.forEach(item => {
-                const sisa = item.Nominal_Rp - item.Total_Disetor;
-                const statusBadge = sisa <= 0 
-                    ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-semibold">Selesai</span>`
-                    : `<span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum Selesai</span>`;
-
-                const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-3 font-semibold text-slate-700">${item.ID}</td>
-                    <td class="p-3"><div class="font-medium">${item.Sumber}</div><div class="text-[10px] text-slate-400">${item.Jenis}</div></td>
-                    <td class="p-3 max-w-xs font-medium">${item.Judul_Temuan}</td>
-                    <td class="p-3">${item.Penanggung_Jawab}</td>
-                    <td class="p-3 font-semibold">Rp ${item.Nominal_Rp.toLocaleString("id-ID")}</td>
-                    <td class="p-3 text-emerald-600 font-semibold">Rp ${item.Total_Disetor.toLocaleString("id-ID")}</td>
-                    <td class="p-3 text-amber-600 font-semibold">Rp ${(sisa > 0 ? sisa : 0).toLocaleString("id-ID")}</td>
-                    <td class="p-3">${statusBadge}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="openModalPayment('${item.ID}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded text-[11px] font-semibold transition">
-                            + Setor
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Modal Handlers
-        function openModalFinding() { document.getElementById("modal-finding").classList.remove("hidden"); }
-        function closeModalFinding() { document.getElementById("modal-finding").classList.add("hidden"); }
-        function openModalPayment(id) { 
-            document.getElementById("pay-id-temuan").value = id;
-            document.getElementById("modal-payment").classList.remove("hidden"); 
-        }
-        function closeModalPayment() { document.getElementById("modal-payment").classList.add("hidden"); }
-
-        // Form Submitters
-        async function submitFinding(e) {
-            e.preventDefault();
-            const btn = document.getElementById("btn-submit-finding");
+            const btn = document.getElementById("btn-save-temuan");
             btn.innerText = "Menyimpan...";
             btn.disabled = true;
 
             const payload = {
                 action: "add_finding",
-                ID_Temuan: document.getElementById("find-id").value,
-                Sumber: document.getElementById("find-sumber").value,
-                Jenis: document.getElementById("find-jenis").value,
-                Judul_Temuan: document.getElementById("find-judul").value,
-                Penanggung_Jawab: document.getElementById("find-pj").value,
-                Nominal_Rp: document.getElementById("find-nominal").value
+                ID_Temuan: idTemuan,
+                Sumber: sumber,
+                Jenis: jenis,
+                Judul_Temuan: judul,
+                Penanggung_Jawab: pj,
+                Nominal_Rp: Number(nominal) || 0
             };
 
             try {
-                await fetch(API_URL, {
-                    method: "POST",
+                await fetch(API_URL, { 
+                    method: "POST", 
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload) 
                 });
-                closeModalFinding();
-                fetchData();
-            } catch (err) {
-                alert("Gagal menambah temuan: " + err.message);
+
+                document.getElementById("id-baru").value = "";
+                document.getElementById("judul-baru").value = "";
+                document.getElementById("pj-baru").value = "";
+                document.getElementById("nominal-baru").value = "";
+
+                closeModal("modal-tambah-temuan");
+                await fetchData();
+                alert("✅ Temuan berhasil ditambahkan!");
+            } catch (error) {
+                alert("Gagal menyimpan data: " + error.message);
             } finally {
-                btn.innerText = "Simpan";
+                btn.innerText = "Simpan Temuan";
                 btn.disabled = false;
             }
         }
 
-        async function submitPayment(e) {
-            e.preventDefault();
-            const btn = document.getElementById("btn-submit-payment");
-            btn.innerText = "Mengunggah...";
-            btn.disabled = true;
-
-            const fileInput = document.getElementById("pay-file");
-            let fileData = null, fileName = null, fileMimeType = null;
-
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                fileName = file.name;
-                fileMimeType = file.type;
-                fileData = await toBase64(file);
-            }
-
-            const payload = {
-                action: "add_payment",
-                ID_Temuan: document.getElementById("pay-id-temuan").value,
-                No_Bukti: document.getElementById("pay-nobukti").value,
-                Tanggal: document.getElementById("pay-tanggal").value,
-                Nominal_Setor: document.getElementById("pay-nominal").value,
-                Keterangan: document.getElementById("pay-keterangan").value,
-                fileData: fileData,
-                fileName: fileName,
-                fileMimeType: fileMimeType
-            };
-
-            try {
-                await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
-                });
-                closeModalPayment();
-                fetchData();
-            } catch (err) {
-                alert("Gagal menambahkan pembayaran: " + err.message);
-            } finally {
-                btn.innerText = "Kirim Pembayaran";
-                btn.disabled = false;
-            }
-        }
-
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-        });
-
-        // Export Functions
-        function exportExcel() {
-            const ws = XLSX.utils.json_to_sheet(globalData.map(d => ({
-                ID: d.ID,
-                Sumber: d.Sumber,
-                Jenis: d.Jenis,
-                Judul: d.Judul_Temuan,
-                Penanggung_Jawab: d.Penanggung_Jawab,
-                Nominal: d.Nominal_Rp,
-                Disetor: d.Total_Disetor,
-                Sisa: d.Nominal_Rp - d.Total_Disetor,
-                Status: d.Status
-            })));
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data Temuan");
-            XLSX.writeFile(wb, "Data_TLHP_Kemenag_Banten.xlsx");
-        }
-
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text("Laporan Monitoring e-TLHP Kemenag Banten", 14, 15);
-            doc.autoTable({
-                startY: 20,
-                head: [['ID', 'Sumber', 'Judul Temuan', 'PJ', 'Nominal', 'Disetor']],
-                body: globalData.map(d => [d.ID, d.Sumber, d.Judul_Temuan, d.Penanggung_Jawab, d.Nominal_Rp, d.Total_Disetor])
-            });
-            doc.save("Laporan_eTLHP.pdf");
-        }
+        // Load data saat halaman dibuka
+        fetchData();
     </script>
 </body>
 </html>
