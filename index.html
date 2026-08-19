@@ -12,7 +12,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="bg-slate-100 p-4 md:p-6 text-slate-800">
-    <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- MODAL LOGIN / PASSWORD LOCK -->
+    <div id="login-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 border border-slate-200">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto text-2xl">
+                🔒
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-slate-800">Akses Terbatas</h3>
+                <p class="text-xs text-slate-500 mt-1">Masukkan password aplikasi e-TLHP untuk melanjutkan.</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-3">
+                <input type="password" id="login-password" placeholder="Masukkan Password" required
+                       class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-center focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+                <button type="submit" id="btn-login"
+                        class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 rounded-lg text-sm shadow transition">
+                    Masuk Aplikasi
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="app-content" class="max-w-7xl mx-auto space-y-6">
         
         <!-- Header dengan Logo Kemenag -->
         <div class="bg-white p-6 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t-4 border-emerald-600 border-x border-b border-slate-200">
@@ -28,6 +51,7 @@
             <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
                 <button onclick="openModalTambahTemuan()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition">➕ Tambah Temuan</button>
                 <button onclick="fetchData()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition">🔄 Refresh Data</button>
+                <button onclick="handleLogout()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 rounded-lg text-sm font-semibold transition">🚪 Keluar</button>
             </div>
         </div>
 
@@ -263,6 +287,55 @@
         let activeSumber = 'ALL';
         let searchQuery = '';
         let displayedData = [];
+
+        // PENANGANAN AUTHENTICATION (PASSWORD)
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+            if (isLoggedIn === "true") {
+                document.getElementById("login-overlay").classList.add("hidden");
+                fetchData();
+            } else {
+                document.getElementById("login-overlay").classList.remove("hidden");
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById("login-password").value;
+            const btn = document.getElementById("btn-login");
+
+            btn.innerText = "Verifikasi...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "login_verify", password: password })
+                });
+
+                const data = await res.json();
+
+                if (data.status === "success") {
+                    sessionStorage.setItem("isLoggedIn", "true");
+                    document.getElementById("login-overlay").classList.add("hidden");
+                    document.getElementById("login-password").value = "";
+                    fetchData();
+                } else {
+                    alert("❌ Password salah! Silakan coba lagi.");
+                }
+            } catch (err) {
+                alert("Gagal melakukan autentikasi: " + err.message);
+            } finally {
+                btn.innerText = "Masuk Aplikasi";
+                btn.disabled = false;
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem("isLoggedIn");
+            location.reload();
+        }
 
         async function fetchData() {
             try {
@@ -634,7 +707,6 @@
             modal.classList.remove("flex");
         }
 
-        // UTILS FUNCTION FIX (Memisahkan Mime Header Base64)
         function toBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -665,8 +737,6 @@
             }
 
             const file = fileInput.files[0];
-            
-            // Pengecekan Ukuran File Maksimal 5MB
             if (file.size > 5 * 1024 * 1024) {
                 alert("⚠️ Ukuran file terlalu besar! Maksimal ukuran file adalah 5 MB.");
                 return;
@@ -691,7 +761,7 @@
                     fileMimeType: file.type
                 };
 
-                const response = await fetch(API_URL, { 
+                await fetch(API_URL, { 
                     method: "POST", 
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(payload) 
@@ -763,8 +833,8 @@
             }
         }
 
-        // Load data saat halaman dibuka
-        fetchData();
+        // Jalankan Pengecekan Otentikasi Saat Aplikasi Dibuka
+        checkAuth();
     </script>
 </body>
 </html>
