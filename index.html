@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <!-- Metric Cards Utama -->
+        <!-- Metric Cards Utama (Metrik Ringkasan) -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 border border-slate-100">
                 <p class="text-xs text-slate-500 font-semibold">TOTAL TEMUAN</p>
@@ -35,13 +35,15 @@
                 <p class="text-xs text-slate-500 font-semibold">ON PROGRESS</p>
                 <h3 id="total-proses" class="text-2xl font-bold text-slate-800">0</h3>
             </div>
+            <!-- Ringkasan Khusus Setoran Keuangan -->
             <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500 border border-slate-100">
-                <p class="text-xs text-slate-500 font-semibold">TOTAL KEUANGAN (RP)</p>
-                <h3 id="total-keuangan" class="text-lg font-bold text-slate-800">Rp 0</h3>
+                <p class="text-xs text-slate-500 font-semibold">PROSES SETORAN KAS NEGARA</p>
+                <h3 id="keuangan-percent-text" class="text-2xl font-bold text-purple-700">0%</h3>
+                <p id="keuangan-sub-text" class="text-xs text-slate-500 mt-1">Rp 0 / Rp 0</p>
             </div>
         </div>
 
-        <!-- Metric Cards Khusus Rincian per Sumber Audit -->
+        <!-- Metric Cards Rincian per Sumber Audit -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-1">
@@ -49,9 +51,8 @@
                     <span id="badge-bpk" class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span>Selesai:</span> <b id="bpk-selesai" class="text-emerald-600">0</b></div>
-                    <div class="flex justify-between"><span>On Progress:</span> <b id="bpk-proses" class="text-amber-600">0</b></div>
-                    <div class="flex justify-between"><span>Nilai Temuan:</span> <b id="bpk-nominal" class="text-slate-800">Rp 0</b></div>
+                    <div class="flex justify-between"><span>Keuangan:</span> <b id="bpk-keuangan-info" class="text-slate-700">Rp 0 (0%)</b></div>
+                    <div class="flex justify-between"><span>Dokumen:</span> <b id="bpk-dokumen-info" class="text-slate-700">0 Temuan</b></div>
                 </div>
             </div>
 
@@ -61,9 +62,8 @@
                     <span id="badge-bpkp" class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span>Selesai:</span> <b id="bpkp-selesai" class="text-emerald-600">0</b></div>
-                    <div class="flex justify-between"><span>On Progress:</span> <b id="bpkp-proses" class="text-amber-600">0</b></div>
-                    <div class="flex justify-between"><span>Nilai Temuan:</span> <b id="bpkp-nominal" class="text-slate-800">Rp 0</b></div>
+                    <div class="flex justify-between"><span>Keuangan:</span> <b id="bpkp-keuangan-info" class="text-slate-700">Rp 0 (0%)</b></div>
+                    <div class="flex justify-between"><span>Dokumen:</span> <b id="bpkp-dokumen-info" class="text-slate-700">0 Temuan</b></div>
                 </div>
             </div>
 
@@ -73,24 +73,32 @@
                     <span id="badge-inspektorat" class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-bold">0 Temuan</span>
                 </div>
                 <div class="text-xs text-slate-500 space-y-1 pt-2 border-t">
-                    <div class="flex justify-between"><span>Selesai:</span> <b id="inspektorat-selesai" class="text-emerald-600">0</b></div>
-                    <div class="flex justify-between"><span>On Progress:</span> <b id="inspektorat-proses" class="text-amber-600">0</b></div>
-                    <div class="flex justify-between"><span>Nilai Temuan:</span> <b id="inspektorat-nominal" class="text-slate-800">Rp 0</b></div>
+                    <div class="flex justify-between"><span>Keuangan:</span> <b id="inspektorat-keuangan-info" class="text-slate-700">Rp 0 (0%)</b></div>
+                    <div class="flex justify-between"><span>Dokumen:</span> <b id="inspektorat-dokumen-info" class="text-slate-700">0 Temuan</b></div>
                 </div>
             </div>
         </div>
 
-        <!-- Tabel Utama dengan Filter Tombol -->
+        <!-- Tabel Utama dengan Multi-Filter -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
             <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <h2 class="font-bold text-slate-700">Daftar Rekomendasi Audit</h2>
                 
-                <!-- Filter Tab -->
-                <div class="flex flex-wrap gap-1 bg-slate-200 p-1 rounded-lg text-xs font-semibold">
-                    <button onclick="filterTable('ALL')" id="btn-filter-all" class="px-3 py-1.5 rounded-md bg-white text-slate-800 shadow-sm transition">Semua</button>
-                    <button onclick="filterTable('BPK')" id="btn-filter-bpk" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">BPK</button>
-                    <button onclick="filterTable('BPKP')" id="btn-filter-bpkp" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">BPKP</button>
-                    <button onclick="filterTable('Inspektorat')" id="btn-filter-inspektorat" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">Inspektorat</button>
+                <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                    <!-- Filter Jenis -->
+                    <div class="flex bg-slate-200 p-1 rounded-lg">
+                        <button onclick="filterJenis('ALL')" id="btn-jenis-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua Jenis</button>
+                        <button onclick="filterJenis('Keuangan')" id="btn-jenis-keuangan" class="px-3 py-1 rounded-md text-slate-600 transition">💰 Keuangan</button>
+                        <button onclick="filterJenis('Dokumen')" id="btn-jenis-dokumen" class="px-3 py-1 rounded-md text-slate-600 transition">📄 Dokumen</button>
+                    </div>
+
+                    <!-- Filter Sumber -->
+                    <div class="flex bg-slate-200 p-1 rounded-lg">
+                        <button onclick="filterSumber('ALL')" id="btn-sumber-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua Sumber</button>
+                        <button onclick="filterSumber('BPK')" id="btn-sumber-bpk" class="px-3 py-1 rounded-md text-slate-600 transition">BPK</button>
+                        <button onclick="filterSumber('BPKP')" id="btn-sumber-bpkp" class="px-3 py-1 rounded-md text-slate-600 transition">BPKP</button>
+                        <button onclick="filterSumber('Inspektorat')" id="btn-sumber-inspektorat" class="px-3 py-1 rounded-md text-slate-600 transition">Inspektorat</button>
+                    </div>
                 </div>
             </div>
 
@@ -115,7 +123,7 @@
         </div>
     </div>
 
-    <!-- MODAL 1: Input Bukti Bayar -->
+    <!-- MODAL 1: Input Bukti -->
     <div id="modal-bayar" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
@@ -154,7 +162,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: Detail Riwayat Bukti -->
+    <!-- MODAL 2: Detail Riwayat -->
     <div id="modal-riwayat" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-2xl w-full space-y-4 shadow-xl">
             <h3 class="text-lg font-bold text-slate-800 border-b pb-2">📑 Riwayat Bukti Bayar & Dokumen</h3>
@@ -165,7 +173,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: Tambah Temuan Baru -->
+    <!-- MODAL 3: Tambah Temuan -->
     <div id="modal-tambah-temuan" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Temuan Audit</h3>
@@ -205,38 +213,47 @@
         const API_URL = "MASUKKAN_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI";
 
         let currentData = [];
-        let activeFilter = 'ALL';
+        let activeJenis = 'ALL';
+        let activeSumber = 'ALL';
 
         async function fetchData() {
             try {
                 const res = await fetch(API_URL);
                 currentData = await res.json();
                 renderMetrics(currentData);
-                filterTable(activeFilter);
+                applyFilters();
             } catch (e) {
                 console.error(e);
             }
         }
 
-        function filterTable(sumber) {
-            activeFilter = sumber;
-            
-            // Update Tampilan Tombol Tab Filter
-            ['all', 'bpk', 'bpkp', 'inspektorat'].forEach(s => {
-                const btn = document.getElementById(`btn-filter-${s}`);
-                if (btn) {
-                    btn.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition";
-                }
+        function filterJenis(jenis) {
+            activeJenis = jenis;
+            ['all', 'keuangan', 'dokumen'].forEach(j => {
+                const btn = document.getElementById(`btn-jenis-${j}`);
+                if (btn) btn.className = "px-3 py-1 rounded-md text-slate-600 transition";
             });
-            const activeBtn = document.getElementById(`btn-filter-${sumber.toLowerCase()}`);
-            if (activeBtn) {
-                activeBtn.className = "px-3 py-1.5 rounded-md bg-white text-slate-800 shadow-sm font-bold transition";
-            }
+            document.getElementById(`btn-jenis-${jenis.toLowerCase()}`).className = "px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm font-bold transition";
+            applyFilters();
+        }
 
-            // Filter Data
+        function filterSumber(sumber) {
+            activeSumber = sumber;
+            ['all', 'bpk', 'bpkp', 'inspektorat'].forEach(s => {
+                const btn = document.getElementById(`btn-sumber-${s}`);
+                if (btn) btn.className = "px-3 py-1 rounded-md text-slate-600 transition";
+            });
+            document.getElementById(`btn-sumber-${sumber.toLowerCase()}`).className = "px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm font-bold transition";
+            applyFilters();
+        }
+
+        function applyFilters() {
             let filtered = currentData;
-            if (sumber !== 'ALL') {
-                filtered = currentData.filter(d => String(d.Sumber).toUpperCase() === sumber.toUpperCase());
+            if (activeJenis !== 'ALL') {
+                filtered = filtered.filter(d => String(d.Jenis).toLowerCase() === activeJenis.toLowerCase());
+            }
+            if (activeSumber !== 'ALL') {
+                filtered = filtered.filter(d => String(d.Sumber).toUpperCase() === activeSumber.toUpperCase());
             }
             renderTable(filtered);
         }
@@ -270,7 +287,7 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
                         <td class="p-3 font-semibold text-slate-700">${item.Sumber}</td>
-                        <td class="p-3">${item.Jenis}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-semibold ${item.Jenis === 'Keuangan' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}">${item.Jenis}</span></td>
                         <td class="p-3 font-medium text-slate-900">${item.Judul_Temuan}</td>
                         <td class="p-3 font-semibold">${nominalFormat}</td>
                         <td class="p-3">${disetorFormat}</td>
@@ -287,14 +304,22 @@
         function renderMetrics(data) {
             if(!data) return;
             
-            // Total Keseluruhan
+            // Metrik Umum
             document.getElementById("total-temuan").innerText = data.length;
             document.getElementById("total-selesai").innerText = data.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100).length;
             document.getElementById("total-proses").innerText = data.filter(d => (d.Status === "On Progress" || !d.Status) && parseInt(d.Progress_Percent || 0) < 100).length;
-            const totalUang = data.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
-            document.getElementById("total-keuangan").innerText = "Rp " + totalUang.toLocaleString('id-ID');
 
-            // Hitung Rincian Per Sumber (BPK, BPKP, Inspektorat)
+            // Kalkulasi Khusus Setoran Keuangan
+            const dataKeuangan = data.filter(d => String(d.Jenis).toLowerCase() === 'keuangan');
+            const totalNominalUang = dataKeuangan.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+            const totalDisetorUang = dataKeuangan.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+            
+            const totalPercentUang = totalNominalUang > 0 ? ((totalDisetorUang / totalNominalUang) * 100).toFixed(1) : 0;
+            
+            document.getElementById("keuangan-percent-text").innerText = `${totalPercentUang}% Disetor`;
+            document.getElementById("keuangan-sub-text").innerText = `Rp ${totalDisetorUang.toLocaleString('id-ID')} / Rp ${totalNominalUang.toLocaleString('id-ID')}`;
+
+            // Rincian per Sumber
             calcSumberMetrics(data, "BPK", "bpk");
             calcSumberMetrics(data, "BPKP", "bpkp");
             calcSumberMetrics(data, "Inspektorat", "inspektorat");
@@ -303,14 +328,17 @@
         function calcSumberMetrics(data, sumberName, prefix) {
             const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
             const total = subset.length;
-            const selesai = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100).length;
-            const proses = subset.filter(d => (d.Status === "On Progress" || !d.Status) && parseInt(d.Progress_Percent || 0) < 100).length;
-            const nominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+            
+            const keuangan = subset.filter(d => String(d.Jenis).toLowerCase() === 'keuangan');
+            const totalNominal = keuangan.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
+            const totalDisetor = keuangan.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+            const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(0) : 0;
+
+            const dokumenCount = subset.filter(d => String(d.Jenis).toLowerCase() === 'dokumen').length;
 
             document.getElementById(`badge-${prefix}`).innerText = `${total} Temuan`;
-            document.getElementById(`${prefix}-selesai`).innerText = selesai;
-            document.getElementById(`${prefix}-proses`).innerText = proses;
-            document.getElementById(`${prefix}-nominal`).innerText = "Rp " + nominal.toLocaleString('id-ID');
+            document.getElementById(`${prefix}-keuangan-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
+            document.getElementById(`${prefix}-dokumen-info`).innerText = `${dokumenCount} Temuan`;
         }
 
         function openModalBayar(id) {
