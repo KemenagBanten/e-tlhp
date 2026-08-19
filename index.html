@@ -655,21 +655,51 @@
         }
 
         async function submitTemuanBaru() {
+    const idTemuan = document.getElementById("id-baru").value.trim();
+    const sumber = document.getElementById("sumber-baru").value;
+    const jenis = document.getElementById("jenis-baru").value;
+    const judul = document.getElementById("judul-baru").value.trim();
+    const pj = document.getElementById("pj-baru").value.trim();
+    const nominal = document.getElementById("nominal-baru").value;
+
+    // Pengecekan Wajib Isi
+    if (!idTemuan || !sumber || !jenis || !judul || !pj || nominal === "") {
+        alert("⚠️ Semua kolom inputan wajib diisi!");
+        return;
+    }
+
     const btn = document.getElementById("btn-save-temuan");
     btn.innerText = "Menyimpan...";
     btn.disabled = true;
 
     const payload = {
         action: "add_finding",
-        ID_Temuan: document.getElementById("id-baru").value, // Mengambil input ID Temuan
-        Sumber: document.getElementById("sumber-baru").value,
-        Jenis: document.getElementById("jenis-baru").value,
-        Judul_Temuan: document.getElementById("judul-baru").value,
-        Penanggung_Jawab: document.getElementById("pj-baru").value,
-        Nominal_Rp: document.getElementById("nominal-baru").value
+        ID_Temuan: idTemuan,
+        Sumber: sumber,
+        Jenis: jenis,
+        Judul_Temuan: judul,
+        Penanggung_Jawab: pj,
+        Nominal_Rp: nominal
     };
 
-    await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+    try {
+        await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+
+        // Reset Formulir
+        document.getElementById("id-baru").value = "";
+        document.getElementById("judul-baru").value = "";
+        document.getElementById("pj-baru").value = "";
+        document.getElementById("nominal-baru").value = "";
+
+        closeModal("modal-tambah-temuan");
+        fetchData();
+    } catch (error) {
+        alert("Gagal menyimpan data: " + error.message);
+    } finally {
+        btn.innerText = "Simpan Temuan";
+        btn.disabled = false;
+    }
+}
 
     // Reset input setelah disimpan
     document.getElementById("id-baru").value = "";
