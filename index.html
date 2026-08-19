@@ -210,42 +210,49 @@
     </div>
 
     <!-- MODAL 3: Tambah Temuan -->
-    <div id="modal-tambah-temuan" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
-            <h3 class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Temuan Audit</h3>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Sumber Audit</label>
-                <select id="sumber-baru" class="w-full border p-2 rounded-lg text-sm">
-                    <option value="BPK">BPK</option>
-                    <option value="Inspektorat">Inspektorat</option>
-                    <option value="BPKP">BPKP</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Temuan</label>
-                <select id="jenis-baru" class="w-full border p-2 rounded-lg text-sm">
-                    <option value="Keuangan">Keuangan</option>
-                    <option value="Dokumen">Dokumen</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Temuan</label>
-                <input type="text" id="judul-baru" placeholder="Masukan judul temuan..." class="w-full border p-2 rounded-lg text-sm">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Penanggung Jawab (OPD / Nama Unit)</label>
-                <input type="text" id="pj-baru" placeholder="Contoh: Dinas PU / Bidang Bina Marga" class="w-full border p-2 rounded-lg text-sm">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Temuan (Rp) [Khusus Keuangan]</label>
-                <input type="number" id="nominal-baru" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('modal-tambah-temuan')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
-                <button onclick="submitTemuanBaru()" id="btn-save-temuan" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold">Simpan Temuan</button>
-            </div>
+<div id="modal-tambah-temuan" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+        <h3 class="text-lg font-bold text-slate-800 border-b pb-2">➕ Tambah Temuan Audit</h3>
+        
+        <!-- Input ID Temuan Baru -->
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">ID Temuan</label>
+            <input type="text" id="id-baru" placeholder="Contoh: T-001 / BPK-2026-01" class="w-full border p-2 rounded-lg text-sm">
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Sumber Audit</label>
+            <select id="sumber-baru" class="w-full border p-2 rounded-lg text-sm">
+                <option value="BPK">BPK</option>
+                <option value="Inspektorat">Inspektorat</option>
+                <option value="BPKP">BPKP</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Temuan</label>
+            <select id="jenis-baru" class="w-full border p-2 rounded-lg text-sm">
+                <option value="Keuangan">Keuangan</option>
+                <option value="Dokumen">Dokumen</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Temuan</label>
+            <input type="text" id="judul-baru" placeholder="Masukan judul temuan..." class="w-full border p-2 rounded-lg text-sm">
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Penanggung Jawab (OPD / Nama Unit)</label>
+            <input type="text" id="pj-baru" placeholder="Contoh: Dinas PU / Bidang Bina Marga" class="w-full border p-2 rounded-lg text-sm">
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Temuan (Rp) [Khusus Keuangan]</label>
+            <input type="number" id="nominal-baru" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+            <button onclick="closeModal('modal-tambah-temuan')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
+            <button onclick="submitTemuanBaru()" id="btn-save-temuan" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold">Simpan Temuan</button>
         </div>
     </div>
+</div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
