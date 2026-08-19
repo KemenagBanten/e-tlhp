@@ -655,27 +655,33 @@
         }
 
         async function submitTemuanBaru() {
-            const btn = document.getElementById("btn-save-temuan");
-            btn.innerText = "Menyimpan...";
-            btn.disabled = true;
+    const btn = document.getElementById("btn-save-temuan");
+    btn.innerText = "Menyimpan...";
+    btn.disabled = true;
 
-            const payload = {
-                action: "add_finding",
-                Sumber: document.getElementById("sumber-baru").value,
-                Jenis: document.getElementById("jenis-baru").value,
-                Judul_Temuan: document.getElementById("judul-baru").value,
-                Penanggung_Jawab: document.getElementById("pj-baru").value,
-                Nominal_Rp: document.getElementById("nominal-baru").value
-            };
+    const payload = {
+        action: "add_finding",
+        ID_Temuan: document.getElementById("id-baru").value, // Mengambil input ID Temuan
+        Sumber: document.getElementById("sumber-baru").value,
+        Jenis: document.getElementById("jenis-baru").value,
+        Judul_Temuan: document.getElementById("judul-baru").value,
+        Penanggung_Jawab: document.getElementById("pj-baru").value,
+        Nominal_Rp: document.getElementById("nominal-baru").value
+    };
 
-            await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+    await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
 
-            btn.innerText = "Simpan Temuan";
-            btn.disabled = false;
-            closeModal("modal-tambah-temuan");
-            fetchData();
-        }
+    // Reset input setelah disimpan
+    document.getElementById("id-baru").value = "";
+    document.getElementById("judul-baru").value = "";
+    document.getElementById("pj-baru").value = "";
+    document.getElementById("nominal-baru").value = "";
 
+    btn.innerText = "Simpan Temuan";
+    btn.disabled = false;
+    closeModal("modal-tambah-temuan");
+    fetchData();
+}
         const toBase64 = file => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
