@@ -625,35 +625,55 @@
         }
 
         async function submitPembayaran() {
-            const btn = document.getElementById("btn-save-bayar");
-            btn.innerText = "Mengunggah...";
-            btn.disabled = true;
+    const noBukti = document.getElementById("bayar-nobukti").value.trim();
+    const tanggal = document.getElementById("bayar-tanggal").value;
+    const nominal = document.getElementById("bayar-nominal").value;
+    const keterangan = document.getElementById("bayar-keterangan").value.trim();
+    const fileInput = document.getElementById("bayar-file");
 
-            const payload = {
-                action: "add_payment",
-                ID_Temuan: document.getElementById("bayar-id-temuan").value,
-                No_Bukti: document.getElementById("bayar-nobukti").value,
-                Tanggal: document.getElementById("bayar-tanggal").value,
-                Nominal_Setor: document.getElementById("bayar-nominal").value || 0,
-                Keterangan: document.getElementById("bayar-keterangan").value
-            };
+    // Pengecekan Wajib Isi
+    if (!noBukti || !tanggal || !keterangan || fileInput.files.length === 0) {
+        alert("⚠️ Semua kolom inputan dan unggahan file wajib diisi!");
+        return;
+    }
 
-            const fileInput = document.getElementById("bayar-file");
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                payload.fileData = await toBase64(file);
-                payload.fileName = file.name;
-                payload.fileMimeType = file.type;
-            }
+    // Jika di tab Keuangan, nominal juga wajib diisi
+    if (activeTab === 'Keuangan' && nominal === "") {
+        alert("⚠️ Nominal setoran wajib diisi!");
+        return;
+    }
 
-            await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+    const btn = document.getElementById("btn-save-bayar");
+    btn.innerText = "Mengunggah...";
+    btn.disabled = true;
 
-            btn.innerText = "Simpan Bukti";
-            btn.disabled = false;
-            closeModal("modal-bayar");
-            fetchData();
-        }
+    const payload = {
+        action: "add_payment",
+        ID_Temuan: document.getElementById("bayar-id-temuan").value,
+        No_Bukti: noBukti,
+        Tanggal: tanggal,
+        Nominal_Setor: nominal || 0,
+        Keterangan: keterangan
+    };
 
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        payload.fileData = await toBase64(file);
+        payload.fileName = file.name;
+        payload.fileMimeType = file.type;
+    }
+
+    try {
+        await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+        closeModal("modal-bayar");
+        fetchData();
+    } catch (error) {
+        alert("Gagal menyimpan bukti: " + error.message);
+    } finally {
+        btn.innerText = "Simpan Bukti";
+        btn.disabled = false;
+    }
+}
         async function submitTemuanBaru() {
     const idTemuan = document.getElementById("id-baru").value.trim();
     const sumber = document.getElementById("sumber-baru").value;
