@@ -99,6 +99,10 @@
                         <span id="lbl-bpk">Disetor:</span> 
                         <b id="bpk-info" class="text-slate-700">Rp 0 (0%)</b>
                     </div>
+                    <div class="flex justify-between text-rose-600 font-semibold pt-1 border-t border-dashed">
+                        <span>Sisa Saldo:</span> 
+                        <b id="bpk-sisa">Rp 0</b>
+                    </div>
                 </div>
             </div>
 
@@ -113,6 +117,10 @@
                         <span id="lbl-bpkp">Disetor:</span> 
                         <b id="bpkp-info" class="text-slate-700">Rp 0 (0%)</b>
                     </div>
+                    <div class="flex justify-between text-rose-600 font-semibold pt-1 border-t border-dashed">
+                        <span>Sisa Saldo:</span> 
+                        <b id="bpkp-sisa">Rp 0</b>
+                    </div>
                 </div>
             </div>
 
@@ -126,6 +134,10 @@
                     <div class="flex justify-between">
                         <span id="lbl-inspektorat">Disetor:</span> 
                         <b id="inspektorat-info" class="text-slate-700">Rp 0 (0%)</b>
+                    </div>
+                    <div class="flex justify-between text-rose-600 font-semibold pt-1 border-t border-dashed">
+                        <span>Sisa Saldo:</span> 
+                        <b id="inspektorat-sisa">Rp 0</b>
                     </div>
                 </div>
             </div>
@@ -470,22 +482,32 @@
             if (activeTab === 'Keuangan') {
                 const totalNominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
                 const totalDisetor = subset.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
+                const sisaSaldo = Math.max(0, totalNominal - totalDisetor);
                 const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(1) : 0;
 
                 document.getElementById(`badge-${prefix}`).innerText = `Rp ${totalNominal.toLocaleString('id-ID')}`;
                 document.getElementById(`lbl-${prefix}`).innerText = "Disetor:";
                 document.getElementById(`${prefix}-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
+                
+                // Menampilkan sisa saldo temuan
+                const sisaElement = document.getElementById(`${prefix}-sisa`);
+                if(sisaElement) sisaElement.innerText = `Rp ${sisaSaldo.toLocaleString('id-ID')}`;
+
             } else {
                 const totalDokumen = subset.length;
                 const selesaiCount = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)).length;
+                const belumSelesaiCount = totalDokumen - selesaiCount;
                 const percent = totalDokumen > 0 ? ((selesaiCount / totalDokumen) * 100).toFixed(0) : 0;
 
                 document.getElementById(`badge-${prefix}`).innerText = `${totalDokumen} Dokumen`;
                 document.getElementById(`lbl-${prefix}`).innerText = "Dokumen Lengkap:";
                 document.getElementById(`${prefix}-info`).innerText = `${selesaiCount} / ${totalDokumen} (${percent}%)`;
+
+                // Untuk tab dokumen, sisa saldo bisa diganti informasi dokumen belum lengkap
+                const sisaElement = document.getElementById(`${prefix}-sisa`);
+                if(sisaElement) sisaElement.innerText = `${belumSelesaiCount} Belum Lengkap`;
             }
         }
-
         function renderTable(data) {
             const tbody = document.getElementById("table-body");
             tbody.innerHTML = "";
