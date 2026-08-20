@@ -178,6 +178,7 @@
                             <th class="p-3">ID</th>
                             <th class="p-3">Sumber</th>
                             <th class="p-3">Judul Temuan</th>
+                            <th id="th-rekomendasi" class="p-3">Rekomendasi</th> <!-- Kolom Baru -->
                             <th class="p-3">Penanggung Jawab</th>
                             <th id="th-nominal" class="p-3">Nilai Temuan</th>
                             <th id="th-disetor" class="p-3">Total Disetor</th>
@@ -514,9 +515,16 @@
             tbody.innerHTML = "";
             
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center p-6 text-slate-400">Tidak ada data yang sesuai dengan pencarian/filter.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center p-6 text-slate-400">Tidak ada data yang sesuai dengan pencarian/filter.</td></tr>`;
                 return;
             }
+
+            // Pengaturan visibilitas kolom berdasarkan Tab yang aktif
+            const isKeuangan = activeTab === 'Keuangan';
+            document.getElementById("th-nominal").style.display = isKeuangan ? "" : "none";
+            document.getElementById("th-disetor").style.display = isKeuangan ? "" : "none";
+            document.getElementById("th-sisa").style.display = isKeuangan ? "" : "none";
+            document.getElementById("th-rekomendasi").style.display = isKeuangan ? "none" : "";
 
             data.forEach(item => {
                 const totalDisetor = Number(item.Total_Disetor || 0);
@@ -525,7 +533,7 @@
                 const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
 
                 let isSelesai = false;
-                if (activeTab === 'Keuangan') {
+                if (isKeuangan) {
                     isSelesai = totalNominal > 0 && totalDisetor >= totalNominal;
                 } else {
                     isSelesai = hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100;
@@ -535,41 +543,32 @@
                     ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-semibold">Selesai</span>`
                     : `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">On Progress</span>`;
 
-                const colNominal = activeTab === 'Keuangan' 
-                    ? `<td class="p-3 font-semibold text-slate-800">Rp ${totalNominal.toLocaleString('id-ID')}</td>` 
-                    : '';
-
-                const colDisetor = activeTab === 'Keuangan'
-                    ? `Rp ${totalDisetor.toLocaleString('id-ID')}`
-                    : (hasFile ? `<span class="text-emerald-700 font-semibold">Sudah Diunggah</span>` : `<span class="text-slate-400 italic">Belum Ada Berkas</span>`);
-
-                // Kolom Sisa Belum Dibayar khusus untuk tab Keuangan
-                const colSisa = activeTab === 'Keuangan'
-                    ? `<td class="p-3 font-semibold text-rose-600">Rp ${sisaKurang.toLocaleString('id-ID')}</td>`
-                    : '';
-
-                // Sembunyikan/tampilkan header Sisa di tab Dokumen
-                document.getElementById("th-sisa").style.display = activeTab === 'Keuangan' ? "" : "none";
+                const colNominal = isKeuangan ? `<td class="p-3 font-semibold text-slate-800">Rp ${totalNominal.toLocaleString('id-ID')}</td>` : '';
+                const colDisetor = isKeuangan ? `<td class="p-3">Rp ${totalDisetor.toLocaleString('id-ID')}</td>` : '';
+                const colSisa = isKeuangan ? `<td class="p-3 font-semibold text-rose-600">Rp ${sisaKurang.toLocaleString('id-ID')}</td>` : '';
+                
+                // Kolom Rekomendasi khusus untuk tab Dokumen
+                const colRekomendasi = !isKeuangan ? `<td class="p-3 text-slate-700">${item.Rekomendasi || '-'}</td>` : '';
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition border-b border-slate-100">
                         <td class="p-3 font-mono font-semibold text-slate-500 text-xs">#${item.ID}</td>
                         <td class="p-3 font-semibold text-slate-700">${item.Sumber}</td>
                         <td class="p-3 font-medium text-slate-900">${item.Judul_Temuan}</td>
+                        ${colRekomendasi}
                         <td class="p-3 text-slate-700 font-medium">${item.Penanggung_Jawab || '-'}</td>
                         ${colNominal}
-                        <td class="p-3">${colDisetor}</td>
+                        ${colDisetor}
                         ${colSisa}
                         <td class="p-3">${statusBadge}</td>
                         <td class="p-3 text-center space-x-1 action-col">
-                            <button onclick="openModalBayar('${item.ID}')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2 py-1 rounded text-xs transition">➕ Input Bukti</button>
-                            <button onclick="openModalRiwayat('${item.ID}')" class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-xs transition">📑 Lihat Bukti (${item.Riwayat_Bayar ? item.Riwayat_Bayar.length : 0})</button>
+                            <button onclick="openModalBayar('${item.ID}')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2 py-1 rounded text-xs transition">➕ Input Berkas</button>
+                            <button onclick="openModalRiwayat('${item.ID}')" class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-xs transition">📑 Lihat Berkas (${item.Riwayat_Bayar ? item.Riwayat_Bayar.length : 0})</button>
                         </td>
                     </tr>
                 `;
             });
         }
-
         // EXPORT EXCEL
         function exportToExcel() {
             const dataToExport = displayedData.map(item => {
