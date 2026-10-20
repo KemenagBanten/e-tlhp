@@ -1076,8 +1076,6 @@ body {
                 document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-emerald-700";
                 document.getElementById("dynamic-sub-text").innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} dari Rp ${totalNominal.toLocaleString('id-ID')}`;
 
-                document.getElementById("th-nominal").style.display = "";
-                document.getElementById("th-disetor").innerText = "Total Disetor (Rp)";
                 document.getElementById("table-title").innerText = "Daftar Rekomendasi Audit - Keuangan";
 
             } else {
@@ -1101,8 +1099,6 @@ body {
                 document.getElementById("dynamic-main-text").className = "text-2xl font-bold text-amber-600";
                 document.getElementById("dynamic-sub-text").innerText = `${selesaiCount} dari ${totalDokumen} Dokumen Dilengkapi`;
 
-                document.getElementById("th-nominal").style.display = "none";
-                document.getElementById("th-disetor").innerText = "Kelengkapan Berkas";
                 document.getElementById("table-title").innerText = "Daftar Rekomendasi Audit - Dokumen";
             }
 
