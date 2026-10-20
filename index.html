@@ -672,70 +672,7 @@ body {
     }
 }
 
-    
-
-<!-- SIDEBAR SIJAWARA BANTEN -->
-<div id="sijawara-sidebar">
-
-    <!-- Logo dalam kotak putih -->
-    <div class="sijawara-sidebar-logo">
-        <img src="asset/LOGO_APLIKASI.png"
-             alt="Logo aplikasi">
-    </div>
-
-    <!-- Tombol aksi -->
-    <div class="sijawara-sidebar-actions">
-        <button type="button"
-                onclick="openModalTambahTemuan()"
-                class="sijawara-sidebar-action">
-            <span>＋</span> Tambah Temuan
-        </button>
-
-        <button type="button"
-                onclick="fetchData()"
-                class="sijawara-sidebar-action">
-            <span>↻</span> Refresh Data
-        </button>
-    </div>
-
-    <!-- Menu utama -->
-    <div class="sijawara-sidebar-menu">
-        <div class="sijawara-sidebar-label">MENU UTAMA</div>
-
-        <button onclick="switchTab('Keuangan')"
-                id="tab-keuangan"
-                class="sijawara-sidebar-tab border-emerald-600">
-            💰 Temuan Keuangan
-        </button>
-
-        <button onclick="switchTab('Dokumen')"
-                id="tab-dokumen"
-                class="sijawara-sidebar-tab">
-            📄 Temuan Administrasi
-        </button>
-
-        <!-- Menu untuk pengembangan berikutnya -->
-        <button type="button"
-                id="tab-hukuman-disiplin"
-                class="sijawara-sidebar-tab"
-                onclick="alert('Menu Hukuman Disiplin akan dikembangkan pada tahap berikutnya.')">
-            ⚖️ Hukuman Disiplin
-        </button>
-    </div>
-
-    <!-- Logout di bagian bawah -->
-    <div class="sijawara-sidebar-bottom">
-        <button type="button"
-                onclick="handleLogout()"
-                class="sijawara-sidebar-action sijawara-logout">
-            <span>⇥</span> Keluar
-        </button>
-    </div>
-
-</div>
-
-
-/* SIDEBAR SIJAWARA BANTEN — MINIMALIS */
+    /* SIDEBAR SIJAWARA BANTEN — MINIMALIS */
 #sijawara-sidebar {
     position: fixed;
     top: 0;
@@ -930,6 +867,162 @@ body {
 }
 
 
+/* =========================================
+   SIJAWARA BANTEN - PERBAIKAN TAMPILAN
+========================================= */
+
+/* Sembunyikan header lama agar tidak duplikat */
+#app-content > div:first-child {
+  display: none !important;
+}
+
+/* Beri ruang untuk sidebar kiri */
+body {
+  padding: 20px 20px 20px 200px !important;
+}
+
+/* Konten utama dimulai dari atas */
+#app-content {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Sidebar tetap di kiri layar */
+#sijawara-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: 180px !important;
+  height: 100vh !important;
+  overflow-y: auto !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+/* Kotak logo putih */
+.sijawara-sidebar-logo {
+  background: #ffffff !important;
+  margin: 12px !important;
+  padding: 10px !important;
+  min-height: 82px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sijawara-sidebar-logo img {
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  height: 62px !important;
+  object-fit: contain !important;
+}
+
+/* Area tombol dan menu */
+.sijawara-sidebar-actions,
+.sijawara-sidebar-menu {
+  padding: 0 10px !important;
+}
+
+.sijawara-sidebar-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+.sijawara-sidebar-menu {
+  margin-top: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+/* Label MENU UTAMA */
+.sijawara-sidebar-label {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  color: #d6b45c !important;
+  padding: 8px 7px !important;
+}
+
+/* Tombol sidebar: tidak berbentuk kotak saat tidak aktif */
+.sijawara-sidebar-action,
+.sijawara-sidebar-tab {
+  width: 100% !important;
+  min-height: 34px !important;
+  padding: 8px 9px !important;
+  border: none !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  color: #e7f4f1 !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+}
+
+.sijawara-sidebar-action:hover,
+.sijawara-sidebar-tab:hover {
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
+/* Menu yang aktif */
+.sijawara-sidebar-tab.active {
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: inset 3px 0 #d6b45c !important;
+}
+
+/* Tombol keluar berada di bawah */
+.sijawara-sidebar-bottom {
+  margin-top: auto !important;
+  padding: 12px 10px 18px !important;
+}
+
+.sijawara-logout {
+  color: #ffe2dc !important;
+}
+
+/* Warna dasar sidebar */
+#sijawara-sidebar {
+  background: #075e54 !important;
+  color: #ffffff !important;
+}
+
+/* Ukuran konten lebih ringkas */
+#app-content p {
+  line-height: 1.45;
+}
+
+/* Tampilan layar kecil */
+@media (max-width: 767px) {
+  body {
+    padding: 12px !important;
+  }
+
+  #sijawara-sidebar {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin-bottom: 18px !important;
+    border-radius: 10px !important;
+  }
+
+  .sijawara-sidebar-bottom {
+    margin-top: 10px !important;
+  }
+}
+
 
 </style>
 
@@ -985,62 +1078,81 @@ body {
         </div>
 
    
+
 <!-- SIDEBAR SIJAWARA BANTEN -->
 <div id="sijawara-sidebar">
 
-    <!-- Logo aplikasi -->
-    <div class="sijawara-sidebar-logo">
-        <img src="asset/LOGO_APLIKASI.png"
-             alt="Logo SIJAWARA BANTEN">
-        <div class="sijawara-sidebar-title">
-            SIJAWARA BANTEN
-        </div>
-        <div class="sijawara-sidebar-welcome">
-            Selamat Datang
-        </div>
-    </div>
+  <!-- Logo saja -->
+  <div class="sijawara-sidebar-logo">
+    <img src="asset/LOGO_APLIKASI.png" alt="Logo SIJAWARA BANTEN">
+  </div>
 
-    <!-- Tombol aksi -->
-    <div class="sijawara-sidebar-actions">
-        <button type="button"
-                onclick="openModalTambahTemuan()"
-                class="sijawara-sidebar-action">
-            <span>＋</span> Tambah Temuan
-        </button>
+  <!-- Tombol aksi -->
+  <div class="sijawara-sidebar-actions">
+    <button
+      type="button"
+      onclick="openModalTambahTemuan()"
+      class="sijawara-sidebar-action">
+      <span>＋</span> Tambah Temuan
+    </button>
 
-        <button type="button"
-                onclick="fetchData()"
-                class="sijawara-sidebar-action">
-            <span>↻</span> Refresh Data
-        </button>
+    <button
+      type="button"
+      onclick="fetchData()"
+      class="sijawara-sidebar-action">
+      <span>↻</span> Refresh Data
+    </button>
+  </div>
 
-        <button type="button"
-                onclick="handleLogout()"
-                class="sijawara-sidebar-action sijawara-logout">
-            <span>⇥</span> Keluar
-        </button>
-    </div>
+  <!-- Navigasi menu -->
+  <div class="sijawara-sidebar-menu">
+    <div class="sijawara-sidebar-label">MENU UTAMA</div>
 
-    <!-- Navigasi menu -->
-    <div class="sijawara-sidebar-menu">
-        <div class="sijawara-sidebar-label">
-            MENU UTAMA
-        </div>
+    <button
+      type="button"
+      onclick="tampilkanDashboard()"
+      id="tab-dashboard"
+      class="sijawara-sidebar-tab active">
+      <span>▦</span> Dashboard
+    </button>
 
-        <button onclick="switchTab('Keuangan')"
-                id="tab-keuangan"
-                class="sijawara-sidebar-tab border-emerald-600">
-            💰 Temuan Keuangan
-        </button>
+    <button
+      type="button"
+      onclick="switchTab('Keuangan')"
+      id="tab-keuangan"
+      class="sijawara-sidebar-tab">
+      <span>Rp</span> Temuan Keuangan
+    </button>
 
-        <button onclick="switchTab('Dokumen')"
-                id="tab-dokumen"
-                class="sijawara-sidebar-tab">
-            📄 Temuan Administrasi
-        </button>
-    </div>
+    <button
+      type="button"
+      onclick="switchTab('Dokumen')"
+      id="tab-dokumen"
+      class="sijawara-sidebar-tab">
+      <span>▤</span> Temuan Administrasi
+    </button>
+
+    <button
+      type="button"
+      onclick="menuHukumanDisiplin()"
+      id="tab-disiplin"
+      class="sijawara-sidebar-tab">
+      <span>§</span> Hukuman Disiplin
+    </button>
+  </div>
+
+  <!-- Keluar di bagian bawah -->
+  <div class="sijawara-sidebar-bottom">
+    <button
+      type="button"
+      onclick="handleLogout()"
+      class="sijawara-sidebar-action sijawara-logout">
+      <span>⇥</span> Keluar
+    </button>
+  </div>
 
 </div>
+
 
 
         <!-- Metric Cards Utama -->
