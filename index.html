@@ -7,81 +7,102 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     
+
 <style>
     :root {
         --sijawara-green: #14532d;
         --sijawara-deep: #0b3322;
         --sijawara-gold: #c59b43;
         --sijawara-bg: #f3f6f2;
+        --sijawara-header-height: 110px;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-padding-top: 125px;
     }
 
     body {
         background: var(--sijawara-bg) !important;
         color: #24352c;
         font-family: Inter, "Segoe UI", Arial, sans-serif;
+        padding: 0 24px 24px !important;
+        margin: 0;
     }
 
     #app-content {
         max-width: 1500px;
-        margin: auto;
+        margin: 0 auto;
+        padding-top: 125px;
     }
 
-    /* Header utama */
-    
-/* HEADER WEBSITE SIJAWARA */
-#app-content > div:first-child {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1000 !important;
-
-    background: #f3f6f2 !important;
-    border: none !important;
-    border-bottom: 2px solid #c59b43 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-
-    padding: 8px 20px !important;
-    margin-bottom: 12px;
-}
-
-/* Ukuran logo */
-#app-content > div:first-child img {
-    height: 88px;
-    max-height: 88px;
-    width: auto;
-    object-fit: contain;
-}
-
-/* Efek halus pada tombol */
-#app-content > div:first-child button {
-    border-radius: 8px;
-}
-
-/* Tampilan layar HP */
-@media (max-width: 767px) {
+    /* HEADER TETAP DI ATAS LAYAR */
     #app-content > div:first-child {
-        padding: 8px 10px !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        z-index: 9999 !important;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        background: #f3f6f2 !important;
+        border: none !important;
+        border-bottom: 3px solid var(--sijawara-gold) !important;
+        border-radius: 0 !important;
+        box-shadow: 0 3px 12px rgba(20, 83, 45, 0.10) !important;
+
+        padding: 8px 28px !important;
+        margin: 0 !important;
+        gap: 16px;
+        box-sizing: border-box !important;
     }
 
+    /* LOGO HEADER */
     #app-content > div:first-child img {
-        height: 70px;
-        max-height: 70px;
+        display: block;
+        height: 88px !important;
+        max-height: 88px !important;
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
     }
-}
 
+    /* AREA TOMBOL HEADER */
+    #app-content > div:first-child > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        width: auto;
+    }
 
-    /* Tombol utama */
+    #app-content > div:first-child button {
+        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    /* EFEK TOMBOL */
     #app-content button {
-        transition: background-color .2s ease,
-                    box-shadow .2s ease,
-                    transform .2s ease;
+        transition:
+            background-color .2s ease,
+            box-shadow .2s ease,
+            transform .2s ease;
     }
 
     #app-content button:hover {
         box-shadow: 0 3px 9px rgba(15, 60, 35, .12);
     }
 
-    /* Navigasi tab */
+    /* NAVIGASI TAB */
     #app-content > div:nth-child(2) {
         border-bottom: 1px solid #d3dfd3;
         gap: 8px;
@@ -93,7 +114,7 @@
         border-radius: 10px 10px 0 0 !important;
     }
 
-    /* Kartu statistik */
+    /* KARTU STATISTIK */
     #app-content .grid > div {
         border-radius: 14px !important;
         box-shadow: 0 3px 14px rgba(20, 60, 35, .055) !important;
@@ -113,7 +134,7 @@
         line-height: 1.4;
     }
 
-    /* Panel tabel */
+    /* PANEL TABEL */
     #app-content > div.bg-white.rounded-xl.shadow-sm.overflow-hidden {
         border-radius: 14px !important;
         box-shadow: 0 4px 18px rgba(20, 60, 35, .07) !important;
@@ -121,6 +142,11 @@
 
     #app-content #main-table thead {
         background: var(--sijawara-green) !important;
+    }
+
+    #main-table {
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
     #main-table th {
@@ -143,7 +169,7 @@
         background: #eaf4e9 !important;
     }
 
-    /* Modal login dan formulir */
+    /* MODAL LOGIN DAN FORMULIR */
     #login-overlay > div,
     #modal-bayar > div,
     #modal-riwayat > div,
@@ -174,30 +200,133 @@
         box-shadow: 0 0 0 3px rgba(38, 131, 75, .12);
     }
 
-    /* Tampilan layar kecil */
+    /* TAMPILAN HP */
     @media (max-width: 767px) {
         body {
-            padding: 12px !important;
+            padding: 0 12px 12px !important;
+        }
+
+        #app-content {
+            padding-top: 155px;
         }
 
         #app-content > div:first-child {
-            padding: 10px 12px !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            padding: 7px 10px !important;
         }
 
         #app-content > div:first-child img {
-            height: 78px;
-            max-height: 78px;
+            height: 68px !important;
+            max-height: 68px !important;
         }
 
         #app-content > div:first-child > div:last-child {
-            justify-content: center;
+            width: 100% !important;
+            justify-content: center !important;
+            gap: 6px !important;
+        }
+
+        #app-content > div:first-child button {
+            padding: 7px 9px !important;
+            font-size: 11px !important;
+        }
+
+        #app-content > div:nth-child(2) {
+            overflow-x: auto;
+        }
+
+        #tab-keuangan,
+        #tab-dokumen {
+            padding: 10px 12px !important;
+            white-space: nowrap;
         }
 
         #main-table {
             min-width: 850px;
         }
     }
+    
+/* PERKECIL UKURAN TULISAN DASHBOARD */
+#app-content {
+    font-size: 13px;
+}
+
+#app-content h1 {
+    font-size: 20px !important;
+}
+
+#app-content h2 {
+    font-size: 16px !important;
+}
+
+#app-content h3 {
+    font-size: 17px !important;
+}
+
+#app-content p,
+#app-content span,
+#app-content label {
+    font-size: 12px;
+}
+
+#app-content button {
+    font-size: 12px !important;
+}
+
+#app-content input,
+#app-content select,
+#app-content textarea {
+    font-size: 12px !important;
+}
+
+#app-content #main-table th {
+    font-size: 11px !important;
+}
+
+#app-content #main-table td {
+    font-size: 12px !important;
+}
+
+/* Angka statistik tetap jelas, tetapi lebih ringkas */
+#total-temuan,
+#total-selesai,
+#total-proses {
+    font-size: 20px !important;
+}
+
+#dynamic-main-text {
+    font-size: 19px !important;
+}
+
+/* Tulisan pada layar HP */
+@media (max-width: 767px) {
+    #app-content h1 {
+        font-size: 18px !important;
+    }
+
+    #app-content h2 {
+        font-size: 14px !important;
+    }
+
+    #app-content h3 {
+        font-size: 15px !important;
+    }
+
+    #total-temuan,
+    #total-selesai,
+    #total-proses {
+        font-size: 18px !important;
+    }
+
+    #dynamic-main-text {
+        font-size: 17px !important;
+    }
+}
+
 </style>
+
 
     
     <!-- Pustaka untuk Export Excel & PDF -->
@@ -232,7 +361,9 @@
     <div id="app-content" class="max-w-7xl mx-auto space-y-6">
         
         <!-- Header dengan Logo Kemenag -->
-        <div class="bg-white px-4 py-2 md:px-5 md:py-3 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-center gap-3 border-t-4 border-emerald-600 border-x border-b border-slate-200">
+       
+<div class="flex flex-row justify-between items-center gap-3">
+
             
 <div class="flex items-center">
     <img src="asset/LOGO_APLIKASI.png"
