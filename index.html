@@ -87,10 +87,32 @@ body {
    SIDEBAR
 ========================================== */
 
+
 #sijawara-sidebar {
   position: fixed;
-  inset: 0 auto 0 0;
+  top: 0;
+  left: 0;
+  right: auto;
+  bottom: 0;
   z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 220px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 14px 12px;
+
+  overflow-y: auto;
+  background: var(--sij-teal-dark);
+  border-right: 3px solid var(--sij-gold);
+  border-top: none;
+  border-radius: 0;
+  color: var(--sij-white);
+}
+
 
   display: flex;
   flex-direction: column;
@@ -434,7 +456,7 @@ body {
 
     
 </head>
-<body class="bg-slate-100 p-4 md:p-6 text-slate-800">
+<body class="text-slate-800">
 
     <!-- MODAL LOGIN / PASSWORD LOCK -->
     <div id="login-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
