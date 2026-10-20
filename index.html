@@ -994,22 +994,25 @@ body {
             }
         }
 
-        function switchTab(jenis) {
-            activeTab = jenis;
-            
-            const tabKeuangan = document.getElementById('tab-keuangan');
-            const tabDokumen = document.getElementById('tab-dokumen');
+        
+function switchTab(jenis) {
+    activeTab = jenis;
 
-            if (jenis === 'Keuangan') {
-                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition";
-                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition";
-            } else {
-                tabDokumen.className = "px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition";
-                tabKeuangan.className = "px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition";
-            }
+    const tabKeuangan = document.getElementById('tab-keuangan');
+    const tabDokumen = document.getElementById('tab-dokumen');
 
-            renderTab();
-        }
+    // Pertahankan kelas CSS sidebar agar ukuran huruf tetap konsisten
+    if (tabKeuangan) {
+        tabKeuangan.classList.toggle('active', jenis === 'Keuangan');
+    }
+
+    if (tabDokumen) {
+        tabDokumen.classList.toggle('active', jenis === 'Dokumen');
+    }
+
+    renderTab();
+}
+
 
         function filterSumber(sumber) {
             activeSumber = sumber;
