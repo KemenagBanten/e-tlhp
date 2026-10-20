@@ -1092,6 +1092,71 @@ body {
   font-weight: 400 !important;
 }
 
+    
+/* =====================================
+   PENYESUAIAN UKURAN SIDEBAR
+===================================== */
+
+/* Lebarkan sidebar agar tulisan tidak terpotong */
+#sijawara-sidebar {
+  width: 220px !important;
+}
+
+/* Perkecil ikon agar seimbang dengan tulisan */
+#sijawara-sidebar i[data-lucide] {
+  width: 12px !important;
+  height: 12px !important;
+  min-width: 12px !important;
+  stroke-width: 1.5 !important;
+}
+
+#sijawara-sidebar button i {
+  flex: 0 0 12px !important;
+}
+
+/* Beri sedikit lebih banyak ruang untuk tulisan */
+#sijawara-sidebar .sijawara-sidebar-action,
+#sijawara-sidebar .sijawara-sidebar-tab {
+  gap: 7px !important;
+  padding-left: 9px !important;
+  padding-right: 5px !important;
+  font-size: 10px !important;
+  white-space: nowrap !important;
+}
+
+/* Pendekkan kotak logo, lebarnya tetap */
+#sijawara-sidebar .sijawara-sidebar-logo {
+  height: 64px !important;
+  min-height: 64px !important;
+  box-sizing: border-box !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+/* Logo menyesuaikan tinggi kotak yang baru */
+#sijawara-sidebar .sijawara-sidebar-logo img {
+  height: 48px !important;
+  max-width: 100% !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+/* Sesuaikan ruang konten utama dengan sidebar baru */
+body {
+  padding-left: 240px !important;
+}
+
+/* Pada layar kecil, sidebar tetap memenuhi lebar layar */
+@media (max-width: 767px) {
+  body {
+    padding: 12px !important;
+  }
+
+  #sijawara-sidebar {
+    width: 100% !important;
+  }
+}
+
 
 </style>
 
