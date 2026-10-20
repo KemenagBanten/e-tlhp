@@ -672,6 +672,200 @@ body {
     }
 }
 
+    
+/* SIDEBAR SIJAWARA BANTEN */
+#sijawara-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    padding: 18px 12px;
+    overflow-y: auto;
+    z-index: 10000;
+    background: #12443e;
+    border-right: 3px solid #d6ad4b;
+    color: #ffffff;
+    box-sizing: border-box;
+}
+
+.sijawara-sidebar-logo {
+    text-align: center;
+    padding: 12px 6px 18px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 10px;
+    background: rgba(255,255,255,.07);
+}
+
+.sijawara-sidebar-logo img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 76px;
+    object-fit: contain;
+    margin: 0 auto 10px;
+}
+
+.sijawara-sidebar-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+
+.sijawara-sidebar-welcome {
+    margin-top: 5px;
+    color: #e4c875;
+    font-size: 11px;
+}
+
+.sijawara-sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding-bottom: 18px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,.2);
+}
+
+.sijawara-sidebar-action {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 7px;
+    background: rgba(255,255,255,.08);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sijawara-sidebar-action:hover {
+    background: rgba(255,255,255,.17);
+}
+
+.sijawara-sidebar-action span {
+    width: 16px;
+    color: #e4c875;
+    font-size: 16px;
+    text-align: center;
+}
+
+.sijawara-sidebar-action.sijawara-logout {
+    color: #ffe1dc;
+}
+
+.sijawara-sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.sijawara-sidebar-label {
+    margin: 0 5px 5px;
+    color: #cbd9d5;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.sijawara-sidebar-tab {
+    width: 100%;
+    padding: 11px 9px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: #e3eeea;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sijawara-sidebar-tab:hover {
+    background: rgba(255,255,255,.09);
+}
+
+.sijawara-sidebar-tab.border-emerald-600 {
+    border-color: #d6ad4b;
+    background: #ffffff;
+    color: #12443e;
+    font-weight: 700;
+}
+
+/* Ruang untuk sidebar di layar komputer */
+@media (min-width: 768px) {
+    body {
+        padding-left: 220px !important;
+    }
+
+    #app-content {
+        padding-top: 12px !important;
+    }
+
+    /* Sembunyikan logo lama di header */
+    #app-content > div:first-child > div:first-child {
+        display: none !important;
+    }
+
+    /* Header lama hanya menjadi tempat tombol yang tersisa.
+       Tombol akan kita rapikan pada langkah berikutnya. */
+}
+
+/* Tampilan HP */
+@media (max-width: 767px) {
+    #sijawara-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        padding: 12px;
+        border-right: none;
+        border-bottom: 3px solid #d6ad4b;
+    }
+
+    .sijawara-sidebar-logo img {
+        height: 58px;
+    }
+
+    .sijawara-sidebar-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sijawara-sidebar-action {
+        justify-content: center;
+        padding: 9px 5px;
+        font-size: 10px;
+    }
+
+    .sijawara-sidebar-action span {
+        display: none;
+    }
+
+    .sijawara-sidebar-menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sijawara-sidebar-label {
+        grid-column: 1 / -1;
+    }
+
+    body {
+        padding: 0 10px 12px !important;
+    }
+
+    #app-content {
+        padding-top: 12px !important;
+    }
+}
+
+
 </style>
 
 
