@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEM INFORMASI JEJAK PENGAWASAN
-DAN REKOMENDASI AUDIT</title>
+    <title>SIJAWARA BANTEN</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     
@@ -28,27 +27,48 @@ DAN REKOMENDASI AUDIT</title>
     }
 
     /* Header utama */
+    
+/* HEADER WEBSITE SIJAWARA */
+#app-content > div:first-child {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+
+    background: #f3f6f2 !important;
+    border: none !important;
+    border-bottom: 2px solid #c59b43 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    padding: 8px 20px !important;
+    margin-bottom: 12px;
+}
+
+/* Ukuran logo */
+#app-content > div:first-child img {
+    height: 88px;
+    max-height: 88px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Efek halus pada tombol */
+#app-content > div:first-child button {
+    border-radius: 8px;
+}
+
+/* Tampilan layar HP */
+@media (max-width: 767px) {
     #app-content > div:first-child {
-        background: linear-gradient(115deg, #ffffff 65%, #edf5ec) !important;
-        border-top: 4px solid var(--sijawara-gold) !important;
-        border-bottom: 1px solid #d8e4d8 !important;
-        border-radius: 14px !important;
-        box-shadow: 0 5px 20px rgba(20, 83, 45, 0.08) !important;
-        padding: 10px 20px !important;
+        padding: 8px 10px !important;
     }
 
-    /* Logo */
     #app-content > div:first-child img {
-        height: 94px;
-        max-height: 94px;
-        width: auto;
-        object-fit: contain;
-        transition: transform .2s ease;
+        height: 70px;
+        max-height: 70px;
     }
+}
 
-    #app-content > div:first-child img:hover {
-        transform: scale(1.03);
-    }
 
     /* Tombol utama */
     #app-content button {
