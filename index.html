@@ -337,6 +337,8 @@ body {
   border-radius: 14px;
   border-top: 3px solid var(--sij-gold);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.16);
+      max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
 
 #login-overlay h3 {
@@ -717,10 +719,27 @@ body {
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
                     <input type="date" id="bayar-tanggal" class="w-full border p-2 rounded-lg text-sm">
                 </div>
-                <div id="field-nominal-container">
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Setor (Rp)</label>
-                    <input type="number" id="bayar-nominal" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
-                </div>
+                
+<div id="field-nominal-container">
+    <label class="block text-xs font-semibold text-slate-600 mb-1">
+        Nominal Setor (Rp)
+    </label>
+
+    <input
+        type="number"
+        id="bayar-nominal"
+        placeholder="Contoh: 1000000.50"
+        step="0.01"
+        min="0"
+        class="w-full border p-2 rounded-lg text-sm"
+    >
+
+    <p class="text-xs text-slate-500 mt-1">
+        Masukkan nominal tanpa pemisah ribuan. Gunakan titik (.) untuk dua angka desimal.
+        Contoh: 1000000.50
+    </p>
+</div>
+
             </div>
 
             <div>
@@ -828,7 +847,7 @@ body {
 
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Temuan (Rp) [Khusus Keuangan]</label>
-                <input type="number" id="nominal-baru" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
+                <input type="number" id="nominal-baru" placeholder="isi angka saja, Contoh: 1000000,00" class="w-full border p-2 rounded-lg text-sm">
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('modal-tambah-temuan')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
