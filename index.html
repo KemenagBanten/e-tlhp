@@ -5,6 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    
+<style>
+    :root {
+        --sijawara-green: #14532d;
+        --sijawara-deep: #0b3322;
+        --sijawara-gold: #c59b43;
+        --sijawara-bg: #f3f6f2;
+    }
+
+    body {
+        background: var(--sijawara-bg) !important;
+        color: #24352c;
+        font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    #app-content {
+        max-width: 1500px;
+        margin: auto;
+    }
+
+    /* Header utama */
+    #app-content > div:first-child {
+        background: linear-gradient(115deg, #ffffff 65%, #edf5ec) !important;
+        border-top: 4px solid var(--sijawara-gold) !important;
+        border-bottom: 1px solid #d8e4d8 !important;
+        border-radius: 14px !important;
+        box-shadow: 0 5px 20px rgba(20, 83, 45, 0.08) !important;
+        padding: 10px 20px !important;
+    }
+
+    /* Logo */
+    #app-content > div:first-child img {
+        height: 94px;
+        max-height: 94px;
+        width: auto;
+        object-fit: contain;
+        transition: transform .2s ease;
+    }
+
+    #app-content > div:first-child img:hover {
+        transform: scale(1.03);
+    }
+
+    /* Tombol utama */
+    #app-content button {
+        transition: background-color .2s ease,
+                    box-shadow .2s ease,
+                    transform .2s ease;
+    }
+
+    #app-content button:hover {
+        box-shadow: 0 3px 9px rgba(15, 60, 35, .12);
+    }
+
+    /* Navigasi tab */
+    #app-content > div:nth-child(2) {
+        border-bottom: 1px solid #d3dfd3;
+        gap: 8px;
+    }
+
+    #tab-keuangan,
+    #tab-dokumen {
+        padding: 12px 20px !important;
+        border-radius: 10px 10px 0 0 !important;
+    }
+
+    /* Kartu statistik */
+    #app-content .grid > div {
+        border-radius: 14px !important;
+        box-shadow: 0 3px 14px rgba(20, 60, 35, .055) !important;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    #app-content .grid > div:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 20px rgba(20, 60, 35, .09) !important;
+    }
+
+    #total-temuan,
+    #total-selesai,
+    #total-proses,
+    #dynamic-main-text {
+        letter-spacing: -.5px;
+        line-height: 1.4;
+    }
+
+    /* Panel tabel */
+    #app-content > div.bg-white.rounded-xl.shadow-sm.overflow-hidden {
+        border-radius: 14px !important;
+        box-shadow: 0 4px 18px rgba(20, 60, 35, .07) !important;
+    }
+
+    #app-content #main-table thead {
+        background: var(--sijawara-green) !important;
+    }
+
+    #main-table th {
+        padding: 14px 12px !important;
+        font-size: 12px;
+        letter-spacing: .2px;
+        white-space: nowrap;
+    }
+
+    #main-table td {
+        padding: 13px 12px !important;
+        vertical-align: middle;
+    }
+
+    #main-table tbody tr:nth-child(even) {
+        background: #f7faf6;
+    }
+
+    #main-table tbody tr:hover {
+        background: #eaf4e9 !important;
+    }
+
+    /* Modal login dan formulir */
+    #login-overlay > div,
+    #modal-bayar > div,
+    #modal-riwayat > div,
+    #modal-tambah-temuan > div {
+        border-radius: 18px !important;
+        border-top: 4px solid var(--sijawara-gold);
+        box-shadow: 0 18px 55px rgba(0, 0, 0, .18) !important;
+    }
+
+    #login-overlay h3 {
+        color: var(--sijawara-green) !important;
+    }
+
+    #modal-bayar input,
+    #modal-bayar textarea,
+    #modal-tambah-temuan input,
+    #modal-tambah-temuan select {
+        border-radius: 8px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    #modal-bayar input:focus,
+    #modal-bayar textarea:focus,
+    #modal-tambah-temuan input:focus,
+    #modal-tambah-temuan select:focus {
+        outline: none;
+        border-color: #26834b;
+        box-shadow: 0 0 0 3px rgba(38, 131, 75, .12);
+    }
+
+    /* Tampilan layar kecil */
+    @media (max-width: 767px) {
+        body {
+            padding: 12px !important;
+        }
+
+        #app-content > div:first-child {
+            padding: 10px 12px !important;
+        }
+
+        #app-content > div:first-child img {
+            height: 78px;
+            max-height: 78px;
+        }
+
+        #app-content > div:first-child > div:last-child {
+            justify-content: center;
+        }
+
+        #main-table {
+            min-width: 850px;
+        }
+    }
+</style>
+
     
     <!-- Pustaka untuk Export Excel & PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
