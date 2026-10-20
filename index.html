@@ -997,7 +997,11 @@ body {
         
 function switchTab(jenis) {
     activeTab = jenis;
+const tabDashboard = document.getElementById('tab-dashboard');
 
+if (tabDashboard) {
+    tabDashboard.classList.remove('active');
+}
     const tabKeuangan = document.getElementById('tab-keuangan');
     const tabDokumen = document.getElementById('tab-dokumen');
 
