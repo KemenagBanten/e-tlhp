@@ -1158,6 +1158,36 @@ body {
 }
 
 
+/* SIDEBAR MENEMPEL KE UJUNG ATAS LAYAR */
+#sijawara-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  bottom: 0 !important;
+
+  margin-top: 0 !important;
+  margin-left: 0 !important;
+
+  height: 100vh !important;
+  min-height: 100vh !important;
+
+  border-top: none !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+
+  z-index: 99999 !important;
+}
+
+/* Pastikan tidak ada ruang kosong dari elemen induk */
+#app-content {
+  overflow: visible !important;
+}
+
+/* Logo tetap memiliki jarak di dalam sidebar */
+#sijawara-sidebar .sijawara-sidebar-logo {
+  margin-top: 12px !important;
+}
+
 </style>
 
 
