@@ -1023,6 +1023,75 @@ body {
   }
 }
 
+    
+/* =====================================
+   SIDEBAR — FONT KECIL DAN RINGAN
+===================================== */
+
+/* Tulisan tombol sidebar */
+#sijawara-sidebar .sijawara-sidebar-action,
+#sijawara-sidebar .sijawara-sidebar-tab {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+
+  white-space: nowrap !important;
+  letter-spacing: 0 !important;
+
+  padding: 9px 7px !important;
+}
+
+/* Hilangkan ketebalan pada menu aktif */
+#sijawara-sidebar .sijawara-sidebar-tab.active {
+  font-weight: 400 !important;
+}
+
+/* Ukuran ikon seragam */
+#sijawara-sidebar i[data-lucide] {
+  width: 15px !important;
+  height: 15px !important;
+  min-width: 15px !important;
+  stroke-width: 1.6 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Label MENU UTAMA tidak terlalu tebal */
+#sijawara-sidebar .sijawara-sidebar-label {
+  font-size: 9px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.7px !important;
+}
+
+/* Ruang menu lebih rapat */
+#sijawara-sidebar .sijawara-sidebar-menu {
+  gap: 3px !important;
+  margin-top: 14px !important;
+}
+
+/* Jarak tombol aksi */
+#sijawara-sidebar .sijawara-sidebar-actions {
+  gap: 3px !important;
+}
+
+/* Jangan biarkan tulisan tombol menyusut atau turun baris */
+#sijawara-sidebar button {
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+}
+
+#sijawara-sidebar button i {
+  flex: 0 0 15px !important;
+}
+
+/* Tombol Keluar juga ringan */
+#sijawara-sidebar .sijawara-logout {
+  font-weight: 400 !important;
+}
+
 
 </style>
 
@@ -1032,6 +1101,11 @@ body {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Ikon Lucide untuk SIJAWARA BANTEN -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+    
 </head>
 <body class="bg-slate-100 p-4 md:p-6 text-slate-800">
 
@@ -1093,14 +1167,14 @@ body {
       type="button"
       onclick="openModalTambahTemuan()"
       class="sijawara-sidebar-action">
-      <span>＋</span> Tambah Temuan
+      <span><i data-lucide="circle-plus"></i></span> Tambah Temuan
     </button>
 
     <button
       type="button"
       onclick="fetchData()"
       class="sijawara-sidebar-action">
-      <span>↻</span> Refresh Data
+      <span><i data-lucide="refresh-cw"></i></span> Refresh Data
     </button>
   </div>
 
@@ -1113,7 +1187,7 @@ body {
       onclick="tampilkanDashboard()"
       id="tab-dashboard"
       class="sijawara-sidebar-tab active">
-      <span>▦</span> Dashboard
+      <span><i data-lucide="layout-dashboard"></i></span> Dashboard
     </button>
 
     <button
@@ -1121,7 +1195,7 @@ body {
       onclick="switchTab('Keuangan')"
       id="tab-keuangan"
       class="sijawara-sidebar-tab">
-      <span>Rp</span> Temuan Keuangan
+      <span><i data-lucide="wallet"></i></span> Temuan Keuangan
     </button>
 
     <button
@@ -1129,7 +1203,7 @@ body {
       onclick="switchTab('Dokumen')"
       id="tab-dokumen"
       class="sijawara-sidebar-tab">
-      <span>▤</span> Temuan Administrasi
+      <span><i data-lucide="file-text"></i></span> Temuan Administrasi
     </button>
 
     <button
@@ -1137,7 +1211,7 @@ body {
       onclick="menuHukumanDisiplin()"
       id="tab-disiplin"
       class="sijawara-sidebar-tab">
-      <span>§</span> Hukuman Disiplin
+      <span><i data-lucide="shield-check"></i></span> Hukuman Disiplin
     </button>
   </div>
 
@@ -1147,7 +1221,7 @@ body {
       type="button"
       onclick="handleLogout()"
       class="sijawara-sidebar-action sijawara-logout">
-      <span>⇥</span> Keluar
+      <span><i data-lucide="log-out"></i></span> Keluar
     </button>
   </div>
 
@@ -1959,5 +2033,10 @@ body {
         // Jalankan Pengecekan Otentikasi Saat Aplikasi Dibuka
         checkAuth();
     </script>
+    
+<script>
+  lucide.createIcons();
+</script>
+
 </body>
 </html>
