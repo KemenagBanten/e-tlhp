@@ -725,15 +725,64 @@ body {
             </div>
         </div>
 
-        <!-- NAVIGATION TABS -->
-        <div class="flex border-b border-slate-300 gap-2">
-            <button onclick="switchTab('Keuangan')" id="tab-keuangan" class="px-6 py-3 font-bold text-sm rounded-t-xl border-t-2 border-emerald-600 bg-white text-emerald-800 shadow-sm transition">
-                💰 Temuan Keuangan
-            </button>
-            <button onclick="switchTab('Dokumen')" id="tab-dokumen" class="px-6 py-3 font-bold text-sm rounded-t-xl text-slate-500 hover:text-emerald-700 transition">
-                📄 Temuan Administrasi
-            </button>
+   
+<!-- SIDEBAR SIJAWARA BANTEN -->
+<div id="sijawara-sidebar">
+
+    <!-- Logo aplikasi -->
+    <div class="sijawara-sidebar-logo">
+        <img src="asset/LOGO_APLIKASI.png"
+             alt="Logo SIJAWARA BANTEN">
+        <div class="sijawara-sidebar-title">
+            SIJAWARA BANTEN
         </div>
+        <div class="sijawara-sidebar-welcome">
+            Selamat Datang
+        </div>
+    </div>
+
+    <!-- Tombol aksi -->
+    <div class="sijawara-sidebar-actions">
+        <button type="button"
+                onclick="openModalTambahTemuan()"
+                class="sijawara-sidebar-action">
+            <span>＋</span> Tambah Temuan
+        </button>
+
+        <button type="button"
+                onclick="fetchData()"
+                class="sijawara-sidebar-action">
+            <span>↻</span> Refresh Data
+        </button>
+
+        <button type="button"
+                onclick="handleLogout()"
+                class="sijawara-sidebar-action sijawara-logout">
+            <span>⇥</span> Keluar
+        </button>
+    </div>
+
+    <!-- Navigasi menu -->
+    <div class="sijawara-sidebar-menu">
+        <div class="sijawara-sidebar-label">
+            MENU UTAMA
+        </div>
+
+        <button onclick="switchTab('Keuangan')"
+                id="tab-keuangan"
+                class="sijawara-sidebar-tab border-emerald-600">
+            💰 Temuan Keuangan
+        </button>
+
+        <button onclick="switchTab('Dokumen')"
+                id="tab-dokumen"
+                class="sijawara-sidebar-tab">
+            📄 Temuan Administrasi
+        </button>
+    </div>
+
+</div>
+
 
         <!-- Metric Cards Utama -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
