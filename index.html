@@ -734,44 +734,190 @@ body {
 
 </div>
 
+
+/* SIDEBAR SIJAWARA BANTEN — MINIMALIS */
+#sijawara-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 10000;
+    box-sizing: border-box;
+    background: #12443e;
+    border-right: 3px solid #d6ad4b;
+    color: #fff;
+}
+
+/* Logo saja di kotak putih */
+.sijawara-sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 76px;
+    padding: 8px;
+    margin-bottom: 14px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+.sijawara-sidebar-logo img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 60px;
+    object-fit: contain;
+}
+
+/* Tombol aksi tanpa kotak besar */
+.sijawara-sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,.18);
+}
+
+.sijawara-sidebar-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    padding: 8px 6px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.3;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.sijawara-sidebar-action:hover {
+    background: rgba(255,255,255,.09);
+}
+
+.sijawara-sidebar-action span {
+    flex: 0 0 16px;
+    color: #e4c875;
+    font-size: 15px;
+    text-align: center;
+}
+
+.sijawara-logout {
+    color: #ffe1dc;
+}
+
+/* Menu utama */
+.sijawara-sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+}
+
+.sijawara-sidebar-label {
+    padding: 5px 6px 7px;
+    color: #cbd9d5;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .8px;
+}
+
+/* Menu tidak memiliki kotak saat tidak aktif */
+.sijawara-sidebar-tab {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 9px 6px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: transparent;
+    color: #e3eeea;
+    font-size: 10.5px;
+    line-height: 1.3;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.sijawara-sidebar-tab:hover {
+    background: rgba(255,255,255,.07);
+}
+
+/* Hanya menu aktif yang tampak menonjol */
+.sijawara-sidebar-tab.border-emerald-600 {
+    border-color: transparent;
+    border-left: 3px solid #d6ad4b;
+    border-radius: 4px;
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Logout selalu berada di bawah sidebar */
+.sijawara-sidebar-bottom {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,.18);
+}
+
+/* Konten halaman */
+@media (min-width: 768px) {
+    body {
+        padding-left: 220px !important;
+    }
+
+    #app-content {
+        padding-top: 12px !important;
+    }
+
+    #app-content > div:first-child > div:first-child {
+        display: none !important;
+    }
+}
+
 /* Tampilan HP */
 @media (max-width: 767px) {
     #sijawara-sidebar {
         position: relative;
         width: 100%;
         height: auto;
-        max-height: none;
-        padding: 12px;
+        padding: 10px;
         border-right: none;
         border-bottom: 3px solid #d6ad4b;
     }
 
+    .sijawara-sidebar-logo {
+        min-height: 60px;
+        margin-bottom: 8px;
+    }
+
     .sijawara-sidebar-logo img {
-        height: 58px;
+        height: 48px;
     }
 
     .sijawara-sidebar-actions {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .sijawara-sidebar-action {
-        justify-content: center;
-        padding: 9px 5px;
-        font-size: 10px;
-    }
-
-    .sijawara-sidebar-action span {
-        display: none;
-    }
-
-    .sijawara-sidebar-menu {
-        display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .sijawara-sidebar-label {
-        grid-column: 1 / -1;
+    .sijawara-sidebar-menu {
+        display: flex;
+    }
+
+    .sijawara-sidebar-bottom {
+        margin-top: 8px;
     }
 
     body {
@@ -782,6 +928,7 @@ body {
         padding-top: 12px !important;
     }
 }
+
 
 
 </style>
