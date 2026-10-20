@@ -988,6 +988,8 @@ body {
             try {
                 const res = await fetch(API_URL);
                 currentData = await res.json();
+                console.log("Jumlah data dari API:", currentData.length);
+console.log("Contoh data pertama:", currentData[0]);
                 renderTab();
             } catch (e) {
                 console.error("Gagal mengambil data:", e);
