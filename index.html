@@ -760,21 +760,19 @@ body {
             <h3 class="text-lg font-bold text-emerald-900 border-b pb-2">➕ Tambah Temuan Audit</h3>
             
             
+
 <div>
     <label class="block text-xs font-semibold text-slate-600 mb-1">
-        ID Temuan
+        Tanggal Temuan <span class="text-rose-500">*</span>
     </label>
     <input
-        type="text"
-        id="id-baru"
-        value="Otomatis dibuat sistem"
-        class="w-full border p-2 rounded-lg text-sm bg-slate-100 text-slate-500"
-        readonly
+        type="date"
+        id="tanggal-temuan-baru"
+        class="w-full border p-2 rounded-lg text-sm"
+        required
     >
-    <p class="text-xs text-slate-500 mt-1">
-        ID akan dibuat otomatis saat temuan disimpan.
-    </p>
 </div>
+
 
 
             <div>
@@ -801,10 +799,21 @@ body {
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Temuan <span class="text-rose-500">*</span></label>
                 <input type="text" id="judul-baru" placeholder="Masukan judul temuan..." class="w-full border p-2 rounded-lg text-sm" required>
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Penanggung Jawab (Satker / Kankemenag) <span class="text-rose-500">*</span></label>
-                <input type="text" id="pj-baru" placeholder="Contoh: Kankemenag Serang / Bidang PAKIS" class="w-full border p-2 rounded-lg text-sm" required>
-            </div>
+            
+<div>
+    <label class="block text-xs font-semibold text-slate-600 mb-1">
+        Penanggung Jawab (Satker/Nama Pegawai)
+        <span class="text-rose-500">*</span>
+    </label>
+    <input
+        type="text"
+        id="pj-baru"
+        placeholder="Contoh: Kanwil Banten / Fulan"
+        class="w-full border p-2 rounded-lg text-sm"
+        required
+    >
+</div>
+
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Temuan (Rp) [Khusus Keuangan]</label>
                 <input type="number" id="nominal-baru" placeholder="0" class="w-full border p-2 rounded-lg text-sm">
@@ -1337,7 +1346,9 @@ body {
         }
 
        
+
 async function submitTemuanBaru() {
+    const tanggal = document.getElementById("tanggal-temuan-baru").value;
     const sumber = document.getElementById("sumber-baru").value;
     const jenis = document.getElementById("jenis-baru").value;
     const judul = document.getElementById("judul-baru").value.trim();
@@ -1345,12 +1356,12 @@ async function submitTemuanBaru() {
     let nominal = document.getElementById("nominal-baru").value;
 
     if (jenis !== "Keuangan" && nominal === "") {
-    nominal = 0;
-}
+        nominal = 0;
+    }
 
-    if (!sumber || !jenis || !judul || !pj ||
+    if (!tanggal || !sumber || !jenis || !judul || !pj ||
         (jenis === "Keuangan" && nominal === "")) {
-        alert("⚠️ Semua kolom inputan wajib diisi!");
+        alert("⚠️ Mohon lengkapi semua kolom wajib diisi!");
         return;
     }
 
@@ -1360,6 +1371,7 @@ async function submitTemuanBaru() {
 
     const payload = {
         action: "add_finding",
+        Tanggal_Temuan: tanggal,
         Sumber: sumber,
         Jenis: jenis,
         Judul_Temuan: judul,
@@ -1382,6 +1394,7 @@ async function submitTemuanBaru() {
             throw new Error(hasil.message || "Temuan gagal disimpan.");
         }
 
+        document.getElementById("tanggal-temuan-baru").value = "";
         document.getElementById("judul-baru").value = "";
         document.getElementById("pj-baru").value = "";
         document.getElementById("nominal-baru").value = "";
