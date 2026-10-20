@@ -774,6 +774,18 @@ body {
 </div>
 
 
+<div>
+    <label class="block text-xs font-semibold text-slate-600 mb-1">
+        Nomor LHP
+    </label>
+    <input
+        type="text"
+        id="nomor-lhp-baru"
+        placeholder="Masukkan nomor LHP"
+        class="w-full border p-2 rounded-lg text-sm"
+    >
+</div>
+
 
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Sumber Audit <span class="text-rose-500">*</span></label>
@@ -1349,6 +1361,7 @@ body {
 
 async function submitTemuanBaru() {
     const tanggal = document.getElementById("tanggal-temuan-baru").value;
+    const nomorLHP = document.getElementById("nomor-lhp-baru").value.trim();
     const sumber = document.getElementById("sumber-baru").value;
     const jenis = document.getElementById("jenis-baru").value;
     const judul = document.getElementById("judul-baru").value.trim();
@@ -1372,6 +1385,7 @@ async function submitTemuanBaru() {
     const payload = {
         action: "add_finding",
         Tanggal_Temuan: tanggal,
+        Nomor_LHP: nomorLHP,
         Sumber: sumber,
         Jenis: jenis,
         Judul_Temuan: judul,
@@ -1395,6 +1409,7 @@ async function submitTemuanBaru() {
         }
 
         document.getElementById("tanggal-temuan-baru").value = "";
+        document.getElementById("nomor-lhp-baru").value = "";
         document.getElementById("judul-baru").value = "";
         document.getElementById("pj-baru").value = "";
         document.getElementById("nominal-baru").value = "";
