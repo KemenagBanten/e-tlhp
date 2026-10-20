@@ -773,106 +773,143 @@ body {
         </div>
     </div>
 
-    <!-- MODAL 3: Tambah Temuan -->
-    <div id="modal-tambah-temuan" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
-            <h3 class="text-lg font-bold text-emerald-900 border-b pb-2">➕ Tambah Temuan Audit</h3>
-            
-            
+   
+<!-- MODAL 3: Tambah Temuan -->
+<div id="modal-tambah-temuan"
+     class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
 
-<div>
-    <label class="block text-xs font-semibold text-slate-600 mb-1">
-        Tanggal Temuan <span class="text-rose-500">*</span>
-    </label>
-    <input
-        type="date"
-        id="tanggal-temuan-baru"
-        class="w-full border p-2 rounded-lg text-sm"
-        required
-    >
-</div>
+    <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
 
+        <h3 class="text-lg font-bold text-emerald-900 border-b pb-2">
+            ➕ Tambah Temuan Audit
+        </h3>
 
-<div>
-    <label class="block text-xs font-semibold text-slate-600 mb-1">
-        Nomor LHP
-    </label>
-    <input
-        type="text"
-        id="nomor-lhp-baru"
-        placeholder="Masukkan nomor LHP"
-        class="w-full border p-2 rounded-lg text-sm"
-    >
-</div>
+        <!-- JENIS TEMUAN SELALU TAMPIL -->
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">
+                Jenis Temuan <span class="text-rose-500">*</span>
+            </label>
 
+            <select id="jenis-baru"
+                    class="w-full border p-2 rounded-lg text-sm"
+                    required
+                    onchange="ubahFormJenisTemuan()">
+                <option value="Keuangan">Keuangan</option>
+                <option value="Administrasi">Administrasi</option>
+                <option value="Hukdis">Hukdis</option>
+            </select>
+        </div>
+
+        <!-- FORM KHUSUS KEUANGAN -->
+        <div id="form-keuangan-fields" class="space-y-4">
 
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Sumber Audit <span class="text-rose-500">*</span></label>
-                <select id="sumber-baru" class="w-full border p-2 rounded-lg text-sm" required>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">
+                    Tanggal Temuan <span class="text-rose-500">*</span>
+                </label>
+                <input type="date"
+                       id="tanggal-temuan-baru"
+                       class="w-full border p-2 rounded-lg text-sm"
+                       required>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">
+                    Nomor LHP
+                </label>
+                <input type="text"
+                       id="nomor-lhp-baru"
+                       placeholder="Masukkan nomor LHP"
+                       class="w-full border p-2 rounded-lg text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">
+                    Sumber Audit <span class="text-rose-500">*</span>
+                </label>
+                <select id="sumber-baru"
+                        class="w-full border p-2 rounded-lg text-sm"
+                        required>
                     <option value="BPK">BPK</option>
                     <option value="Inspektorat">Inspektorat</option>
                     <option value="BPKP">BPKP</option>
                 </select>
             </div>
-            
-<div>
-    <label class="block text-xs font-semibold text-slate-600 mb-1">
-        Jenis Temuan <span class="text-rose-500">*</span>
-    </label>
-    <select id="jenis-baru" class="w-full border p-2 rounded-lg text-sm" required>
-        <option value="Keuangan">Keuangan</option>
-        <option value="Administrasi">Administrasi</option>
-        <option value="Hukdis">Hukdis</option>
-    </select>
-</div>
 
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Temuan <span class="text-rose-500">*</span></label>
-                <input type="text" id="judul-baru" placeholder="Masukan judul temuan..." class="w-full border p-2 rounded-lg text-sm" required>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">
+                    Deskripsi Temuan <span class="text-rose-500">*</span>
+                </label>
+                <input type="text"
+                       id="judul-baru"
+                       placeholder="Masukkan deskripsi temuan..."
+                       class="w-full border p-2 rounded-lg text-sm"
+                       required>
             </div>
-            
-<div>
-    <label class="block text-xs font-semibold text-slate-600 mb-1">
-        Penanggung Jawab (Satker/Nama Pegawai)
-        <span class="text-rose-500">*</span>
-    </label>
-    <input
-        type="text"
-        id="pj-baru"
-        placeholder="Contoh: Kanwil Banten / Fulan"
-        class="w-full border p-2 rounded-lg text-sm"
-        required
-    >
-</div>
 
-            
-<div>
-    <label class="block text-xs font-semibold text-slate-600 mb-1">
-        Nominal Temuan (Rp) [Khusus Keuangan]
-    </label>
-
-    <input
-        type="number"
-        id="nominal-baru"
-        placeholder="Contoh: 1000000.50"
-        step="0.01"
-        min="0"
-        class="w-full border p-2 rounded-lg text-sm"
-    >
-
-    <p class="text-xs text-slate-500 mt-1">
-        Masukkan angka tanpa pemisah ribuan. Gunakan titik (.) untuk desimal.
-        Contoh: 1000000.50
-    </p>
-</div>
-
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('modal-tambah-temuan')" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
-                <button onclick="submitTemuanBaru()" id="btn-save-temuan" class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Simpan Temuan</button>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">
+                    Penanggung Jawab (Satker/Nama Pegawai)
+                    <span class="text-rose-500">*</span>
+                </label>
+                <input type="text"
+                       id="pj-baru"
+                       placeholder="Contoh: Kanwil Banten / Fulan"
+                       class="w-full border p-2 rounded-lg text-sm"
+                       required>
             </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">
+                    Nominal Temuan (Rp)
+                </label>
+                <input type="number"
+                       id="nominal-baru"
+                       placeholder="Contoh: 1000000.50"
+                       step="0.01"
+                       min="0"
+                       class="w-full border p-2 rounded-lg text-sm">
+
+                <p class="text-xs text-slate-500 mt-1">
+                    Masukkan angka tanpa pemisah ribuan.
+                    Gunakan titik (.) untuk desimal. Contoh: 1000000.50
+                </p>
+            </div>
+
         </div>
-    </div>
 
+        <!-- PESAN UNTUK ADMINISTRASI DAN HUKDIS -->
+        <div id="form-jenis-belum-tersedia"
+             class="hidden rounded-lg bg-slate-50 border p-4">
+            <p class="text-sm font-semibold text-slate-700">
+                Form belum tersedia
+            </p>
+            <p class="text-xs text-slate-500 mt-1">
+                Form input untuk jenis temuan ini akan disiapkan
+                pada tahap berikutnya.
+            </p>
+        </div>
+
+        <!-- TOMBOL -->
+        <div class="flex justify-end gap-2 pt-2">
+            <button type="button"
+                    onclick="closeModal('modal-tambah-temuan')"
+                    class="px-4 py-2 border rounded-lg text-sm">
+                Batal
+            </button>
+
+            <button type="button"
+                    onclick="submitTemuanBaru()"
+                    id="btn-save-temuan"
+                    class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">
+                Simpan Temuan
+            </button>
+        </div>
+
+    </div>
+</div>
+
+    
     <!-- JAVASCRIPT LOGIC -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbyVCaO2X02swIUlwnZdf2nh93tWTpbAD7351BVHBjZYCjJVWaJ_4dzFSN0Q6H5MYRg3/exec";
@@ -1257,6 +1294,20 @@ body {
             modal.classList.remove("hidden");
             modal.classList.add("flex");
         }
+        
+function ubahFormJenisTemuan() {
+    const jenis = document.getElementById("jenis-baru").value;
+    const formKeuangan = document.getElementById("form-keuangan-fields");
+    const pesan = document.getElementById("form-jenis-belum-tersedia");
+    const tombolSimpan = document.getElementById("btn-save-temuan");
+
+    const isKeuangan = jenis === "Keuangan";
+
+    formKeuangan.classList.toggle("hidden", !isKeuangan);
+    pesan.classList.toggle("hidden", isKeuangan);
+    tombolSimpan.classList.toggle("hidden", !isKeuangan);
+}
+
 
         function openModalBayar(id) {
             document.getElementById("bayar-id-temuan").value = id;
