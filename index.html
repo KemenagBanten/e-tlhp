@@ -5,1188 +5,420 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIJAWARA BANTEN</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    
-
+  
 <style>
-    :root {
-        --sijawara-green: #14532d;
-        --sijawara-deep: #0b3322;
-        --sijawara-gold: #c59b43;
-        --sijawara-bg: #f3f6f2;
-        --sijawara-header-height: 110px;
-    }
-
-    * {
-        box-sizing: border-box;
-    }
-
-    html {
-        scroll-padding-top: 125px;
-    }
-
-    body {
-        background: var(--sijawara-bg) !important;
-        color: #24352c;
-        font-family: Inter, "Segoe UI", Arial, sans-serif;
-        padding: 0 24px 24px !important;
-        margin: 0;
-    }
-
-    #app-content {
-        max-width: 1500px;
-        margin: 0 auto;
-        padding-top: 125px;
-    }
-
-    /* HEADER TETAP DI ATAS LAYAR */
-    #app-content > div:first-child {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        z-index: 9999 !important;
-
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-
-        background: #f3f6f2 !important;
-        border: none !important;
-        border-bottom: 3px solid var(--sijawara-gold) !important;
-        border-radius: 0 !important;
-        box-shadow: 0 3px 12px rgba(20, 83, 45, 0.10) !important;
-
-        padding: 8px 28px !important;
-        margin: 0 !important;
-        gap: 16px;
-        box-sizing: border-box !important;
-    }
-
-    /* LOGO HEADER */
-    #app-content > div:first-child img {
-        display: block;
-        height: 88px !important;
-        max-height: 88px !important;
-        width: auto;
-        max-width: 100%;
-        object-fit: contain;
-    }
-
-    /* AREA TOMBOL HEADER */
-    #app-content > div:first-child > div:last-child {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 8px;
-        width: auto;
-    }
-
-    #app-content > div:first-child button {
-        border-radius: 8px;
-        white-space: nowrap;
-    }
-
-    /* EFEK TOMBOL */
-    #app-content button {
-        transition:
-            background-color .2s ease,
-            box-shadow .2s ease,
-            transform .2s ease;
-    }
-
-    #app-content button:hover {
-        box-shadow: 0 3px 9px rgba(15, 60, 35, .12);
-    }
-
-    /* NAVIGASI TAB */
-    #app-content > div:nth-child(2) {
-        border-bottom: 1px solid #d3dfd3;
-        gap: 8px;
-    }
-
-    #tab-keuangan,
-    #tab-dokumen {
-        padding: 12px 20px !important;
-        border-radius: 10px 10px 0 0 !important;
-    }
-
-    /* KARTU STATISTIK */
-    #app-content .grid > div {
-        border-radius: 14px !important;
-        box-shadow: 0 3px 14px rgba(20, 60, 35, .055) !important;
-        transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    #app-content .grid > div:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 7px 20px rgba(20, 60, 35, .09) !important;
-    }
-
-    #total-temuan,
-    #total-selesai,
-    #total-proses,
-    #dynamic-main-text {
-        letter-spacing: -.5px;
-        line-height: 1.4;
-    }
-
-    /* PANEL TABEL */
-    #app-content > div.bg-white.rounded-xl.shadow-sm.overflow-hidden {
-        border-radius: 14px !important;
-        box-shadow: 0 4px 18px rgba(20, 60, 35, .07) !important;
-    }
-
-    #app-content #main-table thead {
-        background: var(--sijawara-green) !important;
-    }
-
-    #main-table {
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    #main-table th {
-        padding: 14px 12px !important;
-        font-size: 12px;
-        letter-spacing: .2px;
-        white-space: nowrap;
-    }
-
-    #main-table td {
-        padding: 13px 12px !important;
-        vertical-align: middle;
-    }
-
-    #main-table tbody tr:nth-child(even) {
-        background: #f7faf6;
-    }
-
-    #main-table tbody tr:hover {
-        background: #eaf4e9 !important;
-    }
-
-    /* MODAL LOGIN DAN FORMULIR */
-    #login-overlay > div,
-    #modal-bayar > div,
-    #modal-riwayat > div,
-    #modal-tambah-temuan > div {
-        border-radius: 18px !important;
-        border-top: 4px solid var(--sijawara-gold);
-        box-shadow: 0 18px 55px rgba(0, 0, 0, .18) !important;
-    }
-
-    #login-overlay h3 {
-        color: var(--sijawara-green) !important;
-    }
-
-    #modal-bayar input,
-    #modal-bayar textarea,
-    #modal-tambah-temuan input,
-    #modal-tambah-temuan select {
-        border-radius: 8px;
-        transition: border-color .2s ease, box-shadow .2s ease;
-    }
-
-    #modal-bayar input:focus,
-    #modal-bayar textarea:focus,
-    #modal-tambah-temuan input:focus,
-    #modal-tambah-temuan select:focus {
-        outline: none;
-        border-color: #26834b;
-        box-shadow: 0 0 0 3px rgba(38, 131, 75, .12);
-    }
-
-    /* TAMPILAN HP */
-    @media (max-width: 767px) {
-        body {
-            padding: 0 12px 12px !important;
-        }
-
-        #app-content {
-            padding-top: 155px;
-        }
-
-        #app-content > div:first-child {
-            flex-direction: column !important;
-            justify-content: center !important;
-            gap: 6px !important;
-            padding: 7px 10px !important;
-        }
-
-        #app-content > div:first-child img {
-            height: 68px !important;
-            max-height: 68px !important;
-        }
-
-        #app-content > div:first-child > div:last-child {
-            width: 100% !important;
-            justify-content: center !important;
-            gap: 6px !important;
-        }
-
-        #app-content > div:first-child button {
-            padding: 7px 9px !important;
-            font-size: 11px !important;
-        }
-
-        #app-content > div:nth-child(2) {
-            overflow-x: auto;
-        }
-
-        #tab-keuangan,
-        #tab-dokumen {
-            padding: 10px 12px !important;
-            white-space: nowrap;
-        }
-
-        #main-table {
-            min-width: 850px;
-        }
-    }
-    
-/* PERKECIL UKURAN TULISAN DASHBOARD */
-#app-content {
-    font-size: 13px;
-}
-
-#app-content h1 {
-    font-size: 20px !important;
-}
-
-#app-content h2 {
-    font-size: 16px !important;
-}
-
-#app-content h3 {
-    font-size: 17px !important;
-}
-
-#app-content p,
-#app-content span,
-#app-content label {
-    font-size: 12px;
-}
-
-#app-content button {
-    font-size: 12px !important;
-}
-
-#app-content input,
-#app-content select,
-#app-content textarea {
-    font-size: 12px !important;
-}
-
-#app-content #main-table th {
-    font-size: 11px !important;
-}
-
-#app-content #main-table td {
-    font-size: 12px !important;
-}
-
-/* Angka statistik tetap jelas, tetapi lebih ringkas */
-#total-temuan,
-#total-selesai,
-#total-proses {
-    font-size: 20px !important;
-}
-
-#dynamic-main-text {
-    font-size: 19px !important;
-}
-
-/* Tulisan pada layar HP */
-@media (max-width: 767px) {
-    #app-content h1 {
-        font-size: 18px !important;
-    }
-
-    #app-content h2 {
-        font-size: 14px !important;
-    }
-
-    #app-content h3 {
-        font-size: 15px !important;
-    }
-
-    #total-temuan,
-    #total-selesai,
-    #total-proses {
-        font-size: 18px !important;
-    }
-
-    #dynamic-main-text {
-        font-size: 17px !important;
-    }
-}
-/* =====================================
-   SIJAWARA BANTEN — SIDEBAR MINIMALIS
-   Tahap 1: Mode terang
-===================================== */
+   
+/* ==========================================
+   SIJAWARA BANTEN
+   CSS UTAMA — VERSI RAPI
+========================================== */
 
 :root {
-    --sij-teal: #0f6259;
-    --sij-teal-dark: #12443e;
-    --sij-gold: #d6ad4b;
-    --sij-bg: #f4f7f5;
-    --sij-white: #ffffff;
-    --sij-text: #263b36;
-    --sij-muted: #71817b;
-    --sij-border: #e1e9e4;
+  --sij-teal: #0f6259;
+  --sij-teal-dark: #12443e;
+  --sij-gold: #d6ad4b;
+  --sij-bg: #f4f7f5;
+  --sij-white: #ffffff;
+  --sij-text: #263b36;
+  --sij-muted: #71817b;
+  --sij-border: #e1e9e4;
 }
 
-/* Latar dan ukuran tulisan */
-body {
-    background: var(--sij-bg) !important;
-    color: var(--sij-text);
-    font-size: 12px;
-    padding: 0 20px 20px 200px !important;
+* {
+  box-sizing: border-box;
 }
+
+html {
+  scroll-padding-top: 20px;
+}
+
+body {
+  margin: 0;
+  padding: 20px 20px 20px 240px;
+  background: var(--sij-bg);
+  color: var(--sij-text);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+}
+
+/* ==========================================
+   KONTEN UTAMA
+========================================== */
 
 #app-content {
-    max-width: 1600px;
-    padding-top: 112px;
-    margin: 0 auto;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0;
 }
 
-/* Header atas tetap terlihat */
+/* Sembunyikan header lama.
+   Logo dan tombol aksi ada di sidebar. */
 #app-content > div:first-child {
-    height: 94px;
-    background: var(--sij-white) !important;
-    border-bottom: 2px solid var(--sij-gold) !important;
-    box-shadow: 0 2px 8px rgba(18, 68, 62, 0.06) !important;
-    padding: 6px 22px !important;
+  display: none;
 }
 
-#app-content > div:first-child img {
-    height: 72px !important;
-    max-height: 72px !important;
-}
-
-/* Tab lama tampil sebagai sidebar kiri */
-#app-content > div:nth-child(2) {
-    position: fixed !important;
-    top: 94px !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 180px !important;
-    z-index: 9000 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 6px !important;
-
-    padding: 22px 12px !important;
-    background: var(--sij-teal-dark) !important;
-    border: none !important;
-    border-right: 3px solid var(--sij-gold) !important;
-    overflow-y: auto;
-}
-
-/* Judul menu tab */
-#tab-keuangan,
-#tab-dokumen {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 12px 10px !important;
-    border: none !important;
-    border-radius: 7px !important;
-    background: transparent !important;
-    color: #dcebe5 !important;
-    box-shadow: none !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-}
-
-/* Penanda tab aktif */
-#tab-keuangan.border-emerald-600,
-#tab-dokumen.border-emerald-600 {
-    background: var(--sij-teal) !important;
-    color: #ffffff !important;
-    border-left: 3px solid var(--sij-gold) !important;
-}
-
-/* Hover menu */
-#tab-keuangan:hover,
-#tab-dokumen:hover {
-    background: rgba(255, 255, 255, 0.10) !important;
-    color: #ffffff !important;
-}
-
-/* Kartu statistik lebih sederhana */
-#app-content .grid > div {
-    border-radius: 9px !important;
-    box-shadow: 0 2px 7px rgba(20, 60, 45, 0.04) !important;
-}
-
-/* Judul dan angka lebih ringkas */
 #app-content h1 {
-    font-size: 18px !important;
+  font-size: 20px;
 }
 
 #app-content h2 {
-    font-size: 14px !important;
+  font-size: 16px;
 }
 
 #app-content h3 {
-    font-size: 15px !important;
+  font-size: 15px;
 }
 
 #app-content p,
 #app-content label,
 #app-content span {
-    font-size: 12px;
+  line-height: 1.45;
+}
+
+#app-content button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+#sijawara-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 220px;
+  height: 100vh;
+  height: 100dvh;
+  padding: 14px 12px;
+
+  overflow-y: auto;
+  background: var(--sij-teal-dark);
+  border-right: 3px solid var(--sij-gold);
+  color: var(--sij-white);
+}
+
+/* Logo transparan, tanpa kotak */
+.sijawara-sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 0;
+  margin: 0 0 18px;
+  padding: 4px 2px;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.sijawara-sidebar-logo img {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  height: auto;
+  max-height: 60px;
+  object-fit: contain;
+}
+
+/* Tombol aksi */
+
+.sijawara-sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.sijawara-sidebar-action {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  width: 100%;
+  min-width: 0;
+  padding: 9px 7px;
+
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #e7f2ee;
+
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sijawara-sidebar-action:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* Ikon Lucide */
+
+#sijawara-sidebar i[data-lucide] {
+  display: block;
+  flex: 0 0 13px;
+
+  width: 13px;
+  height: 13px;
+
+  stroke-width: 1.6;
+}
+
+/* Menu utama */
+
+.sijawara-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sijawara-sidebar-label {
+  padding: 6px 7px 8px;
+  color: var(--sij-gold);
+
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+}
+
+.sijawara-sidebar-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  width: 100%;
+  min-width: 0;
+  padding: 9px 7px;
+
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #dcebe5;
+
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sijawara-sidebar-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Menu aktif */
+
+.sijawara-sidebar-tab.active,
+.sijawara-sidebar-tab.border-emerald-600 {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 3px 0 var(--sij-gold);
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Tombol keluar di bawah */
+
+.sijawara-sidebar-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.sijawara-logout {
+  color: #ffe1dc;
+}
+
+/* ==========================================
+   KARTU STATISTIK
+========================================== */
+
+#app-content .grid > div {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(20, 60, 45, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+#app-content .grid > div:hover {
+  box-shadow: 0 5px 14px rgba(20, 60, 45, 0.09);
 }
 
 #total-temuan,
 #total-selesai,
 #total-proses {
-    font-size: 20px !important;
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
 }
 
 #dynamic-main-text {
-    font-size: 18px !important;
+  font-size: 18px;
+  line-height: 1.4;
 }
 
-/* Tombol */
-#app-content button {
-    font-size: 12px;
-    box-shadow: none;
+/* ==========================================
+   TABEL
+========================================== */
+
+#app-content > div.bg-white.rounded-xl.shadow-sm.overflow-hidden {
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(20, 60, 45, 0.06);
 }
 
-/* Tabel */
+#main-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#main-table thead {
+  background: var(--sij-teal-dark);
+}
+
 #main-table th {
-    background: var(--sij-teal-dark) !important;
-    padding: 10px 9px !important;
-    font-size: 11px !important;
+  padding: 10px 9px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 #main-table td {
-    padding: 10px 9px !important;
-    font-size: 12px !important;
+  padding: 10px 9px;
+  font-size: 12px;
+  vertical-align: middle;
 }
 
 #main-table tbody tr:nth-child(even) {
-    background: #f6f9f7;
+  background: #f6f9f7;
 }
 
 #main-table tbody tr:hover {
-    background: #e9f3ef !important;
+  background: #e9f3ef;
 }
 
-/* Tampilan tablet dan HP:
-   sidebar kembali menjadi menu horizontal */
-@media (max-width: 767px) {
-    body {
-        padding: 0 10px 12px !important;
-    }
+/* ==========================================
+   FORMULIR DAN MODAL
+========================================== */
 
-    #app-content {
-        padding-top: 150px;
-    }
-
-    #app-content > div:first-child {
-        height: auto;
-        min-height: 90px;
-        flex-direction: column !important;
-        gap: 5px !important;
-        padding: 7px 10px !important;
-    }
-
-    #app-content > div:first-child img {
-        height: 58px !important;
-        max-height: 58px !important;
-    }
-
-    #app-content > div:nth-child(2) {
-        position: static !important;
-        width: 100% !important;
-        height: auto !important;
-        flex-direction: row !important;
-        padding: 8px 0 !important;
-        margin-bottom: 14px;
-        border-right: none !important;
-        border-bottom: 2px solid var(--sij-gold) !important;
-        overflow-x: auto;
-    }
-
-    #tab-keuangan,
-    #tab-dokumen {
-        width: auto;
-        min-width: max-content;
-        text-align: center;
-        padding: 10px !important;
-    }
-
-    #main-table {
-        min-width: 850px;
-    }
+#login-overlay > div,
+#modal-bayar > div,
+#modal-riwayat > div,
+#modal-tambah-temuan > div {
+  border-radius: 14px;
+  border-top: 3px solid var(--sij-gold);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.16);
 }
 
-    
-/* =========================================
-   PERBAIKAN TAMPILAN SIJAWARA BANTEN
-   Sidebar penuh dari atas + logo dalam kotak
-========================================= */
-
-/* Hilangkan jarak yang membuat layout bergeser */
-body {
-    padding: 0 20px 20px 200px !important;
+#login-overlay h3 {
+  color: var(--sij-teal-dark);
 }
 
-/* Header utama tidak lagi menutupi sidebar */
-#app-content > div:first-child {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 88px;
-    margin: 0 0 18px 0 !important;
-    padding: 10px 18px !important;
-    background: #ffffff !important;
-    border: 1px solid #e1e9e4 !important;
-    border-bottom: 3px solid #d6ad4b !important;
-    border-radius: 12px !important;
-    box-shadow: 0 3px 12px rgba(18, 68, 62, 0.06) !important;
-    z-index: 1 !important;
+#modal-bayar input,
+#modal-bayar textarea,
+#modal-tambah-temuan input,
+#modal-tambah-temuan select {
+  border-radius: 7px;
+  font-size: 12px;
 }
 
-/* Kotak khusus logo */
-#app-content > div:first-child > div:first-child {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 70px;
-    min-height: 66px;
-    padding: 6px 12px;
-    background: #f4f7f5;
-    border: 1px solid #dce7e0;
-    border-radius: 10px;
+#modal-bayar input:focus,
+#modal-bayar textarea:focus,
+#modal-tambah-temuan input:focus,
+#modal-tambah-temuan select:focus {
+  outline: none;
+  border-color: var(--sij-teal);
+  box-shadow: 0 0 0 2px rgba(15, 98, 89, 0.12);
 }
 
-/* Ukuran logo */
-#app-content > div:first-child img {
-    display: block;
-    height: 62px !important;
-    max-height: 62px !important;
-    width: auto !important;
-    object-fit: contain;
-}
+/* ==========================================
+   TAMPILAN HP
+========================================== */
 
-/* Sidebar menempel dari ujung paling atas */
-#app-content > div:nth-child(2) {
-    position: fixed !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 180px !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    padding: 20px 12px !important;
-    padding-top: 24px !important;
-    overflow-y: auto !important;
-    z-index: 10000 !important;
-    background: #12443e !important;
-    border-right: 3px solid #d6ad4b !important;
-}
-
-/* Area konten utama */
-#app-content {
-    max-width: 1600px;
-    padding-top: 20px !important;
-    margin: 0 auto !important;
-}
-
-/* Ucapan selamat datang pada header */
-#app-content > div:first-child::after {
-    content: "Selamat Datang di SIJAWARA BANTEN";
-    display: block;
-    margin-left: auto;
-    margin-right: 14px;
-    color: #12443e;
-    font-size: 13px;
-    font-weight: 600;
-    text-align: right;
-}
-
-/* Tombol header tetap rapi */
-#app-content > div:first-child > div:last-child {
-    width: auto !important;
-    flex-shrink: 0;
-}
-
-/* Penyesuaian layar HP */
-@media (max-width: 767px) {
-    body {
-        padding: 0 10px 12px !important;
-    }
-
-    #app-content {
-        padding-top: 10px !important;
-    }
-
-    #app-content > div:first-child {
-        position: relative !important;
-        min-height: 0;
-        flex-direction: column !important;
-        gap: 10px !important;
-    }
-
-    #app-content > div:first-child::after {
-        margin: 0;
-        text-align: center;
-    }
-
-    #app-content > div:first-child > div:first-child {
-        min-height: 0;
-    }
-
-    #app-content > div:first-child img {
-        height: 54px !important;
-        max-height: 54px !important;
-    }
-
-    #app-content > div:first-child > div:last-child {
-        width: 100% !important;
-        justify-content: center !important;
-    }
-
-    #app-content > div:nth-child(2) {
-        position: static !important;
-        width: 100% !important;
-        height: auto !important;
-        flex-direction: row !important;
-        padding: 8px !important;
-        margin-bottom: 14px;
-        border-right: none !important;
-        border-bottom: 2px solid #d6ad4b !important;
-    }
-}
-
-    /* SIDEBAR SIJAWARA BANTEN — MINIMALIS */
-#sijawara-sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 200px;
-    padding: 14px 12px;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    z-index: 10000;
-    box-sizing: border-box;
-    background: #12443e;
-    border-right: 3px solid #d6ad4b;
-    color: #fff;
-}
-
-/* Logo saja di kotak putih */
-.sijawara-sidebar-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 76px;
-    padding: 8px;
-    margin-bottom: 14px;
-    background: #fff;
-    border-radius: 8px;
-}
-
-.sijawara-sidebar-logo img {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    height: 60px;
-    object-fit: contain;
-}
-
-/* Tombol aksi tanpa kotak besar */
-.sijawara-sidebar-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
-    border-bottom: 1px solid rgba(255,255,255,.18);
-}
-
-.sijawara-sidebar-action {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    min-width: 0;
-    padding: 8px 6px;
-    border: none;
-    border-radius: 5px;
-    background: transparent;
-    color: #fff;
-    font-size: 11px;
-    line-height: 1.3;
-    font-weight: 500;
-    text-align: left;
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-.sijawara-sidebar-action:hover {
-    background: rgba(255,255,255,.09);
-}
-
-.sijawara-sidebar-action span {
-    flex: 0 0 16px;
-    color: #e4c875;
-    font-size: 15px;
-    text-align: center;
-}
-
-.sijawara-logout {
-    color: #ffe1dc;
-}
-
-/* Menu utama */
-.sijawara-sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 3px;
-}
-
-.sijawara-sidebar-label {
-    padding: 5px 6px 7px;
-    color: #cbd9d5;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: .8px;
-}
-
-/* Menu tidak memiliki kotak saat tidak aktif */
-.sijawara-sidebar-tab {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    padding: 9px 6px;
-    border: 1px solid transparent;
-    border-radius: 5px;
-    background: transparent;
-    color: #e3eeea;
-    font-size: 10.5px;
-    line-height: 1.3;
-    font-weight: 500;
-    text-align: left;
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-.sijawara-sidebar-tab:hover {
-    background: rgba(255,255,255,.07);
-}
-
-/* Hanya menu aktif yang tampak menonjol */
-.sijawara-sidebar-tab.border-emerald-600 {
-    border-color: transparent;
-    border-left: 3px solid #d6ad4b;
-    border-radius: 4px;
-    background: rgba(255,255,255,.12);
-    color: #fff;
-    font-weight: 700;
-}
-
-/* Logout selalu berada di bawah sidebar */
-.sijawara-sidebar-bottom {
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,.18);
-}
-
-/* Konten halaman */
-@media (min-width: 768px) {
-    body {
-        padding-left: 220px !important;
-    }
-
-    #app-content {
-        padding-top: 12px !important;
-    }
-
-    #app-content > div:first-child > div:first-child {
-        display: none !important;
-    }
-}
-
-/* Tampilan HP */
-@media (max-width: 767px) {
-    #sijawara-sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        padding: 10px;
-        border-right: none;
-        border-bottom: 3px solid #d6ad4b;
-    }
-
-    .sijawara-sidebar-logo {
-        min-height: 60px;
-        margin-bottom: 8px;
-    }
-
-    .sijawara-sidebar-logo img {
-        height: 48px;
-    }
-
-    .sijawara-sidebar-actions {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .sijawara-sidebar-menu {
-        display: flex;
-    }
-
-    .sijawara-sidebar-bottom {
-        margin-top: 8px;
-    }
-
-    body {
-        padding: 0 10px 12px !important;
-    }
-
-    #app-content {
-        padding-top: 12px !important;
-    }
-}
-
-
-/* =========================================
-   SIJAWARA BANTEN - PERBAIKAN TAMPILAN
-========================================= */
-
-/* Sembunyikan header lama agar tidak duplikat */
-#app-content > div:first-child {
-  display: none !important;
-}
-
-/* Beri ruang untuk sidebar kiri */
-body {
-  padding: 20px 20px 20px 200px !important;
-}
-
-/* Konten utama dimulai dari atas */
-#app-content {
-  max-width: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Sidebar tetap di kiri layar */
-#sijawara-sidebar {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  bottom: 0 !important;
-  width: 180px !important;
-  height: 100vh !important;
-  overflow-y: auto !important;
-  z-index: 10000 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-/* Kotak logo putih */
-.sijawara-sidebar-logo {
-  background: #ffffff !important;
-  margin: 12px !important;
-  padding: 10px !important;
-  min-height: 82px !important;
-  border-radius: 10px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.sijawara-sidebar-logo img {
-  display: block !important;
-  width: auto !important;
-  max-width: 100% !important;
-  height: 62px !important;
-  object-fit: contain !important;
-}
-
-/* Area tombol dan menu */
-.sijawara-sidebar-actions,
-.sijawara-sidebar-menu {
-  padding: 0 10px !important;
-}
-
-.sijawara-sidebar-actions {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 5px !important;
-}
-
-.sijawara-sidebar-menu {
-  margin-top: 20px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 5px !important;
-}
-
-/* Label MENU UTAMA */
-.sijawara-sidebar-label {
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1px !important;
-  color: #d6b45c !important;
-  padding: 8px 7px !important;
-}
-
-/* Tombol sidebar: tidak berbentuk kotak saat tidak aktif */
-.sijawara-sidebar-action,
-.sijawara-sidebar-tab {
-  width: 100% !important;
-  min-height: 34px !important;
-  padding: 8px 9px !important;
-  border: none !important;
-  border-radius: 6px !important;
-  background: transparent !important;
-  color: #e7f4f1 !important;
-  font-size: 11px !important;
-  line-height: 1.35 !important;
-  text-align: left !important;
-  white-space: nowrap !important;
-  cursor: pointer !important;
-  box-shadow: none !important;
-}
-
-.sijawara-sidebar-action:hover,
-.sijawara-sidebar-tab:hover {
-  background: rgba(255, 255, 255, 0.10) !important;
-}
-
-/* Menu yang aktif */
-.sijawara-sidebar-tab.active {
-  background: rgba(255, 255, 255, 0.16) !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  box-shadow: inset 3px 0 #d6b45c !important;
-}
-
-/* Tombol keluar berada di bawah */
-.sijawara-sidebar-bottom {
-  margin-top: auto !important;
-  padding: 12px 10px 18px !important;
-}
-
-.sijawara-logout {
-  color: #ffe2dc !important;
-}
-
-/* Warna dasar sidebar */
-#sijawara-sidebar {
-  background: #075e54 !important;
-  color: #ffffff !important;
-}
-
-/* Ukuran konten lebih ringkas */
-#app-content p {
-  line-height: 1.45;
-}
-
-/* Tampilan layar kecil */
 @media (max-width: 767px) {
   body {
-    padding: 12px !important;
+    padding: 12px;
   }
 
   #sijawara-sidebar {
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin-bottom: 18px !important;
-    border-radius: 10px !important;
+    position: relative;
+    inset: auto;
+
+    width: 100%;
+    height: auto;
+    min-height: 0;
+
+    margin-bottom: 16px;
+    padding: 10px;
+
+    overflow: visible;
+    border-right: none;
+    border-bottom: 3px solid var(--sij-gold);
+  }
+
+  .sijawara-sidebar-logo {
+    margin-bottom: 10px;
+  }
+
+  .sijawara-sidebar-logo img {
+    width: 180px;
+    max-height: 55px;
+  }
+
+  .sijawara-sidebar-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sijawara-sidebar-menu {
+    margin-top: 8px;
   }
 
   .sijawara-sidebar-bottom {
-    margin-top: 10px !important;
+    margin-top: 10px;
+  }
+
+  #app-content h1 {
+    font-size: 18px;
+  }
+
+  #app-content h2 {
+    font-size: 14px;
+  }
+
+  #app-content h3 {
+    font-size: 14px;
+  }
+
+  #total-temuan,
+  #total-selesai,
+  #total-proses {
+    font-size: 18px;
+  }
+
+  #dynamic-main-text {
+    font-size: 17px;
+  }
+
+  #main-table {
+    min-width: 850px;
   }
 }
 
-    
-/* =====================================
-   SIDEBAR — FONT KECIL DAN RINGAN
-===================================== */
-
-/* Tulisan tombol sidebar */
-#sijawara-sidebar .sijawara-sidebar-action,
-#sijawara-sidebar .sijawara-sidebar-tab {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-
-  font-size: 10px !important;
-  font-weight: 400 !important;
-  line-height: 1.2 !important;
-
-  white-space: nowrap !important;
-  letter-spacing: 0 !important;
-
-  padding: 9px 7px !important;
-}
-
-/* Hilangkan ketebalan pada menu aktif */
-#sijawara-sidebar .sijawara-sidebar-tab.active {
-  font-weight: 400 !important;
-}
-
-/* Ukuran ikon seragam */
-#sijawara-sidebar i[data-lucide] {
-  width: 15px !important;
-  height: 15px !important;
-  min-width: 15px !important;
-  stroke-width: 1.6 !important;
-  flex-shrink: 0 !important;
-}
-
-/* Label MENU UTAMA tidak terlalu tebal */
-#sijawara-sidebar .sijawara-sidebar-label {
-  font-size: 9px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.7px !important;
-}
-
-/* Ruang menu lebih rapat */
-#sijawara-sidebar .sijawara-sidebar-menu {
-  gap: 3px !important;
-  margin-top: 14px !important;
-}
-
-/* Jarak tombol aksi */
-#sijawara-sidebar .sijawara-sidebar-actions {
-  gap: 3px !important;
-}
-
-/* Jangan biarkan tulisan tombol menyusut atau turun baris */
-#sijawara-sidebar button {
-  flex-wrap: nowrap !important;
-  overflow: hidden !important;
-}
-
-#sijawara-sidebar button i {
-  flex: 0 0 15px !important;
-}
-
-/* Tombol Keluar juga ringan */
-#sijawara-sidebar .sijawara-logout {
-  font-weight: 400 !important;
-}
-
-    
-/* =====================================
-   PENYESUAIAN UKURAN SIDEBAR
-===================================== */
-
-/* Lebarkan sidebar agar tulisan tidak terpotong */
-#sijawara-sidebar {
-  width: 220px !important;
-}
-
-/* Perkecil ikon agar seimbang dengan tulisan */
-#sijawara-sidebar i[data-lucide] {
-  width: 12px !important;
-  height: 12px !important;
-  min-width: 12px !important;
-  stroke-width: 1.5 !important;
-}
-
-#sijawara-sidebar button i {
-  flex: 0 0 12px !important;
-}
-
-/* Beri sedikit lebih banyak ruang untuk tulisan */
-#sijawara-sidebar .sijawara-sidebar-action,
-#sijawara-sidebar .sijawara-sidebar-tab {
-  gap: 7px !important;
-  padding-left: 9px !important;
-  padding-right: 5px !important;
-  font-size: 10px !important;
-  white-space: nowrap !important;
-}
-
-/* Pendekkan kotak logo, lebarnya tetap */
-#sijawara-sidebar .sijawara-sidebar-logo {
-  height: 64px !important;
-  min-height: 64px !important;
-  box-sizing: border-box !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-}
-
-/* Logo menyesuaikan tinggi kotak yang baru */
-#sijawara-sidebar .sijawara-sidebar-logo img {
-  height: 48px !important;
-  max-width: 100% !important;
-  width: auto !important;
-  object-fit: contain !important;
-}
-
-/* Sesuaikan ruang konten utama dengan sidebar baru */
-body {
-  padding-left: 240px !important;
-}
-
-/* Pada layar kecil, sidebar tetap memenuhi lebar layar */
-@media (max-width: 767px) {
-  body {
-    padding: 12px !important;
-  }
-
-  #sijawara-sidebar {
-    width: 100% !important;
-  }
-}
-
-
-/* SIDEBAR MENEMPEL KE UJUNG ATAS LAYAR */
-#sijawara-sidebar {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  bottom: 0 !important;
-
-  margin-top: 0 !important;
-  margin-left: 0 !important;
-
-  height: 100vh !important;
-  min-height: 100vh !important;
-
-  border-top: none !important;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-
-  z-index: 99999 !important;
-}
-
-/* Pastikan tidak ada ruang kosong dari elemen induk */
-#app-content {
-  overflow: visible !important;
-}
-
-/* Logo tetap memiliki jarak di dalam sidebar */
-#sijawara-sidebar .sijawara-sidebar-logo {
-  margin-top: 12px !important;
-}
 
 </style>
 
