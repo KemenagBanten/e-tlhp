@@ -550,6 +550,72 @@ body {
     }
 }
 
+    
+/* Tombol hamburger mobile */
+#sijawara-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1002;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #0f766e;
+  color: #ffffff;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Lapisan penutup sidebar */
+#sijawara-sidebar-overlay {
+  display: none;
+}
+
+/* Khusus layar mobile */
+@media (max-width: 768px) {
+  #sijawara-menu-toggle {
+    display: flex;
+  }
+
+  #sijawara-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    width: 250px;
+    max-width: 85vw;
+    height: 100vh;
+    height: 100dvh;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+  }
+
+  #sijawara-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  #sijawara-sidebar-overlay.mobile-open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.45);
+  }
+
+  /* Beri ruang untuk tombol hamburger */
+  #app-content {
+    margin-left: 0 !important;
+    padding-top: 64px;
+    width: 100%;
+  }
+}
+
+
 </style>
 
 
@@ -612,6 +678,22 @@ body {
         </div>
 
    
+<!-- Tombol Hamburger untuk Mobile -->
+<button
+  type="button"
+  id="sijawara-menu-toggle"
+  aria-label="Buka menu navigasi"
+  aria-expanded="false"
+  onclick="toggleSidebarMobile()">
+  <i data-lucide="menu"></i>
+</button>
+
+<!-- Lapisan penutup sidebar pada Mobile -->
+<div
+  id="sijawara-sidebar-overlay"
+  onclick="tutupSidebarMobile()">
+</div>
+
 
 <!-- SIDEBAR SIJAWARA BANTEN -->
 <div id="sijawara-sidebar">
@@ -1407,6 +1489,39 @@ function tampilkanDashboard() {
     renderDashboard(currentData);
 }
 
+function toggleSidebarMobile() {
+    const sidebar = document.getElementById('sijawara-sidebar');
+    const overlay = document.getElementById('sijawara-sidebar-overlay');
+    const tombol = document.getElementById('sijawara-menu-toggle');
+
+    if (!sidebar || !overlay || !tombol) return;
+
+    const sedangTerbuka = sidebar.classList.contains('mobile-open');
+
+    if (sedangTerbuka) {
+        tutupSidebarMobile();
+    } else {
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('mobile-open');
+        tombol.setAttribute('aria-expanded', 'true');
+        tombol.setAttribute('aria-label', 'Tutup menu navigasi');
+    }
+}
+
+function tutupSidebarMobile() {
+    const sidebar = document.getElementById('sijawara-sidebar');
+    const overlay = document.getElementById('sijawara-sidebar-overlay');
+    const tombol = document.getElementById('sijawara-menu-toggle');
+
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (overlay) overlay.classList.remove('mobile-open');
+
+    if (tombol) {
+        tombol.setAttribute('aria-expanded', 'false');
+        tombol.setAttribute('aria-label', 'Buka menu navigasi');
+    }
+}
+
 function switchTab(jenis) {
     activeTab = jenis;
 
@@ -1419,7 +1534,10 @@ function switchTab(jenis) {
     const kartuUtama = document.getElementById('kartu-statistik-utama');
     const kartuSumber = document.getElementById('kartu-sumber-audit');
     const tabel = document.getElementById('main-table');
-
+// Tutup sidebar otomatis pada tampilan mobile
+if (window.innerWidth <= 768) {
+    tutupSidebarMobile();
+}
     // Atur menu aktif
     if (tabDashboard) tabDashboard.classList.toggle('active', jenis === 'Dashboard');
     if (tabKeuangan) tabKeuangan.classList.toggle('active', jenis === 'Keuangan');
