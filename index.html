@@ -829,6 +829,16 @@ body {
     </div>
 
     </div>
+                    
+<select id="filterStatusPembayaran"
+        onchange="renderTab()"
+        class="border border-slate-300 rounded-lg px-3 py-2 text-xs font-semibold bg-white text-slate-700">
+    <option value="ALL">Semua Status</option>
+    <option value="Belum Dibayar">Belum Dibayar</option>
+    <option value="Dalam Proses">Dalam Proses</option>
+    <option value="Lunas">Lunas</option>
+</select>
+
 
                     <div class="flex gap-1">
                         <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
@@ -1301,6 +1311,23 @@ const tabData = activeTab === 'Keuangan'
             renderMetrics(tabData);
 
             displayedData = tabData;
+
+// FILTER STATUS PEMBAYARAN
+const filterStatus = document.getElementById('filterStatusPembayaran');
+
+if (filterStatus && filterStatus.value !== 'ALL') {
+    displayedData = displayedData.filter(d =>
+        String(d.Status || '').trim().toLowerCase() ===
+        filterStatus.value.trim().toLowerCase()
+    );
+}
+
+// FILTER SUMBER AUDIT
+if (activeSumber !== 'ALL') {
+    displayedData = displayedData.filter(d =>
+        String(d.Sumber || '').toUpperCase() === activeSumber.toUpperCase()
+    );
+}
             if (activeSumber !== 'ALL') {
                 displayedData = tabData.filter(d => String(d.Sumber).toUpperCase() === activeSumber.toUpperCase());
             }
