@@ -1312,15 +1312,29 @@ const tabData = activeTab === 'Keuangan'
 
             displayedData = tabData;
 
-// FILTER STATUS PEMBAYARAN
+
+/* FILTER STATUS PEMBAYARAN */
 const filterStatus = document.getElementById('filterStatusPembayaran');
 
 if (filterStatus && filterStatus.value !== 'ALL') {
-    displayedData = displayedData.filter(d =>
-        String(d.Status || '').trim().toLowerCase() ===
-        filterStatus.value.trim().toLowerCase()
-    );
+    displayedData = displayedData.filter(d => {
+        const totalNominal = Number(d.Nominal_Rp || 0);
+        const totalDisetor = Number(d.Total_Disetor || 0);
+
+        let status;
+
+        if (totalNominal > 0 && totalDisetor >= totalNominal) {
+            status = 'Lunas';
+        } else if (totalDisetor > 0) {
+            status = 'Dalam Proses';
+        } else {
+            status = 'Belum Dibayar';
+        }
+
+        return status === filterStatus.value;
+    });
 }
+
 
 // FILTER SUMBER AUDIT
 if (activeSumber !== 'ALL') {
