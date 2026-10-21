@@ -476,6 +476,74 @@ body {
 }
 
 
+/* ===== KARTU SUMBER AUDIT MINIMALIS ===== */
+
+#kartu-sumber-audit {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+#kartu-sumber-audit > div {
+    min-width: 0;
+    padding: 12px !important;
+    border: 1px solid #e1e9e4 !important;
+    border-top: 3px solid #0f6259 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 6px rgba(20, 60, 45, 0.04) !important;
+    background: #fff;
+}
+
+/* Judul sumber audit */
+#kartu-sumber-audit .font-bold {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Total nominal pada badge */
+#kartu-sumber-audit #badge-bpk,
+#kartu-sumber-audit #badge-bpkp,
+#kartu-sumber-audit #badge-inspektorat {
+    max-width: 58%;
+    padding: 4px 7px;
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+/* Baris nominal disetor dan sisa saldo */
+#kartu-sumber-audit .text-xs {
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+#bpk-info,
+#bpkp-info,
+#inspektorat-info,
+#bpk-sisa,
+#bpkp-sisa,
+#inspektorat-sisa {
+    color: #475b53 !important;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+/* Tampilan layar kecil */
+@media (max-width: 700px) {
+    #kartu-sumber-audit {
+        grid-template-columns: 1fr;
+    }
+
+    #kartu-sumber-audit > div {
+        padding: 10px !important;
+    }
+}
+
 </style>
 
 
