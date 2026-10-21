@@ -1310,10 +1310,18 @@ const tabData = activeTab === 'Keuangan'
             
             renderMetrics(tabData);
 
-            displayedData = tabData;
+           
+displayedData = tabData;
 
+// 1. FILTER SUMBER AUDIT
+if (activeSumber !== 'ALL') {
+    displayedData = displayedData.filter(d =>
+        String(d.Sumber || '').trim().toUpperCase() ===
+        String(activeSumber).trim().toUpperCase()
+    );
+}
 
-/* FILTER STATUS PEMBAYARAN */
+// 2. FILTER STATUS PEMBAYARAN
 const filterStatus = document.getElementById('filterStatusPembayaran');
 
 if (filterStatus && filterStatus.value !== 'ALL') {
@@ -1335,27 +1343,19 @@ if (filterStatus && filterStatus.value !== 'ALL') {
     });
 }
 
-
-// FILTER SUMBER AUDIT
-if (activeSumber !== 'ALL') {
-    displayedData = displayedData.filter(d =>
-        String(d.Sumber || '').toUpperCase() === activeSumber.toUpperCase()
-    );
-}
-            if (activeSumber !== 'ALL') {
-                displayedData = tabData.filter(d => String(d.Sumber).toUpperCase() === activeSumber.toUpperCase());
-            }
-
-           
+// 3. FILTER PENCARIAN
 if (searchQuery.trim() !== '') {
+    const kataKunci = searchQuery.trim().toLowerCase();
+
     displayedData = displayedData.filter(d =>
-        String(d.Nomor_LHA || d.Nomor_LHP || '').toLowerCase().includes(searchQuery) ||
-        String(d.Penanggungjawab || d.Penanggung_Jawab || '').toLowerCase().includes(searchQuery) ||
-        String(d.Judul_Temuan || '').toLowerCase().includes(searchQuery) ||
-        String(d.Sumber || '').toLowerCase().includes(searchQuery) ||
-        String(d.ID || '').toLowerCase().includes(searchQuery)
+        String(d.Nomor_LHA || d.Nomor_LHP || '').toLowerCase().includes(kataKunci) ||
+        String(d.Penanggungjawab || d.Penanggung_Jawab || '').toLowerCase().includes(kataKunci) ||
+        String(d.Judul_Temuan || '').toLowerCase().includes(kataKunci) ||
+        String(d.Sumber || '').toLowerCase().includes(kataKunci) ||
+        String(d.ID || '').toLowerCase().includes(kataKunci)
     );
 }
+
 
             currentPage = 1;
 
