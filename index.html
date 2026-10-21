@@ -729,6 +729,21 @@ body {
         </tr>
     </tbody>
 </table>
+    
+<div id="pagination-container"
+     style="display:flex; justify-content:space-between;
+            align-items:center; gap:12px; flex-wrap:wrap;
+            padding:12px 4px; font-size:12px;">
+
+    <div id="pagination-info" style="color:#64748b;">
+        Menampilkan data...
+    </div>
+
+    <div id="pagination-buttons"
+         style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+    </div>
+</div>
+
 
 </div>
 
@@ -948,6 +963,8 @@ body {
         const API_URL = "https://script.google.com/macros/s/AKfycbyVCaO2X02swIUlwnZdf2nh93tWTpbAD7351BVHBjZYCjJVWaJ_4dzFSN0Q6H5MYRg3/exec";
 
         let currentData = [];
+        let currentPage = 1;
+const rowsPerPage = 10;
         let activeTab = 'Keuangan'; 
         let activeSumber = 'ALL';
         let searchQuery = '';
@@ -1087,6 +1104,7 @@ if (tabDashboard) {
                     (String(d.ID).includes(searchQuery))
                 );
             }
+            currentPage = 1;
 
             renderTable(displayedData);
         }
@@ -1236,8 +1254,12 @@ function renderTable(data) {
         return teks;
     }
 
-    data.forEach((item, index) => {
-        console.log("DATA TABEL:", item);
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+const startIndex = (currentPage - 1) * rowsPerPage;
+const pageData = data.slice(startIndex, startIndex + rowsPerPage);
+
+pageData.forEach((item, index) => {
+    index = startIndex + index;
         const idTemuan = item.ID || "";
         const totalNominal = Number(item.Nominal_Rp || 0);
         const totalDisetor = Number(item.Total_Disetor || 0);
@@ -1340,8 +1362,74 @@ function renderTable(data) {
                     </button>
                 </td>
             </tr>
-        `;
+               `;
     });
+
+    // Tampilkan tombol paginasi
+    renderPagination(data.length, totalPages);
+}
+
+function renderPagination(totalData, totalPages) {
+    const info = document.getElementById("pagination-info");
+    const buttons = document.getElementById("pagination-buttons");
+
+    if (!info || !buttons) return;
+
+    if (totalData === 0) {
+        info.textContent = "Tidak ada data";
+        buttons.innerHTML = "";
+        return;
+    }
+
+    const start = (currentPage - 1) * rowsPerPage + 1;
+    const end = Math.min(currentPage * rowsPerPage, totalData);
+
+    info.textContent =
+        `Menampilkan ${start}–${end} dari ${totalData} data`;
+
+    buttons.innerHTML = "";
+
+    function buatTombol(teks, halaman, nonaktif = false, aktif = false) {
+        const tombol = document.createElement("button");
+
+        tombol.textContent = teks;
+        tombol.disabled = nonaktif;
+
+        tombol.style.cssText = `
+            padding:6px 10px;
+            border:1px solid ${aktif ? "#0f766e" : "#cbd5e1"};
+            border-radius:5px;
+            font-size:12px;
+            background:${aktif ? "#0f766e" : "#ffffff"};
+            color:${aktif ? "#ffffff" : "#334155"};
+            cursor:${nonaktif ? "not-allowed" : "pointer"};
+            opacity:${nonaktif ? "0.5" : "1"};
+        `;
+
+        tombol.addEventListener("click", () => {
+            currentPage = halaman;
+            renderTable(displayedData);
+        });
+
+        buttons.appendChild(tombol);
+    }
+
+    buatTombol("Sebelumnya", currentPage - 1, currentPage === 1);
+
+    for (let halaman = 1; halaman <= totalPages; halaman++) {
+        buatTombol(
+            String(halaman),
+            halaman,
+            false,
+            halaman === currentPage
+        );
+    }
+
+    buatTombol(
+        "Berikutnya",
+        currentPage + 1,
+        currentPage === totalPages
+    );
 }
 
 
