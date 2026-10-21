@@ -1382,45 +1382,50 @@ const rowsPerPage = 10;
             }
         }
 
-        async function handleLogin(e) {
-            e.preventDefault();
-            const password = document.getElementById("login-password").value;
-            const btn = document.getElementById("btn-login");
+   
+async function handleLogin(e) {
+    e.preventDefault();
 
-            btn.innerText = "Verifikasi...";
-            btn.disabled = true;
+    const password = document.getElementById("login-password").value;
+    const btn = document.getElementById("btn-login");
 
-            try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: "login_verify", password: password })
-                });
+    btn.innerText = "Verifikasi...";
+    btn.disabled = true;
 
-                const data = await res.json();
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "login_verify",
+                password: password
+            })
+        });
 
-                
-if (data.status === "success" && data.token) {
-    sessionStorage.setItem("isLoggedIn", "true");
-    sessionStorage.setItem("sijawaraToken", data.token);
+        const data = await res.json();
 
-    document.getElementById("login-overlay").classList.add("hidden");
-    document.getElementById("login-password").value = "";
-    fetchData();
-} else {
-    alert(data.message || "Login gagal. Silakan coba lagi.");
+        if (data.status === "success" && data.token) {
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("sijawaraToken", data.token);
+
+            document.getElementById("login-overlay").classList.add("hidden");
+            document.getElementById("login-password").value = "";
+
+            fetchData();
+        } else {
+            alert(data.message || "Login gagal. Silakan coba lagi.");
+        }
+
+    } catch (err) {
+        alert("Gagal melakukan autentikasi: " + err.message);
+    } finally {
+        btn.innerText = "Masuk Aplikasi";
+        btn.disabled = false;
+    }
 }
 
-                } else {
-                    alert("❌ Password salah! Silakan coba lagi.");
-                }
-            } catch (err) {
-                alert("Gagal melakukan autentikasi: " + err.message);
-            } finally {
-                btn.innerText = "Masuk Aplikasi";
-                btn.disabled = false;
-            }
-        }
 
        
 async function handleLogout() {
