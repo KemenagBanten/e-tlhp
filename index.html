@@ -687,6 +687,23 @@ body {
 
 </div>
 
+        
+<!-- Loading Dashboard -->
+<div id="loading-dashboard"
+     style="display:none;"
+     class="bg-white rounded-xl shadow-sm p-8 text-center">
+
+    <div class="text-sm font-semibold text-emerald-800">
+        Memuat data dashboard...
+    </div>
+
+    <div class="text-xs text-slate-500 mt-2">
+        Mohon tunggu sebentar.
+    </div>
+
+</div>
+
+        
 <!-- AREA DASHBOARD SIJAWARA -->
 <div id="area-dashboard" style="display:none;" class="space-y-4"> 
 
@@ -1271,33 +1288,82 @@ const rowsPerPage = 10;
             location.reload();
         }
 
-        async function fetchData() {
-            try {
-                const res = await fetch(API_URL);
-                currentData = await res.json();
-                console.log("Jumlah data dari API:", currentData.length);
-console.log("Contoh data pertama:", currentData[0]);
-                console.log("NAMA KOLOM DATA:", Object.keys(currentData[0] || {}));
-console.log("CONTOH DATA TEMUAN:", currentData.slice(0, 3));
-                console.log(
-    "Jumlah jenis Keuangan:",
-    currentData.filter(d => String(d.Jenis).toLowerCase() === "keuangan").length
-);
+      
+async function fetchData() {
+    const loadingDashboard = document.getElementById('loading-dashboard');
+    const areaDashboard = document.getElementById('area-dashboard');
 
-console.log(
-    "Jumlah jenis Administrasi:",
-    currentData.filter(d => String(d.Jenis).toLowerCase() === "administrasi").length
-);
+    // Tampilkan loading dan sembunyikan tampilan sebelumnya
+    if (loadingDashboard) loadingDashboard.style.display = '';
+    if (areaDashboard) areaDashboard.style.display = 'none';
 
-console.log(
-    "Contoh nilai Jenis:",
-    [...new Set(currentData.map(d => d.Jenis))]
-);
-                tampilkanDashboard();
-            } catch (e) {
-                console.error("Gagal mengambil data:", e);
-            }
+    [
+        'judul-temuan-keuangan',
+        'kartu-statistik-utama',
+        'kartu-sumber-audit'
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+
+    const tabel = document.getElementById('main-table');
+    if (tabel) {
+        const pembungkus = tabel.closest(
+            '.bg-white.rounded-xl.shadow-sm.overflow-hidden'
+        );
+        if (pembungkus) pembungkus.style.display = 'none';
+    }
+
+    try {
+        const res = await fetch(API_URL);
+
+        if (!res.ok) {
+            throw new Error('Gagal mengambil data dari API.');
         }
+
+        currentData = await res.json();
+
+        console.log("Jumlah data dari API:", currentData.length);
+        console.log("Contoh data pertama:", currentData[0]);
+        console.log("NAMA KOLOM DATA:", Object.keys(currentData[0] || {}));
+        console.log("CONTOH DATA TEMUAN:", currentData.slice(0, 3));
+
+        console.log(
+            "Jumlah jenis Keuangan:",
+            currentData.filter(d => String(d.Jenis).toLowerCase() === "keuangan").length
+        );
+
+        console.log(
+            "Jumlah jenis Administrasi:",
+            currentData.filter(d => String(d.Jenis).toLowerCase() === "administrasi").length
+        );
+
+        console.log(
+            "Contoh nilai Jenis:",
+            [...new Set(currentData.map(d => d.Jenis))]
+        );
+
+        // Sembunyikan loading setelah data berhasil dimuat
+        if (loadingDashboard) loadingDashboard.style.display = 'none';
+
+        tampilkanDashboard();
+
+    } catch (e) {
+        console.error("Gagal mengambil data:", e);
+
+        if (loadingDashboard) {
+            loadingDashboard.style.display = '';
+            loadingDashboard.innerHTML = `
+                <div class="text-sm font-semibold text-red-600">
+                    Gagal memuat data.
+                </div>
+                <div class="text-xs text-slate-500 mt-2">
+                    Silakan muat ulang halaman.
+                </div>
+            `;
+        }
+    }
+}
 
 
 function tampilkanDashboard() {
