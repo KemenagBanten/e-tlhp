@@ -1361,39 +1361,101 @@ if (searchQuery.trim() !== '') {
             calcSumberMetrics(data, "Inspektorat", "inspektorat");
         }
 
-        function calcSumberMetrics(data, sumberName, prefix) {
-            const subset = data.filter(d => String(d.Sumber).toUpperCase() === sumberName.toUpperCase());
-            
-            if (activeTab === 'Keuangan') {
-                const totalNominal = subset.reduce((acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0);
-                const totalDisetor = subset.reduce((acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0);
-                const sisaSaldo = Math.max(0, totalNominal - totalDisetor);
-                const percent = totalNominal > 0 ? ((totalDisetor / totalNominal) * 100).toFixed(1) : 0;
+        
+function calcSumberMetrics(data, sumberName, prefix) {
+    const subset = data.filter(d =>
+        String(d.Sumber || '').toUpperCase() === sumberName.toUpperCase()
+    );
 
-                document.getElementById(`badge-${prefix}`).innerText = `Rp ${totalNominal.toLocaleString('id-ID')}`;
-                document.getElementById(`lbl-${prefix}`).innerText = "Disetor:";
-               document.getElementById(`${prefix}-info`).innerHTML =
-    `Rp ${totalDisetor.toLocaleString('id-ID')}<br><span style="color:#0f6259;font-size:10px;font-weight:600;">${percent}% disetor</span>`;
-                
-                // Menampilkan sisa saldo temuan
-                const sisaElement = document.getElementById(`${prefix}-sisa`);
-                if(sisaElement) sisaElement.innerText = `Rp ${sisaSaldo.toLocaleString('id-ID')}`;
+    if (activeTab === 'Keuangan') {
+        const totalNominal = subset.reduce(
+            (acc, curr) => acc + (Number(curr.Nominal_Rp) || 0), 0
+        );
 
-            } else {
-                const totalDokumen = subset.length;
-                const selesaiCount = subset.filter(d => d.Status === "Selesai" || parseInt(d.Progress_Percent) === 100 || (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)).length;
-                const belumSelesaiCount = totalDokumen - selesaiCount;
-                const percent = totalDokumen > 0 ? ((selesaiCount / totalDokumen) * 100).toFixed(0) : 0;
+        const totalDisetor = subset.reduce(
+            (acc, curr) => acc + (Number(curr.Total_Disetor) || 0), 0
+        );
 
-                document.getElementById(`badge-${prefix}`).innerText = `${totalDokumen} Dokumen`;
-                document.getElementById(`lbl-${prefix}`).innerText = "Dokumen Lengkap:";
-                document.getElementById(`${prefix}-info`).innerText = `${selesaiCount} / ${totalDokumen} (${percent}%)`;
+        const sisaSaldo = Math.max(0, totalNominal - totalDisetor);
 
-                // Untuk tab dokumen, sisa saldo bisa diganti informasi dokumen belum lengkap
-                const sisaElement = document.getElementById(`${prefix}-sisa`);
-                if(sisaElement) sisaElement.innerText = `${belumSelesaiCount} Belum Lengkap`;
-            }
+        const percent = totalNominal > 0
+            ? ((totalDisetor / totalNominal) * 100).toFixed(1)
+            : 0;
+
+        // Lebar garis dibatasi 0–100%
+        const lebarProgres = Math.min(100, Math.max(0, Number(percent) || 0));
+
+        document.getElementById(`badge-${prefix}`).innerText =
+            `Rp ${totalNominal.toLocaleString('id-ID')}`;
+
+        document.getElementById(`lbl-${prefix}`).innerText = 'Disetor:';
+
+        document.getElementById(`${prefix}-info`).innerHTML = `
+            <div style="font-size:11px; color:#344740;">
+                Rp ${totalDisetor.toLocaleString('id-ID')}
+            </div>
+
+            <div style="font-size:10px; color:#0f6259; font-weight:600; margin-top:3px;">
+                ${percent}% disetor
+            </div>
+
+            <div style="
+                width:100%;
+                height:5px;
+                background:#e7eeea;
+                border-radius:999px;
+                overflow:hidden;
+                margin-top:6px;
+            ">
+                <div style="
+                    width:${lebarProgres}%;
+                    height:100%;
+                    background:#0f6259;
+                    border-radius:999px;
+                    transition:width 0.4s ease;
+                "></div>
+            </div>
+        `;
+
+        // Menampilkan sisa saldo dengan warna netral
+        const sisaElement = document.getElementById(`${prefix}-sisa`);
+
+        if (sisaElement) {
+            sisaElement.innerText = `Rp ${sisaSaldo.toLocaleString('id-ID')}`;
         }
+
+    } else {
+        const totalDokumen = subset.length;
+
+        const selesaiCount = subset.filter(d =>
+            d.Status === 'Selesai' ||
+            parseInt(d.Progress_Percent) === 100 ||
+            (d.Riwayat_Bayar && d.Riwayat_Bayar.length > 0)
+        ).length;
+
+        const belumSelesaiCount = totalDokumen - selesaiCount;
+
+        const percent = totalDokumen > 0
+            ? ((selesaiCount / totalDokumen) * 100).toFixed(0)
+            : 0;
+
+        document.getElementById(`badge-${prefix}`).innerText =
+            `${totalDokumen} Dokumen`;
+
+        document.getElementById(`lbl-${prefix}`).innerText =
+            'Dokumen Lengkap:';
+
+        document.getElementById(`${prefix}-info`).innerText =
+            `${selesaiCount} / ${totalDokumen} (${percent}%)`;
+
+        const sisaElement = document.getElementById(`${prefix}-sisa`);
+
+        if (sisaElement) {
+            sisaElement.innerText = `${belumSelesaiCount} Belum Lengkap`;
+        }
+    }
+}
+
         
 
 function renderTable(data) {
