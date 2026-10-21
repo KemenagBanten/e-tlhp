@@ -1778,15 +1778,18 @@ function renderDashboard(data) {
                         }
                     },
                     y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Nominal Temuan (Rp)'
-                        },
-                        ticks: {
-                            callback: nilai => formatRupiah(nilai)
-                        }
-                    }
+    beginAtZero: true,
+    title: {
+        display: true,
+        text: 'Nominal Temuan (dalam Miliar Rupiah)'
+    },
+    ticks: {
+        callback: nilai =>
+            (Number(nilai) / 1000000000).toLocaleString('id-ID', {
+                maximumFractionDigits: 2
+            })
+    }
+}
                 }
             }
         });
