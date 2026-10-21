@@ -1399,11 +1399,18 @@ const rowsPerPage = 10;
 
                 const data = await res.json();
 
-                if (data.status === "success") {
-                    sessionStorage.setItem("isLoggedIn", "true");
-                    document.getElementById("login-overlay").classList.add("hidden");
-                    document.getElementById("login-password").value = "";
-                    fetchData();
+                
+if (data.status === "success" && data.token) {
+    sessionStorage.setItem("isLoggedIn", "true");
+    sessionStorage.setItem("sijawaraToken", data.token);
+
+    document.getElementById("login-overlay").classList.add("hidden");
+    document.getElementById("login-password").value = "";
+    fetchData();
+} else {
+    alert(data.message || "Login gagal. Silakan coba lagi.");
+}
+
                 } else {
                     alert("❌ Password salah! Silakan coba lagi.");
                 }
@@ -1447,7 +1454,11 @@ async function fetchData() {
     }
 
     try {
-        const res = await fetch(API_URL);
+        const token = sessionStorage.getItem("sijawaraToken");
+
+const res = await fetch(
+    `${API_URL}?token=${encodeURIComponent(token || "")}`
+);
 
         if (!res.ok) {
             throw new Error('Gagal mengambil data dari API.');
