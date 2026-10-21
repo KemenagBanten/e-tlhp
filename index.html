@@ -1481,46 +1481,178 @@ function renderPagination(totalData, totalPages) {
 }
 
 
-        // EXPORT EXCEL
-        function exportToExcel() {
-            const dataToExport = displayedData.map(item => {
-                const totalDisetor = Number(item.Total_Disetor || 0);
-                const totalNominal = Number(item.Nominal_Rp || 0);
-                const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
-                
-                let isSelesai = activeTab === 'Keuangan' 
-                    ? (totalNominal > 0 && totalDisetor >= totalNominal)
-                    : (hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100);
+        
+function exportToExcel() {
+    // Buka tab baru langsung saat tombol diklik
+    const tabPreview = window.open('', '_blank');
 
-                if (activeTab === 'Keuangan') {
-                    return {
-                        "ID Temuan": item.ID,
-                        "Sumber Audit": item.Sumber,
-                        "Judul Temuan": item.Judul_Temuan,
-                        "Penanggung Jawab": item.Penanggung_Jawab || '-',
-                        "Nilai Temuan (Rp)": totalNominal,
-                        "Total Disetor (Rp)": totalDisetor,
-                        "Status": isSelesai ? "Selesai" : "On Progress"
-                    };
-                } else {
-                    return {
-                        "ID Temuan": item.ID,
-                        "Sumber Audit": item.Sumber,
-                        "Judul Temuan": item.Judul_Temuan,
-                        "Penanggung Jawab": item.Penanggung_Jawab || '-',
-                        "Kelengkapan Berkas": hasFile ? "Sudah Diunggah" : "Belum Ada Berkas",
-                        "Status": isSelesai ? "Selesai" : "On Progress"
-                    };
-                }
-            });
+    if (!tabPreview) {
+        alert('Tab baru diblokir browser. Izinkan pop-up untuk situs ini, lalu coba lagi.');
+        return;
+    }
 
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, `Temuan_${activeTab}`);
-            
-            const filename = `eTLHP_KemenagBanten_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.xlsx`;
-            XLSX.writeFile(workbook, filename);
+    try {
+        const { jsPDF } = window.jspdf || {};
+        const dataToExport = displayedData.map(item => {
+            const totalDisetor = Number(item.Total_Disetor || 0);
+            const totalNominal = Number(item.Nominal_Rp || 0);
+            const hasFile = Array.isArray(item.Riwayat_Bayar)
+                && item.Riwayat_Bayar.length > 0;
+
+            const isSelesai = activeTab === 'Keuangan'
+                ? totalNominal > 0 && totalDisetor >= totalNominal
+                : hasFile || item.Status === 'Selesai'
+                    || parseInt(item.Progress_Percent) === 100;
+
+            const baris = {
+                "ID Temuan": item.ID || '-',
+                "Tanggal Temuan": item.Tanggal_Temuan || item.Tanggal || '-',
+                "Nomor LHA": item.Nomor_LHA || item.Nomor_LHP || '-',
+                "Sumber Audit": item.Sumber || '-',
+                "Judul Temuan": item.Judul_Temuan || '-',
+                "Penanggung Jawab":
+                    item.Penanggungjawab || item.Penanggung_Jawab || '-'
+            };
+
+            if (activeTab === 'Keuangan') {
+                baris["Nilai Temuan (Rp)"] = totalNominal;
+                baris["Total Disetor (Rp)"] = totalDisetor;
+                baris["Sisa Belum Disetor (Rp)"] =
+                    Math.max(0, totalNominal - totalDisetor);
+                baris["Status"] = isSelesai ? 'Selesai' : 'On Progress';
+            } else {
+                baris["Kelengkapan Berkas"] =
+                    hasFile ? 'Sudah Diunggah' : 'Belum Ada Berkas';
+                baris["Status"] = isSelesai ? 'Selesai' : 'On Progress';
+            }
+
+            return baris;
+        });
+
+        // Siapkan workbook dan pengaturan lebar kolom
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+
+        worksheet['!cols'] = Object.keys(dataToExport[0] || {}).map(k => ({
+            wch: Math.min(
+                Math.max(k.length + 4, 16),
+                k.includes('Judul') ? 42 : 30
+            )
+        }));
+
+        if (dataToExport.length > 0) {
+            worksheet['!autofilter'] = {
+                ref: XLSX.utils.encode_range({
+                    s: { r: 0, c: 0 },
+                    e: {
+                        r: dataToExport.length,
+                        c: Object.keys(dataToExport[0]).length - 1
+                    }
+                })
+            };
         }
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            `Temuan_${activeTab}`.substring(0, 31)
+        );
+
+        const tanggalCetak = new Date().toLocaleDateString('id-ID');
+        const tanggalFile = new Date().toISOString().split('T')[0];
+        const filename =
+            `eTLHP_KemenagBanten_${activeTab}_${activeSumber}_${tanggalFile}.xlsx`;
+
+        // Buat file Excel sebagai Blob
+        const excelArray = XLSX.write(workbook, {
+            bookType: 'xlsx',
+            type: 'array'
+        });
+
+        const excelBlob = new Blob([excelArray], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        const excelUrl = URL.createObjectURL(excelBlob);
+
+        // Amankan teks sebelum dimasukkan ke HTML pratinjau
+        const aman = teks => String(teks ?? '-').replace(/[&<>"']/g, karakter => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[karakter]);
+
+        const kolom = Object.keys(dataToExport[0] || {});
+        const tabel = dataToExport.length
+            ? `<table>
+                <thead><tr>${kolom.map(k =>
+                    `<th>${aman(k)}</th>`
+                ).join('')}</tr></thead>
+                <tbody>${dataToExport.map(baris =>
+                    `<tr>${kolom.map(k => {
+                        const nilai = baris[k];
+                        const rupiah = k.includes('(Rp)');
+                        const isi = rupiah && typeof nilai === 'number'
+                            ? nilai.toLocaleString('id-ID')
+                            : nilai;
+                        return `<td>${aman(isi)}</td>`;
+                    }).join('')}</tr>`
+                ).join('')}</tbody>
+            </table>`
+            : '<p>Tidak ada data yang sesuai dengan pencarian atau filter.</p>';
+
+        const infoCari = document.getElementById('search-input')?.value.trim() || '';
+
+        tabPreview.document.open();
+        tabPreview.document.write(`<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pratinjau Ekspor e-TLHP</title>
+<style>
+body{font-family:Arial,sans-serif;margin:24px;color:#1f2937;font-size:13px}
+h1{font-size:20px;color:#065f46;margin-bottom:6px}
+.info{color:#4b5563;margin:5px 0}
+.actions{margin:20px 0}
+a{display:inline-block;background:#047857;color:white;text-decoration:none;padding:10px 16px;border-radius:6px}
+.table-wrap{overflow:auto;margin-top:18px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{border:1px solid #d1d5db;padding:8px;text-align:left;vertical-align:top}
+th{background:#065f46;color:white;white-space:nowrap}
+tr:nth-child(even){background:#f3f4f6}
+@media print{.actions{display:none}body{margin:10px}}
+</style>
+</head>
+<body>
+<h1>Kanwil Kemenag Banten — Laporan e-TLHP</h1>
+<div class="info">Jenis laporan: ${aman(activeTab)}</div>
+<div class="info">Filter sumber: ${aman(activeSumber)}</div>
+<div class="info">Pencarian: ${aman(infoCari || 'Tidak ada')}</div>
+<div class="info">Tanggal cetak: ${aman(tanggalCetak)}</div>
+<div class="info">Jumlah temuan: ${dataToExport.length}</div>
+<div class="actions">
+<a href="${excelUrl}" download="${aman(filename)}">Unduh Excel (.xlsx)</a>
+</div>
+<div class="table-wrap">${tabel}</div>
+</body>
+</html>`);
+        tabPreview.document.close();
+
+        // Lepaskan URL sementara setelah tab ditutup
+        tabPreview.addEventListener('pagehide', () => {
+            URL.revokeObjectURL(excelUrl);
+        }, { once: true });
+
+    } catch (error) {
+        tabPreview.close();
+        console.error('Gagal menyiapkan ekspor Excel:', error);
+        alert('Gagal menyiapkan Excel: ' + error.message);
+    }
+}
+
 
         // EXPORT PDF
         function exportToPDF() {
