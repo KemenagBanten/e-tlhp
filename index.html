@@ -743,7 +743,7 @@ body {
 <!-- JUDUL HALAMAN TEMUAN KEUANGAN -->
 
 <div id="judul-temuan-keuangan"
-     class="mb-4 flex items-center justify-between gap-4 flex-wrap">
+     style="display:none;" class="mb-4 flex items-center justify-between gap-4 flex-wrap">
 
     <div>
         <h1 class="text-xl font-bold text-slate-800">
@@ -771,7 +771,7 @@ body {
 
 
         <!-- Metric Cards Utama -->
-        <div id="kartu-statistik-utama" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div id="kartu-statistik-utama" style="display:none;" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border border-slate-100">
                 <p id="label-total-temuan" class="text-xs text-slate-500 font-semibold">TOTAL NOMINAL TEMUAN</p>
                 <h3 id="total-temuan" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
@@ -792,7 +792,7 @@ body {
         </div>
 
         <!-- Metric Cards Rincian per Sumber Audit -->
-        <div id="kartu-sumber-audit" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div id="kartu-sumber-audit" style="display:none;" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- BPK -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-1">
@@ -849,7 +849,7 @@ body {
         </div>
 
         <!-- Tabel Utama -->
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200" style="display:none;">
             <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <h2 id="table-title" class="font-bold text-emerald-900">Daftar Rekomendasi Audit</h2>
                 
@@ -1192,7 +1192,7 @@ body {
         let currentData = [];
         let currentPage = 1;
 const rowsPerPage = 10;
-        let activeTab = 'Keuangan'; 
+        let activeTab = 'Dashboard';
         let activeSumber = 'ALL';
            let searchQuery = '';
         let displayedData = [];
