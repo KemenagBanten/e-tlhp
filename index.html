@@ -2735,6 +2735,7 @@ function ubahFormJenisTemuan() {
 
                 const payload = {
                     action: "add_payment",
+                    token: sessionStorage.getItem("sijawaraToken"),
                     ID_Temuan: document.getElementById("bayar-id-temuan").value,
                     No_Bukti: noBukti,
                     Tanggal: tanggal,
