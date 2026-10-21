@@ -264,6 +264,45 @@ body {
    KARTU STATISTIK
 ========================================== */
 
+/* KARTU RINGKASAN SUMBER AUDIT */
+#app-content .grid:has(#badge-bpk),
+#app-content .grid:has(#badge-bpkp),
+#app-content .grid:has(#badge-inspektorat) {
+    gap: 14px;
+}
+
+#badge-bpk,
+#badge-bpkp,
+#badge-inspektorat {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+#bpk-info,
+#bpkp-info,
+#inspektorat-info,
+#bpk-sisa,
+#bpkp-sisa,
+#inspektorat-sisa {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+#app-content .grid:has(#badge-bpk) > div {
+    padding: 16px;
+    border: 1px solid #e1e9e4;
+    border-top: 3px solid #0f6259;
+    border-radius: 10px;
+    background: #fff;
+    min-width: 0;
+}
+
+
 #app-content .grid > div {
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(20, 60, 45, 0.05);
@@ -569,6 +608,17 @@ body {
     </button>
   </div>
 
+</div>
+
+
+<!-- JUDUL HALAMAN TEMUAN KEUANGAN -->
+<div id="judul-temuan-keuangan" class="mb-4">
+    <h1 class="text-xl font-bold text-slate-800">
+        Temuan Keuangan
+    </h1>
+    <p class="text-xs text-slate-500 mt-1">
+        Ringkasan temuan dan tindak lanjut setoran berdasarkan sumber audit.
+    </p>
 </div>
 
 
@@ -1064,6 +1114,37 @@ console.log(
                 console.error("Gagal mengambil data:", e);
             }
         }
+
+function tampilkanDashboard() {
+    // Aktifkan tampilan Dashboard
+    activeTab = 'Dashboard';
+
+    // Tandai tombol Dashboard sebagai aktif
+    const tabDashboard = document.getElementById('tab-dashboard');
+    const tabKeuangan = document.getElementById('tab-keuangan');
+    const tabDokumen = document.getElementById('tab-dokumen');
+
+    if (tabDashboard) tabDashboard.classList.add('active');
+    if (tabKeuangan) tabKeuangan.classList.remove('active');
+    if (tabDokumen) tabDokumen.classList.remove('active');
+
+    // Tampilkan statistik umum
+    const kartuUtama = document.getElementById('label-total-temuan')
+        ?.closest('.grid');
+
+    if (kartuUtama) {
+        kartuUtama.style.display = '';
+    }
+
+    // Untuk sementara, gunakan data keuangan untuk ringkasan Dashboard
+    const dataKeuangan = currentData.filter(d =>
+        d.ID !== null &&
+        d.ID !== undefined &&
+        String(d.ID).trim() !== ''
+    );
+
+    renderMetrics(dataKeuangan);
+}
 
         
 function switchTab(jenis) {
