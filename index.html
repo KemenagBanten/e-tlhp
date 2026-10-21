@@ -682,35 +682,54 @@ body {
             <div class="overflow-x-auto">
                 
 <div class="w-full overflow-x-auto rounded-lg border border-slate-200">
-    <table id="main-table"
+    
+<table id="main-table"
        class="text-left"
-       style="width:100%; min-width:1450px; border-collapse:collapse;">
-<thead class="bg-emerald-900 text-white">
-    <tr style="font-size:12px; font-weight:bold;">
-        <th class="px-3 py-3 whitespace-nowrap">No.</th>
-        <th class="px-3 py-3 whitespace-nowrap">ID Temuan</th>
-        <th class="px-3 py-3 whitespace-nowrap">Tanggal</th>
-        <th class="px-3 py-3 whitespace-nowrap">Nomor LHA</th>
-        <th class="px-3 py-3 whitespace-nowrap">Sumber Audit</th>
-        <th class="px-3 py-3">Deskripsi Temuan</th>
-        <th class="px-3 py-3">Penanggung Jawab</th>
-        <th class="px-3 py-3 whitespace-nowrap text-right">Nilai Temuan</th>
-        <th class="px-3 py-3 whitespace-nowrap text-right">Sudah Dibayar</th>
-        <th class="px-3 py-3 whitespace-nowrap text-right">Sisa Belum Dibayar</th>
-        <th class="px-3 py-3 whitespace-nowrap">Status</th>
-        <th class="px-3 py-3 text-center whitespace-nowrap action-col">Aksi</th>
-    </tr>
-</thead>
-        <tbody id="table-body" class="divide-y divide-slate-100">
-    <tr>
-        <td colspan="12"
-            class="text-center p-6 text-slate-500"
-            style="font-size:12px; font-weight:normal;">
-            Memuat data...
-        </td>
-    </tr>
-</tbody>
+       style="width:100%; min-width:1500px; table-layout:fixed; border-collapse:collapse;">
+
+    <colgroup>
+        <col style="width:45px;">
+        <col style="width:115px;">
+        <col style="width:100px;">
+        <col style="width:125px;">
+        <col style="width:105px;">
+        <col style="width:260px;">
+        <col style="width:155px;">
+        <col style="width:140px;">
+        <col style="width:140px;">
+        <col style="width:150px;">
+        <col style="width:120px;">
+        <col style="width:190px;">
+    </colgroup>
+
+    <thead style="background:#0f766e; color:white;">
+        <tr style="font-size:12px; font-weight:bold;">
+            <th class="px-3 py-3 whitespace-nowrap">No.</th>
+            <th class="px-3 py-3 whitespace-nowrap">ID Temuan</th>
+            <th class="px-3 py-3 whitespace-nowrap">Tanggal</th>
+            <th class="px-3 py-3">Nomor LHA</th>
+            <th class="px-3 py-3">Sumber Audit</th>
+            <th class="px-3 py-3">Deskripsi Temuan</th>
+            <th class="px-3 py-3">Penanggung Jawab</th>
+            <th class="px-3 py-3 text-right">Nilai Temuan</th>
+            <th class="px-3 py-3 text-right">Sudah Dibayar</th>
+            <th class="px-3 py-3 text-right">Sisa Belum Dibayar</th>
+            <th class="px-3 py-3">Status</th>
+            <th class="px-3 py-3 text-center action-col">Aksi</th>
+        </tr>
+    </thead>
+
+    <tbody id="table-body" class="divide-y divide-slate-100">
+        <tr>
+            <td colspan="12"
+                class="text-center p-6 text-slate-500"
+                style="font-size:12px; font-weight:normal;">
+                Memuat data...
+            </td>
+        </tr>
+    </tbody>
 </table>
+
 </div>
 
             </div>
