@@ -1801,7 +1801,7 @@ function renderDashboard(data) {
         if (grafikStatusNominal) grafikStatusNominal.destroy();
 
         grafikStatusNominal = new Chart(canvasStatus, {
-            type: 'pie',
+    type: 'doughnut',
             data: {
                 labels: ['Sudah Disetor', 'Belum Disetor'],
                 datasets: [{
