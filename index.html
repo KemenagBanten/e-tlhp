@@ -661,12 +661,39 @@ body {
                         <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="🔍 Cari Penanggung Jawab / Judul..." class="w-full pl-3 pr-8 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none">
                     </div>
 
-                    <div class="flex bg-slate-200 p-1 rounded-lg text-xs font-semibold">
-                        <button onclick="filterSumber('ALL')" id="btn-sumber-all" class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">Semua</button>
-                        <button onclick="filterSumber('BPK')" id="btn-sumber-bpk" class="px-3 py-1 rounded-md text-slate-600 transition">BPK</button>
-                        <button onclick="filterSumber('BPKP')" id="btn-sumber-bpkp" class="px-3 py-1 rounded-md text-slate-600 transition">BPKP</button>
-                        <button onclick="filterSumber('Inspektorat')" id="btn-sumber-inspektorat" class="px-3 py-1 rounded-md text-slate-600 transition">Itjen</button>
-                    </div>
+                   
+<div class="flex flex-wrap items-center gap-2">
+
+    <div class="flex bg-slate-200 p-1 rounded-lg text-xs font-semibold">
+        <button onclick="filterSumber('ALL')" id="btn-sumber-all"
+            class="px-3 py-1 rounded-md bg-white text-slate-800 shadow-sm transition">
+            Semua
+        </button>
+
+        <button onclick="filterSumber('BPK')" id="btn-sumber-bpk"
+            class="px-3 py-1 rounded-md text-slate-600 transition">
+            BPK
+        </button>
+
+        <button onclick="filterSumber('BPKP')" id="btn-sumber-bpkp"
+            class="px-3 py-1 rounded-md text-slate-600 transition">
+            BPKP
+        </button>
+
+        <button onclick="filterSumber('Inspektorat')" id="btn-sumber-inspektorat"
+            class="px-3 py-1 rounded-md text-slate-600 transition">
+            Itjen
+        </button>
+    </div>
+
+    <select id="filter-nomor-lha"
+        onchange="filterNomorLHA(this.value)"
+        class="border border-slate-300 rounded-lg px-3 py-2 text-xs bg-white"
+        style="max-width:220px;">
+        <option value="ALL">Semua Nomor LHA</option>
+    </select>
+
+</div>
 
                     <div class="flex gap-1">
                         <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center gap-1">
@@ -967,6 +994,7 @@ body {
 const rowsPerPage = 10;
         let activeTab = 'Keuangan'; 
         let activeSumber = 'ALL';
+        let activeNomorLHA = 'ALL';
         let searchQuery = '';
         let displayedData = [];
 
@@ -1023,6 +1051,7 @@ const rowsPerPage = 10;
             try {
                 const res = await fetch(API_URL);
                 currentData = await res.json();
+                muatPilihanNomorLHA();
                 console.log("Jumlah data dari API:", currentData.length);
 console.log("Contoh data pertama:", currentData[0]);
                 console.log(
@@ -1079,6 +1108,76 @@ if (tabDashboard) {
             renderTab();
         }
 
+function filterNomorLHA(nomor) {
+    activeNomorLHA = nomor;
+    currentPage = 1;
+    renderTab();
+}
+
+function muatPilihanNomorLHA() {
+    const dropdown = document.getElementById("filter-nomor-lha");
+    if (!dropdown) return;
+
+    const nomorLHA = [...new Set(
+        currentData
+            .map(item => String(item.Nomor_LHP || item.Nomor_LHA || "").trim())
+            .filter(nomor => nomor !== "")
+    )].sort((a, b) => a.localeCompare(b, "id", { numeric: true }));
+
+    const pilihanSebelumnya = activeNomorLHA;
+
+    dropdown.innerHTML = '<option value="ALL">Semua Nomor LHA</option>';
+
+    nomorLHA.forEach(nomor => {
+        const option = document.createElement("option");
+        option.value = nomor;
+        option.textContent = nomor;
+        dropdown.appendChild(option);
+    });
+
+    if (pilihanSebelumnya !== "ALL" && nomorLHA.includes(pilihanSebelumnya)) {
+        dropdown.value = pilihanSebelumnya;
+    } else {
+        activeNomorLHA = "ALL";
+        dropdown.value = "ALL";
+    }
+}
+
+function filterNomorLHA(nomor) {
+    activeNomorLHA = nomor;
+    currentPage = 1;
+    renderTab();
+}
+
+function muatPilihanNomorLHA() {
+    const dropdown = document.getElementById("filter-nomor-lha");
+    if (!dropdown) return;
+
+    const nomorLHA = [...new Set(
+        currentData
+            .map(item => String(item.Nomor_LHP || item.Nomor_LHA || "").trim())
+            .filter(nomor => nomor !== "")
+    )].sort((a, b) => a.localeCompare(b, "id", { numeric: true }));
+
+    const pilihanSebelumnya = activeNomorLHA;
+
+    dropdown.innerHTML = '<option value="ALL">Semua Nomor LHA</option>';
+
+    nomorLHA.forEach(nomor => {
+        const option = document.createElement("option");
+        option.value = nomor;
+        option.textContent = nomor;
+        dropdown.appendChild(option);
+    });
+
+    if (pilihanSebelumnya !== "ALL" && nomorLHA.includes(pilihanSebelumnya)) {
+        dropdown.value = pilihanSebelumnya;
+    } else {
+        activeNomorLHA = "ALL";
+        dropdown.value = "ALL";
+    }
+}
+
         function handleSearch() {
             searchQuery = document.getElementById("search-input").value.toLowerCase();
             renderTab();
@@ -1095,6 +1194,13 @@ if (tabDashboard) {
             if (activeSumber !== 'ALL') {
                 displayedData = tabData.filter(d => String(d.Sumber).toUpperCase() === activeSumber.toUpperCase());
             }
+
+            // Filter berdasarkan Nomor LHA
+if (activeNomorLHA !== 'ALL') {
+    displayedData = displayedData.filter(d =>
+        String(d.Nomor_LHP || d.Nomor_LHA || '').trim() === activeNomorLHA
+    );
+}
 
             if (searchQuery.trim() !== '') {
                 displayedData = displayedData.filter(d => 
