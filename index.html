@@ -624,7 +624,7 @@ body {
 
 
         <!-- Metric Cards Utama -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div id="kartu-statistik-utama" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border border-slate-100">
                 <p id="label-total-temuan" class="text-xs text-slate-500 font-semibold">TOTAL NOMINAL TEMUAN</p>
                 <h3 id="total-temuan" class="text-xl md:text-2xl font-bold text-slate-800">Rp 0</h3>
@@ -645,7 +645,7 @@ body {
         </div>
 
         <!-- Metric Cards Rincian per Sumber Audit -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div id="kartu-sumber-audit" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- BPK -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-1">
@@ -1115,11 +1115,10 @@ console.log(
             }
         }
 
+
 function tampilkanDashboard() {
-    // Aktifkan tampilan Dashboard
     activeTab = 'Dashboard';
 
-    // Tandai tombol Dashboard sebagai aktif
     const tabDashboard = document.getElementById('tab-dashboard');
     const tabKeuangan = document.getElementById('tab-keuangan');
     const tabDokumen = document.getElementById('tab-dokumen');
@@ -1128,15 +1127,12 @@ function tampilkanDashboard() {
     if (tabKeuangan) tabKeuangan.classList.remove('active');
     if (tabDokumen) tabDokumen.classList.remove('active');
 
-    // Tampilkan statistik umum
-    const kartuUtama = document.getElementById('label-total-temuan')
-        ?.closest('.grid');
+    const kartuUtama = document.getElementById('kartu-statistik-utama');
+    const kartuSumber = document.getElementById('kartu-sumber-audit');
 
-    if (kartuUtama) {
-        kartuUtama.style.display = '';
-    }
+    if (kartuUtama) kartuUtama.style.display = '';
+    if (kartuSumber) kartuSumber.style.display = 'none';
 
-    // Untuk sementara, gunakan data keuangan untuk ringkasan Dashboard
     const dataKeuangan = currentData.filter(d =>
         d.ID !== null &&
         d.ID !== undefined &&
@@ -1146,18 +1142,16 @@ function tampilkanDashboard() {
     renderMetrics(dataKeuangan);
 }
 
-        
+
 function switchTab(jenis) {
     activeTab = jenis;
-const tabDashboard = document.getElementById('tab-dashboard');
 
-if (tabDashboard) {
-    tabDashboard.classList.remove('active');
-}
+    const tabDashboard = document.getElementById('tab-dashboard');
     const tabKeuangan = document.getElementById('tab-keuangan');
     const tabDokumen = document.getElementById('tab-dokumen');
 
-    // Pertahankan kelas CSS sidebar agar ukuran huruf tetap konsisten
+    if (tabDashboard) tabDashboard.classList.remove('active');
+
     if (tabKeuangan) {
         tabKeuangan.classList.toggle('active', jenis === 'Keuangan');
     }
@@ -1166,8 +1160,17 @@ if (tabDashboard) {
         tabDokumen.classList.toggle('active', jenis === 'Dokumen');
     }
 
+    const kartuUtama = document.getElementById('kartu-statistik-utama');
+    const kartuSumber = document.getElementById('kartu-sumber-audit');
+
+    if (kartuUtama) kartuUtama.style.display = 'none';
+    if (kartuSumber) {
+        kartuSumber.style.display = jenis === 'Keuangan' ? '' : 'none';
+    }
+
     renderTab();
 }
+
 
 
         function filterSumber(sumber) {
