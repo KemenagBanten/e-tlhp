@@ -1153,6 +1153,12 @@ if (tabDashboard) {
         
 function renderTable(data) {
     const tbody = document.getElementById("table-body");
+
+    if (!tbody) {
+        console.error("Elemen tabel dengan ID table-body tidak ditemukan.");
+        return;
+    }
+
     tbody.innerHTML = "";
 
     const isKeuangan = activeTab === "Keuangan";
