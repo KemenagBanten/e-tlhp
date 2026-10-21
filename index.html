@@ -1164,6 +1164,7 @@ if (tabDashboard) {
             }
         }
         
+
 function renderTable(data) {
     const tbody = document.getElementById("table-body");
 
@@ -1176,20 +1177,26 @@ function renderTable(data) {
 
     const isKeuangan = activeTab === "Keuangan";
 
-    // Tampilan kosong jika belum ada data
+    if (!isKeuangan) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="12" class="text-center p-6 text-slate-400">
+                    Tabel untuk jenis temuan ini belum tersedia.
+                </td>
+            </tr>`;
+        return;
+    }
+
     if (!data || data.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="12"
-                    class="text-center p-6 text-slate-400"
-                    style="font-size:12px; font-weight:normal;">
+                <td colspan="12" class="text-center p-6 text-slate-400">
                     Tidak ada data yang sesuai dengan pencarian/filter.
                 </td>
             </tr>`;
         return;
     }
 
-    // Format angka rupiah dengan dua angka desimal
     function formatRupiah(nilai) {
         return "Rp " + Number(nilai || 0).toLocaleString("id-ID", {
             minimumFractionDigits: 2,
@@ -1197,7 +1204,6 @@ function renderTable(data) {
         });
     }
 
-    // Format tanggal menjadi DD/MM/YYYY
     function formatTanggal(tanggal) {
         if (!tanggal) return "-";
 
@@ -1211,25 +1217,13 @@ function renderTable(data) {
         return teks;
     }
 
-    // Tabel Keuangan saja untuk tahap ini
-    if (!isKeuangan) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="12"
-                    class="text-center p-6 text-slate-400"
-                    style="font-size:12px; font-weight:normal;">
-                    Tabel untuk jenis temuan ini belum tersedia.
-                </td>
-            </tr>`;
-        return;
-    }
-
     data.forEach((item, index) => {
+        const idTemuan = item.ID || "";
         const totalNominal = Number(item.Nominal_Rp || 0);
         const totalDisetor = Number(item.Total_Disetor || 0);
         const sisaKurang = Math.max(0, totalNominal - totalDisetor);
 
-        const jumlahRiwayat = item.Riwayat_Bayar
+        const jumlahRiwayat = Array.isArray(item.Riwayat_Bayar)
             ? item.Riwayat_Bayar.length
             : 0;
 
@@ -1248,13 +1242,11 @@ function renderTable(data) {
         }
 
         const tanggal = item.Tanggal_Temuan || item.Tanggal || "";
-        const nomorLHP = item.Nomor_LHP || "";
+        const nomorLHA = item.Nomor_LHA || item.Nomor_LHP || "-";
         const sumber = item.Sumber || "-";
         const deskripsi = item.Judul_Temuan || "-";
         const penanggungJawab =
-            item.Penanggung_Jawab ||
-            item.Penanggungjawab ||
-            "-";
+            item.Penanggungjawab || item.Penanggung_Jawab || "-";
 
         tbody.innerHTML += `
             <tr class="hover:bg-slate-50 border-b border-slate-100"
@@ -1265,11 +1257,15 @@ function renderTable(data) {
                 </td>
 
                 <td class="px-3 py-2 whitespace-nowrap">
+                    ${idTemuan || "-"}
+                </td>
+
+                <td class="px-3 py-2 whitespace-nowrap">
                     ${formatTanggal(tanggal)}
                 </td>
 
                 <td class="px-3 py-2 whitespace-nowrap">
-                    ${nomorLHP || "-"}
+                    ${nomorLHA}
                 </td>
 
                 <td class="px-3 py-2 whitespace-nowrap">
@@ -1310,14 +1306,14 @@ function renderTable(data) {
 
                 <td class="px-3 py-2 whitespace-nowrap text-center action-col">
                     <button
-                        onclick="openModalBayar('${item.ID}')"
+                        onclick="openModalBayar('${idTemuan}')"
                         class="bg-emerald-700 hover:bg-emerald-800 text-white px-2 py-1 rounded"
                         style="font-size:12px; font-weight:normal;">
                         Input Bayar
                     </button>
 
                     <button
-                        onclick="openModalRiwayat('${item.ID}')"
+                        onclick="openModalRiwayat('${idTemuan}')"
                         class="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded"
                         style="font-size:12px; font-weight:normal;">
                         Riwayat (${jumlahRiwayat})
@@ -1327,6 +1323,7 @@ function renderTable(data) {
         `;
     });
 }
+
 
         // EXPORT EXCEL
         function exportToExcel() {
