@@ -1391,9 +1391,9 @@ function calcSumberMetrics(data, sumberName, prefix) {
         document.getElementById(`lbl-${prefix}`).innerText = 'Disetor:';
 
         document.getElementById(`${prefix}-info`).innerHTML = `
-            <div style="font-size:11px; color:#344740;">
-                Rp ${totalDisetor.toLocaleString('id-ID')}
-            </div>
+            <div style="font-size:14px; line-height:1.5; color:#344740; font-weight:700;">
+    Rp ${totalDisetor.toLocaleString('id-ID')}
+</div>
 
             <div style="font-size:10px; color:#64736d; font-weight:600; margin-top:3px;">
     ${percent}% disetor
@@ -1859,6 +1859,16 @@ th,td{border:1px solid #d1d5db;padding:8px;text-align:left;vertical-align:top}
 th{background:#065f46;color:white;white-space:nowrap}
 tr:nth-child(even){background:#f3f4f6}
 @media print{.actions{display:none}body{margin:10px}}
+
+
+/* Angka total nominal pada kartu sumber audit */
+#kartu-sumber-audit #badge-bpk,
+#kartu-sumber-audit #badge-bpkp,
+#kartu-sumber-audit #badge-inspektorat {
+    font-size: 12px;
+    font-weight: 700;
+}
+
 </style>
 </head>
 <body>
