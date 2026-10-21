@@ -1464,7 +1464,31 @@ const res = await fetch(
             throw new Error('Gagal mengambil data dari API.');
         }
 
-        currentData = await res.json();
+        
+const hasil = await res.json();
+
+// Jika sesi tidak valid atau sudah kedaluwarsa
+if (
+    !Array.isArray(hasil) &&
+    hasil.status === "error" &&
+    hasil.message
+) {
+    sessionStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("sijawaraToken");
+
+    const loginOverlay = document.getElementById("login-overlay");
+    if (loginOverlay) loginOverlay.classList.remove("hidden");
+
+    throw new Error(hasil.message);
+}
+
+// Pastikan respons berupa daftar data
+if (!Array.isArray(hasil)) {
+    throw new Error("Format data dari server tidak sesuai.");
+}
+
+currentData = hasil;
+
 
         console.log("Jumlah data dari API:", currentData.length);
         console.log("Contoh data pertama:", currentData[0]);
@@ -1491,9 +1515,23 @@ const res = await fetch(
 
         tampilkanDashboard();
 
+    
     } catch (e) {
         console.error("Gagal mengambil data:", e);
 
+        // Jika sesi berakhir, cukup tampilkan layar login
+        if (
+            String(e.message || "")
+                .toLowerCase()
+                .includes("sesi tidak valid")
+        ) {
+            if (loadingDashboard) {
+                loadingDashboard.style.display = 'none';
+            }
+            return;
+        }
+
+        // Untuk kesalahan selain sesi login
         if (loadingDashboard) {
             loadingDashboard.style.display = '';
             loadingDashboard.innerHTML = `
@@ -1507,6 +1545,7 @@ const res = await fetch(
         }
     }
 }
+
 
 
 function tampilkanDashboard() {
