@@ -1312,8 +1312,6 @@ function tampilkanDashboard() {
 }
 
 
-
-
 function switchTab(jenis) {
     activeTab = jenis;
 
@@ -1323,59 +1321,48 @@ function switchTab(jenis) {
 
     const areaDashboard = document.getElementById('area-dashboard');
     const judulKeuangan = document.getElementById('judul-temuan-keuangan');
-
     const kartuUtama = document.getElementById('kartu-statistik-utama');
     const kartuSumber = document.getElementById('kartu-sumber-audit');
+    const tabel = document.getElementById('main-table');
 
-    const filterArea = document.getElementById('filterStatusPembayaran');
+    // Atur menu aktif
+    if (tabDashboard) tabDashboard.classList.toggle('active', jenis === 'Dashboard');
+    if (tabKeuangan) tabKeuangan.classList.toggle('active', jenis === 'Keuangan');
+    if (tabDokumen) tabDokumen.classList.toggle('active', jenis === 'Dokumen');
 
-    // Atur tombol menu aktif
-    if (tabDashboard) {
-        tabDashboard.classList.toggle('active', jenis === 'Dashboard');
-    }
-
-    if (tabKeuangan) {
-        tabKeuangan.classList.toggle('active', jenis === 'Keuangan');
-    }
-
-    if (tabDokumen) {
-        tabDokumen.classList.toggle('active', jenis === 'Dokumen');
-    }
-
-    // Tampilkan Dashboard atau area tabel
+    // Dashboard hanya tampil saat menu Dashboard dipilih
     if (areaDashboard) {
-        areaDashboard.style.display =
-            jenis === 'Dashboard' ? '' : 'none';
+        areaDashboard.style.display = jenis === 'Dashboard' ? '' : 'none';
     }
 
+    // Tampilkan kartu lama hanya di menu Temuan Keuangan/Dokumen
     if (judulKeuangan) {
-        judulKeuangan.style.display =
-            jenis === 'Dashboard' ? 'none' : '';
+        judulKeuangan.style.display = jenis === 'Dashboard' ? 'none' : '';
     }
 
     if (kartuUtama) {
-        kartuUtama.style.display =
-            jenis === 'Dashboard' ? 'none' : '';
+        kartuUtama.style.display = jenis === 'Dashboard' ? 'none' : '';
     }
 
     if (kartuSumber) {
-        kartuSumber.style.display =
-            jenis === 'Keuangan' ? '' : 'none';
+        kartuSumber.style.display = jenis === 'Keuangan' ? '' : 'none';
     }
 
-    if (filterArea) {
-        filterArea.disabled = jenis !== 'Keuangan';
+    // Tampilkan kembali pembungkus tabel saat bukan Dashboard
+    if (tabel) {
+        const pembungkus = tabel.closest('.bg-white.rounded-xl.shadow-sm.overflow-hidden');
+        if (pembungkus) {
+            pembungkus.style.display = jenis === 'Dashboard' ? 'none' : '';
+        }
     }
 
-    // Dashboard memakai data yang sudah dimuat aplikasi
+    // Muat tampilan sesuai menu
     if (jenis === 'Dashboard') {
         renderDashboard(currentData);
     } else {
         renderTab();
     }
 }
-
-
 
         function filterSumber(sumber) {
             activeSumber = sumber;
