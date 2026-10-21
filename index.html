@@ -709,12 +709,10 @@ body {
 
     <div class="text-right shrink-0">
         <div id="tanggal-dashboard"
-             class="text-sm font-semibold text-slate-600">
-            Memuat tanggal...
-        </div>
+     class="text-xs font-semibold text-slate-600">
 
-        <div id="jam-dashboard"
-             class="text-sm font-semibold text-emerald-700 mt-1">
+<div id="jam-dashboard"
+     class="text-xs font-semibold text-emerald-700 mt-1">
             Memuat jam...
         </div>
     </div>
@@ -1307,23 +1305,25 @@ console.log(
         }
 
 
-
 function tampilkanDashboard() {
     activeTab = 'Dashboard';
 
     const tabDashboard = document.getElementById('tab-dashboard');
     const tabKeuangan = document.getElementById('tab-keuangan');
     const tabDokumen = document.getElementById('tab-dokumen');
+    const tabDisiplin = document.getElementById('tab-disiplin');
 
+    // Atur menu aktif
     if (tabDashboard) tabDashboard.classList.add('active');
     if (tabKeuangan) tabKeuangan.classList.remove('active');
     if (tabDokumen) tabDokumen.classList.remove('active');
+    if (tabDisiplin) tabDisiplin.classList.remove('active');
 
-    // Tampilkan Dashboard baru
+    // Tampilkan Dashboard
     const areaDashboard = document.getElementById('area-dashboard');
     if (areaDashboard) areaDashboard.style.display = '';
 
-    // Sembunyikan komponen statistik lama
+    // Sembunyikan judul dan kartu halaman selain Dashboard
     [
         'judul-temuan-keuangan',
         'kartu-statistik-utama',
@@ -1333,16 +1333,18 @@ function tampilkanDashboard() {
         if (el) el.style.display = 'none';
     });
 
-    // Sembunyikan seluruh area tabel dan kontrolnya
+    // Sembunyikan tabel
     const tabel = document.getElementById('main-table');
     if (tabel) {
-        const pembungkus = tabel.closest('.bg-white.rounded-xl.shadow-sm.overflow-hidden');
+        const pembungkus = tabel.closest(
+            '.bg-white.rounded-xl.shadow-sm.overflow-hidden'
+        );
         if (pembungkus) pembungkus.style.display = 'none';
     }
 
+    // Perbarui grafik dan kartu Dashboard
     renderDashboard(currentData);
 }
-
 
 function switchTab(jenis) {
     activeTab = jenis;
