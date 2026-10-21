@@ -1354,7 +1354,8 @@ if (searchQuery.trim() !== '') {
 
                 document.getElementById(`badge-${prefix}`).innerText = `Rp ${totalNominal.toLocaleString('id-ID')}`;
                 document.getElementById(`lbl-${prefix}`).innerText = "Disetor:";
-                document.getElementById(`${prefix}-info`).innerText = `Rp ${totalDisetor.toLocaleString('id-ID')} (${percent}%)`;
+               document.getElementById(`${prefix}-info`).innerHTML =
+    `Rp ${totalDisetor.toLocaleString('id-ID')}<br><span style="color:#0f6259;font-size:10px;font-weight:600;">${percent}% disetor</span>`;
                 
                 // Menampilkan sisa saldo temuan
                 const sisaElement = document.getElementById(`${prefix}-sisa`);
