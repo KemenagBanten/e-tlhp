@@ -990,6 +990,20 @@ body {
                 currentData = await res.json();
                 console.log("Jumlah data dari API:", currentData.length);
 console.log("Contoh data pertama:", currentData[0]);
+                console.log(
+    "Jumlah jenis Keuangan:",
+    currentData.filter(d => String(d.Jenis).toLowerCase() === "keuangan").length
+);
+
+console.log(
+    "Jumlah jenis Administrasi:",
+    currentData.filter(d => String(d.Jenis).toLowerCase() === "administrasi").length
+);
+
+console.log(
+    "Contoh nilai Jenis:",
+    [...new Set(currentData.map(d => d.Jenis))]
+);
                 renderTab();
             } catch (e) {
                 console.error("Gagal mengambil data:", e);
