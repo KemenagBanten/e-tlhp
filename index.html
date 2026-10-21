@@ -694,11 +694,11 @@ body {
     <h2 class="text-base font-bold text-emerald-800">
         Selamat Datang
     </h2>
-    <p class="text-[10px] text-slate-500 mt-1 leading-relaxed">
-        Sistem Informasi Jejak Pengawasan dan Rekomendasi Audit
-        <br>
-        Kantor Wilayah Kementerian Agama Provinsi Banten
-    </p>
+    <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+    Sistem Informasi Jejak Pengawasan dan Rekomendasi Audit
+    <br>
+    Kantor Wilayah Kementerian Agama Provinsi Banten
+</p>
 </div>
 
         <div class="text-right shrink-0">
@@ -2611,7 +2611,10 @@ function perbaruiTanggalJam() {
     });
 
     const elemenTanggal = document.getElementById('tanggal-berjalan');
-    const elemenJam = document.getElementById('jam-berjalan');
+const elemenJam = document.getElementById('jam-berjalan');
+
+const tanggalDashboard = document.getElementById('tanggal-dashboard');
+const jamDashboard = document.getElementById('jam-dashboard');
 
     if (elemenTanggal) elemenTanggal.textContent = tanggal;
     if (elemenJam) elemenJam.textContent = jam + ' WIB';
