@@ -1302,6 +1302,7 @@ function tampilkanDashboard() {
 }
 
 
+
 function switchTab(jenis) {
     activeTab = jenis;
 
@@ -1309,7 +1310,18 @@ function switchTab(jenis) {
     const tabKeuangan = document.getElementById('tab-keuangan');
     const tabDokumen = document.getElementById('tab-dokumen');
 
-    if (tabDashboard) tabDashboard.classList.remove('active');
+    const areaDashboard = document.getElementById('area-dashboard');
+    const judulKeuangan = document.getElementById('judul-temuan-keuangan');
+
+    const kartuUtama = document.getElementById('kartu-statistik-utama');
+    const kartuSumber = document.getElementById('kartu-sumber-audit');
+
+    const filterArea = document.getElementById('filterStatusPembayaran');
+
+    // Atur tombol menu aktif
+    if (tabDashboard) {
+        tabDashboard.classList.toggle('active', jenis === 'Dashboard');
+    }
 
     if (tabKeuangan) {
         tabKeuangan.classList.toggle('active', jenis === 'Keuangan');
@@ -1319,15 +1331,37 @@ function switchTab(jenis) {
         tabDokumen.classList.toggle('active', jenis === 'Dokumen');
     }
 
-    const kartuUtama = document.getElementById('kartu-statistik-utama');
-    const kartuSumber = document.getElementById('kartu-sumber-audit');
-
-    if (kartuUtama) kartuUtama.style.display = 'none';
-    if (kartuSumber) {
-        kartuSumber.style.display = jenis === 'Keuangan' ? '' : 'none';
+    // Tampilkan Dashboard atau area tabel
+    if (areaDashboard) {
+        areaDashboard.style.display =
+            jenis === 'Dashboard' ? '' : 'none';
     }
 
-    renderTab();
+    if (judulKeuangan) {
+        judulKeuangan.style.display =
+            jenis === 'Dashboard' ? 'none' : '';
+    }
+
+    if (kartuUtama) {
+        kartuUtama.style.display =
+            jenis === 'Dashboard' ? 'none' : '';
+    }
+
+    if (kartuSumber) {
+        kartuSumber.style.display =
+            jenis === 'Keuangan' ? '' : 'none';
+    }
+
+    if (filterArea) {
+        filterArea.disabled = jenis !== 'Keuangan';
+    }
+
+    // Dashboard memakai data yang sudah dimuat aplikasi
+    if (jenis === 'Dashboard') {
+        renderDashboard(currentData);
+    } else {
+        renderTab();
+    }
 }
 
 
@@ -1576,6 +1610,139 @@ function calcSumberMetrics(data, sumberName, prefix) {
 }
 
         
+let grafikTrenTahunan = null;
+let grafikStatusNominal = null;
+
+function renderDashboard(data) {
+    const dataKeuangan = data.filter(d =>
+        d.ID !== null &&
+        d.ID !== undefined &&
+        String(d.ID).trim() !== '' &&
+        String(d.Jenis || '').toLowerCase() === 'keuangan'
+    );
+
+    const totalNominal = dataKeuangan.reduce(
+        (total, d) => total + (Number(d.Nominal_Rp) || 0),
+        0
+    );
+
+    const totalDisetor = dataKeuangan.reduce(
+        (total, d) => total + (Number(d.Total_Disetor) || 0),
+        0
+    );
+
+    const sisaNominal = Math.max(0, totalNominal - totalDisetor);
+    const persentase = totalNominal > 0
+        ? (totalDisetor / totalNominal) * 100
+        : 0;
+
+    document.getElementById('dash-total-nominal').textContent =
+        `Rp ${totalNominal.toLocaleString('id-ID')}`;
+
+    document.getElementById('dash-total-disetor').textContent =
+        `Rp ${totalDisetor.toLocaleString('id-ID')}`;
+
+    document.getElementById('dash-sisa-nominal').textContent =
+        `Rp ${sisaNominal.toLocaleString('id-ID')}`;
+
+    document.getElementById('dash-persentase').textContent =
+        `${persentase.toLocaleString('id-ID', {
+            maximumFractionDigits: 1
+        })}%`;
+
+    // Kelompokkan total nominal berdasarkan tahun temuan.
+    const nominalPerTahun = {};
+
+    dataKeuangan.forEach(d => {
+        if (!d.Tanggal_Temuan) return;
+
+        const tanggal = new Date(d.Tanggal_Temuan);
+        if (isNaN(tanggal.getTime())) return;
+
+        const tahun = tanggal.getFullYear();
+
+        nominalPerTahun[tahun] =
+            (nominalPerTahun[tahun] || 0) +
+            (Number(d.Nominal_Rp) || 0);
+    });
+
+    const tahunList = Object.keys(nominalPerTahun)
+        .sort((a, b) => Number(a) - Number(b));
+
+    const formatRupiah = nilai =>
+        'Rp ' + Number(nilai).toLocaleString('id-ID');
+
+    const canvasTren = document.getElementById('grafik-tren-tahunan');
+
+    if (canvasTren && typeof Chart !== 'undefined') {
+        if (grafikTrenTahunan) grafikTrenTahunan.destroy();
+
+        grafikTrenTahunan = new Chart(canvasTren, {
+            type: 'line',
+            data: {
+                labels: tahunList,
+                datasets: [{
+                    label: 'Nominal Temuan',
+                    data: tahunList.map(tahun => nominalPerTahun[tahun]),
+                    borderColor: '#047857',
+                    backgroundColor: 'rgba(4, 120, 87, 0.12)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: context =>
+                                formatRupiah(context.raw)
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: nilai => formatRupiah(nilai)
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const canvasStatus = document.getElementById('grafik-status-nominal');
+
+    if (canvasStatus && typeof Chart !== 'undefined') {
+        if (grafikStatusNominal) grafikStatusNominal.destroy();
+
+        grafikStatusNominal = new Chart(canvasStatus, {
+            type: 'pie',
+            data: {
+                labels: ['Sudah Disetor', 'Belum Disetor'],
+                datasets: [{
+                    data: [totalDisetor, sisaNominal],
+                    backgroundColor: ['#0f766e', '#eab308'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: context =>
+                                `${context.label}: ${formatRupiah(context.raw)}`
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
 
 function renderTable(data) {
     const tbody = document.getElementById("table-body");
