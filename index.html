@@ -1416,14 +1416,39 @@ function renderPagination(totalData, totalPages) {
 
     buatTombol("Sebelumnya", currentPage - 1, currentPage === 1);
 
-    for (let halaman = 1; halaman <= totalPages; halaman++) {
-        buatTombol(
-            String(halaman),
-            halaman,
-            false,
-            halaman === currentPage
-        );
-    }
+   
+    const halamanTampil = new Set([
+        1,
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        totalPages
+    ]);
+
+    let halamanSebelumnya = 0;
+
+    [...halamanTampil]
+        .filter(halaman => halaman >= 1 && halaman <= totalPages)
+        .sort((a, b) => a - b)
+        .forEach(halaman => {
+            if (halamanSebelumnya > 0 && halaman - halamanSebelumnya > 1) {
+                const titik = document.createElement("span");
+                titik.textContent = "...";
+                titik.style.padding = "0 5px";
+                titik.style.color = "#64748b";
+                buttons.appendChild(titik);
+            }
+
+            buatTombol(
+                String(halaman),
+                halaman,
+                false,
+                halaman === currentPage
+            );
+
+            halamanSebelumnya = halaman;
+        });
+
 
     buatTombol(
         "Berikutnya",
