@@ -1578,9 +1578,10 @@ function renderPagination(totalData, totalPages) {
                 headStyles: { fillColor: activeTab === 'Keuangan' ? [0, 104, 55] : [217, 119, 6] }
             });
 
-            const filename = `eTLHP_KemenagBanten_${activeTab}_${activeSumber}_${new Date().toISOString().split('T')[0]}.pdf`;
-            doc.save(filename);
-        }
+            const pdfBlob = doc.output('blob');
+const pdfUrl = URL.createObjectURL(pdfBlob);
+
+window.open(pdfUrl, '_blank');
 
         // BUKA DAN TUTUP MODAL
         function openModalTambahTemuan() {
