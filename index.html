@@ -1281,7 +1281,7 @@ function switchTab(jenis) {
         }
 
         function renderTab() {
-            
+ 
 const tabData = activeTab === 'Keuangan'
     ? currentData
         .filter(d =>
@@ -1291,18 +1291,12 @@ const tabData = activeTab === 'Keuangan'
         )
         .slice()
         .sort((a, b) => {
-            const tanggalA = new Date(
-                a.Tanggal_Temuan || a.Tanggal || a.Created_At || 0
-            ).getTime();
-
-            const tanggalB = new Date(
-                b.Tanggal_Temuan || b.Tanggal || b.Created_At || 0
-            ).getTime();
+            const tanggalA = new Date(a.Tanggal_Temuan).getTime();
+            const tanggalB = new Date(b.Tanggal_Temuan).getTime();
 
             return tanggalB - tanggalA;
         })
     : [];
-
             
             renderMetrics(tabData);
 
