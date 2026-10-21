@@ -682,36 +682,22 @@ body {
             <div class="overflow-x-auto">
                 
 <div class="w-full overflow-x-auto rounded-lg border border-slate-200">
-    <table id="main-table"
-           class="text-left"
-           style="width:100%; min-width:1450px; border-collapse:collapse;">
-
-        <thead class="bg-emerald-900 text-white">
-            <tr style="font-size:12px; font-weight:bold;">
-                <th class="px-3 py-3 whitespace-nowrap">No.</th>
-                <th class="px-3 py-3 whitespace-nowrap">Tanggal</th>
-                <th class="px-3 py-3 whitespace-nowrap">Nomor LHP</th>
-                <th class="px-3 py-3 whitespace-nowrap">Sumber Audit</th>
-                <th class="px-3 py-3">Deskripsi Temuan</th>
-                <th class="px-3 py-3">Penanggung Jawab</th>
-                <th class="px-3 py-3 whitespace-nowrap text-right">Nilai Temuan</th>
-                <th class="px-3 py-3 whitespace-nowrap text-right">Sudah Dibayar</th>
-                <th class="px-3 py-3 whitespace-nowrap text-right">Sisa Belum Dibayar</th>
-                <th class="px-3 py-3 whitespace-nowrap">Status</th>
-                <th class="px-3 py-3 text-center whitespace-nowrap action-col">Aksi</th>
-            </tr>
-        </thead>
-
-        <tbody id="table-body" class="divide-y divide-slate-100">
-            <tr>
-                <td colspan="11"
-                    class="text-center p-6 text-slate-500"
-                    style="font-size:12px; font-weight:normal;">
-                    Memuat data...
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<thead class="bg-emerald-900 text-white">
+    <tr style="font-size:12px; font-weight:bold;">
+        <th class="px-3 py-3 whitespace-nowrap">No.</th>
+        <th class="px-3 py-3 whitespace-nowrap">ID Temuan</th>
+        <th class="px-3 py-3 whitespace-nowrap">Tanggal</th>
+        <th class="px-3 py-3 whitespace-nowrap">Nomor LHA</th>
+        <th class="px-3 py-3 whitespace-nowrap">Sumber Audit</th>
+        <th class="px-3 py-3">Deskripsi Temuan</th>
+        <th class="px-3 py-3">Penanggung Jawab</th>
+        <th class="px-3 py-3 whitespace-nowrap text-right">Nilai Temuan</th>
+        <th class="px-3 py-3 whitespace-nowrap text-right">Sudah Dibayar</th>
+        <th class="px-3 py-3 whitespace-nowrap text-right">Sisa Belum Dibayar</th>
+        <th class="px-3 py-3 whitespace-nowrap">Status</th>
+        <th class="px-3 py-3 text-center whitespace-nowrap action-col">Aksi</th>
+    </tr>
+</thead>
 </div>
 
             </div>
@@ -1175,7 +1161,7 @@ function renderTable(data) {
     if (!data || data.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="11"
+                <td colspan="12"
                     class="text-center p-6 text-slate-400"
                     style="font-size:12px; font-weight:normal;">
                     Tidak ada data yang sesuai dengan pencarian/filter.
@@ -1210,7 +1196,7 @@ function renderTable(data) {
     if (!isKeuangan) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="11"
+                <td colspan="12"
                     class="text-center p-6 text-slate-400"
                     style="font-size:12px; font-weight:normal;">
                     Tabel untuk jenis temuan ini belum tersedia.
