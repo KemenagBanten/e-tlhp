@@ -1050,7 +1050,9 @@ if (tabDashboard) {
         }
 
         function renderTab() {
-            const tabData = currentData.filter(d => String(d.Jenis).toLowerCase() === activeTab.toLowerCase());
+            const tabData = activeTab === 'Keuangan'
+    ? currentData.filter(d => d.ID !== null && d.ID !== undefined && String(d.ID).trim() !== '')
+    : [];
             
             renderMetrics(tabData);
 
