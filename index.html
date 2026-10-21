@@ -1275,6 +1275,7 @@ console.log(
         }
 
 
+
 function tampilkanDashboard() {
     activeTab = 'Dashboard';
 
@@ -1286,20 +1287,30 @@ function tampilkanDashboard() {
     if (tabKeuangan) tabKeuangan.classList.remove('active');
     if (tabDokumen) tabDokumen.classList.remove('active');
 
-    const kartuUtama = document.getElementById('kartu-statistik-utama');
-    const kartuSumber = document.getElementById('kartu-sumber-audit');
+    // Tampilkan Dashboard baru
+    const areaDashboard = document.getElementById('area-dashboard');
+    if (areaDashboard) areaDashboard.style.display = '';
 
-    if (kartuUtama) kartuUtama.style.display = '';
-    if (kartuSumber) kartuSumber.style.display = 'none';
+    // Sembunyikan komponen statistik lama
+    [
+        'judul-temuan-keuangan',
+        'kartu-statistik-utama',
+        'kartu-sumber-audit'
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
 
-    const dataKeuangan = currentData.filter(d =>
-        d.ID !== null &&
-        d.ID !== undefined &&
-        String(d.ID).trim() !== ''
-    );
+    // Sembunyikan seluruh area tabel dan kontrolnya
+    const tabel = document.getElementById('main-table');
+    if (tabel) {
+        const pembungkus = tabel.closest('.bg-white.rounded-xl.shadow-sm.overflow-hidden');
+        if (pembungkus) pembungkus.style.display = 'none';
+    }
 
-    renderMetrics(dataKeuangan);
+    renderDashboard(currentData);
 }
+
 
 
 
