@@ -563,6 +563,9 @@ body {
 <script src="https://unpkg.com/lucide@latest"></script>
 
     
+<!-- Pustaka grafik Dashboard SIJAWARA -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 <body class="text-slate-800">
 
@@ -683,6 +686,58 @@ body {
   </div>
 
 </div>
+
+<!-- AREA DASHBOARD SIJAWARA -->
+<div id="area-dashboard" style="display:none;" class="space-y-4">
+
+    <!-- Kartu ringkasan nominal -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 border-t-4 border-t-emerald-700 shadow-sm">
+            <p class="text-xs text-slate-500 font-semibold">TOTAL NOMINAL TEMUAN</p>
+            <h3 id="dash-total-nominal" class="text-lg font-bold text-slate-800 mt-2">Rp 0</h3>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 border-t-4 border-t-teal-600 shadow-sm">
+            <p class="text-xs text-slate-500 font-semibold">TOTAL SUDAH DISETOR</p>
+            <h3 id="dash-total-disetor" class="text-lg font-bold text-emerald-700 mt-2">Rp 0</h3>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 border-t-4 border-t-amber-500 shadow-sm">
+            <p class="text-xs text-slate-500 font-semibold">SISA BELUM DISETOR</p>
+            <h3 id="dash-sisa-nominal" class="text-lg font-bold text-amber-700 mt-2">Rp 0</h3>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 border-t-4 border-t-yellow-500 shadow-sm">
+            <p class="text-xs text-slate-500 font-semibold">PERSENTASE SETORAN</p>
+            <h3 id="dash-persentase" class="text-lg font-bold text-slate-800 mt-2">0%</h3>
+        </div>
+
+    </div>
+
+    <!-- Grafik Dashboard -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-800 mb-1">Tren Nominal Temuan per Tahun</h3>
+            <p class="text-xs text-slate-500 mb-4">Perkembangan nilai temuan berdasarkan tahun temuan.</p>
+            <div style="position:relative;height:300px;">
+                <canvas id="grafik-tren-tahunan"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-800 mb-1">Komposisi Penyelesaian</h3>
+            <p class="text-xs text-slate-500 mb-4">Proporsi nominal berdasarkan status pembayaran.</p>
+            <div style="position:relative;height:300px;">
+                <canvas id="grafik-status-nominal"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- AKHIR AREA DASHBOARD -->
 
 
 <!-- JUDUL HALAMAN TEMUAN KEUANGAN -->
@@ -1197,6 +1252,8 @@ const rowsPerPage = 10;
                 currentData = await res.json();
                 console.log("Jumlah data dari API:", currentData.length);
 console.log("Contoh data pertama:", currentData[0]);
+                console.log("NAMA KOLOM DATA:", Object.keys(currentData[0] || {}));
+console.log("CONTOH DATA TEMUAN:", currentData.slice(0, 3));
                 console.log(
     "Jumlah jenis Keuangan:",
     currentData.filter(d => String(d.Jenis).toLowerCase() === "keuangan").length
