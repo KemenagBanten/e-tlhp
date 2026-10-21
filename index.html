@@ -2790,6 +2790,7 @@ async function submitTemuanBaru() {
 
     const payload = {
         action: "add_finding",
+        token: sessionStorage.getItem("sijawaraToken"),
         Tanggal_Temuan: tanggal,
         Nomor_LHP: nomorLHP,
         Sumber: sumber,
