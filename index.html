@@ -1422,10 +1422,36 @@ if (data.status === "success" && data.token) {
             }
         }
 
-        function handleLogout() {
-            sessionStorage.removeItem("isLoggedIn");
-            location.reload();
+       
+async function handleLogout() {
+    const token = sessionStorage.getItem("sijawaraToken");
+
+    // Hapus status login dan token dari browser
+    sessionStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("sijawaraToken");
+
+    // Minta server menghapus token sesi
+    if (token) {
+        try {
+            await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify({
+                    action: "logout",
+                    token: token
+                })
+            });
+        } catch (error) {
+            console.error("Gagal mengakhiri sesi di server:", error);
         }
+    }
+
+    // Muat ulang halaman agar kembali ke login
+    location.reload();
+}
+
 
       
 async function fetchData() {
@@ -2785,15 +2811,27 @@ function ubahFormJenisTemuan() {
                     fileMimeType: file.type
                 };
 
-                await fetch(API_URL, { 
-                    method: "POST", 
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload) 
-                });
+               
+const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(payload)
+});
 
-                closeModal("modal-bayar");
-                await fetchData();
-                alert("✅ Bukti berhasil diunggah!");
+const hasil = await response.json();
+
+if (hasil.status !== "success") {
+    throw new Error(
+        hasil.message || "Pembayaran gagal disimpan."
+    );
+}
+
+closeModal("modal-bayar");
+await fetchData();
+alert("✅ Bukti berhasil diunggah!");
+
 
             } catch (error) {
                 alert("Gagal menyimpan bukti: " + error.message);
