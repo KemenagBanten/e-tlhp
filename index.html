@@ -1218,6 +1218,7 @@ function renderTable(data) {
     }
 
     data.forEach((item, index) => {
+        console.log("DATA TABEL:", item);
         const idTemuan = item.ID || "";
         const totalNominal = Number(item.Nominal_Rp || 0);
         const totalDisetor = Number(item.Total_Disetor || 0);
