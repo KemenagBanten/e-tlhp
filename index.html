@@ -616,6 +616,15 @@ body {
 }
 
 
+
+/* Sembunyikan sidebar saat modal login aktif */
+body:has(#login-overlay:not(.hidden)) #sijawara-sidebar,
+body:has(#login-overlay:not(.hidden)) #sijawara-menu-toggle,
+body:has(#login-overlay:not(.hidden)) #sijawara-sidebar-overlay {
+    display: none !important;
+}
+
+
 </style>
 
 
@@ -652,12 +661,8 @@ body {
                 class="h-24 w-auto max-w-full object-contain mx-auto">
 
             <h2 class="text-xl font-bold text-emerald-900 mt-4">
-                Login
-            </h2>
-
-            <p class="text-xs text-slate-500 mt-1">
-                SIJAWARA BANTEN
-            </p>
+    Login
+</h2>
         </div>
 
         <!-- Form Password -->
