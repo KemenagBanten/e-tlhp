@@ -1435,9 +1435,9 @@ function switchTab(jenis) {
         judulKeuangan.style.display = jenis === 'Dashboard' ? 'none' : '';
     }
 
-    if (kartuUtama) {
-        kartuUtama.style.display = jenis === 'Dashboard' ? 'none' : '';
-    }
+   if (kartuUtama) {
+    kartuUtama.style.display = 'none';
+}
 
     if (kartuSumber) {
         kartuSumber.style.display = jenis === 'Keuangan' ? '' : 'none';
