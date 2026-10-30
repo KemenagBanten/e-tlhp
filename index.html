@@ -2797,25 +2797,37 @@ function ubahFormJenisTemuan() {
 }
 
 
-        function openModalBayar(id) {
-            document.getElementById("bayar-id-temuan").value = id;
-            document.getElementById("bayar-nobukti").value = "";
-            document.getElementById("bayar-nominal").value = "";
-            document.getElementById("bayar-keterangan").value = "";
-            document.getElementById("bayar-file").value = "";
+       
+function openModalBayar(id) {
+    // Pastikan kembali ke mode tambah
+    document.getElementById("bayar-id-bayar").value = "";
 
-            if(activeTab === 'Dokumen') {
-                document.getElementById("field-nominal-container").style.display = "none";
-                document.getElementById("modal-bayar-title").innerText = `➕ Upload Dokumen (ID: #${id})`;
-            } else {
-                document.getElementById("field-nominal-container").style.display = "";
-                document.getElementById("modal-bayar-title").innerText = `➕ Tambah Bukti Bayar (ID: #${id})`;
-            }
+    document.getElementById("bayar-id-temuan").value = id;
+    document.getElementById("bayar-nobukti").value = "";
+    document.getElementById("bayar-tanggal").value = "";
+    document.getElementById("bayar-nominal").value = "";
+    document.getElementById("bayar-keterangan").value = "";
+    document.getElementById("bayar-file").value = "";
 
-            const modal = document.getElementById("modal-bayar");
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-        }
+    // Reset tombol simpan
+    const btn = document.getElementById("btn-save-bayar");
+    btn.innerText = "Simpan Bukti";
+    btn.disabled = false;
+
+    if (activeTab === 'Dokumen') {
+        document.getElementById("field-nominal-container").style.display = "none";
+        document.getElementById("modal-bayar-title").innerText =
+            `➕ Upload Dokumen (ID: #${id})`;
+    } else {
+        document.getElementById("field-nominal-container").style.display = "";
+        document.getElementById("modal-bayar-title").innerText =
+            `➕ Tambah Bukti Bayar (ID: #${id})`;
+    }
+
+    const modal = document.getElementById("modal-bayar");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+}
 
        
 function openModalRiwayat(id) {
@@ -2928,6 +2940,50 @@ function editRiwayatBayar(idBayar, idTemuan) {
     const modal = document.getElementById("modal-bayar");
     modal.classList.remove("hidden");
     modal.classList.add("flex");
+}
+
+        
+async function hapusRiwayatBayar(idBayar, idTemuan) {
+    const konfirmasi = confirm(
+        "Apakah Anda yakin ingin menghapus riwayat pembayaran ini?\n\n" +
+        "Data akan dipindahkan ke arsip dan tetap dapat ditelusuri."
+    );
+
+    if (!konfirmasi) return;
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "delete_payment",
+                token: sessionStorage.getItem("sijawaraToken"),
+                ID_Bayar: idBayar
+            })
+        });
+
+        const hasil = await response.json();
+
+        if (hasil.status !== "success") {
+            throw new Error(
+                hasil.message || "Riwayat pembayaran gagal dihapus."
+            );
+        }
+
+        closeModal("modal-riwayat");
+
+        await fetchData();
+
+        // Tampilkan kembali riwayat yang sudah diperbarui
+        openModalRiwayat(idTemuan);
+
+        alert("✅ Riwayat berhasil dipindahkan ke arsip!");
+
+    } catch (error) {
+        alert("Gagal menghapus riwayat: " + error.message);
+    }
 }
 
 
