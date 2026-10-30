@@ -2780,9 +2780,70 @@ function exportToExcel() {
             return baris;
         });
 
+        // RINGKASAN DATA EKSPOR
+const jumlahTemuan = displayedData.length;
+
+const totalNominal = displayedData.reduce(
+    (total, item) => total + Number(item.Nominal_Rp || 0), 0
+);
+
+const totalDisetor = displayedData.reduce(
+    (total, item) => total + Number(item.Total_Disetor || 0), 0
+);
+
+const sisaBelumDisetor = totalNominal - totalDisetor;
+
+// Keterangan filter status
+const statusEkspor = window.statusTerpilihEkspor || [];
+
+const keteranganStatus = statusEkspor.length > 0
+    ? statusEkspor.join(' + ')
+    : 'Semua';
+        
         // Siapkan workbook dan pengaturan lebar kolom
-        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-        const workbook = XLSX.utils.book_new();
+const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+const workbook = XLSX.utils.book_new();
+
+// Tambahkan ringkasan di bagian atas lembar Excel
+const ringkasan = [
+    ["RINGKASAN LAPORAN e-TLHP"],
+    ["Jenis Laporan", activeTab],
+    ["Filter Sumber", activeSumber],
+    ["Filter Status", keteranganStatus],
+    ["Tanggal Cetak", new Date().toLocaleDateString('id-ID')],
+    ["Jumlah Temuan", jumlahTemuan]
+];
+
+if (activeTab === 'Keuangan') {
+    ringkasan.push(
+        ["Total Nilai Temuan (Rp)", totalNominal],
+        ["Total Disetor (Rp)", totalDisetor],
+        ["Sisa Belum Disetor (Rp)", sisaBelumDisetor]
+    );
+}
+
+// Sisipkan ringkasan mulai dari baris pertama
+XLSX.utils.sheet_add_aoa(worksheet, ringkasan, {
+    origin: "A1"
+});
+
+// Geser tabel utama ke bawah
+XLSX.utils.sheet_add_json(worksheet, dataToExport, {
+    origin: `A${ringkasan.length + 2}`,
+    skipHeader: false
+});
+
+// Atur lebar kolom
+worksheet['!cols'] = [
+    { wch: 30 },
+    { wch: 35 },
+    { wch: 25 },
+    { wch: 30 },
+    { wch: 42 },
+    { wch: 30 },
+    { wch: 25 },
+    { wch: 25 }
+];
 
         worksheet['!cols'] = Object.keys(dataToExport[0] || {}).map(k => ({
             wch: Math.min(
@@ -2792,17 +2853,21 @@ function exportToExcel() {
         }));
 
         if (dataToExport.length > 0) {
-            worksheet['!autofilter'] = {
-                ref: XLSX.utils.encode_range({
-                    s: { r: 0, c: 0 },
-                    e: {
-                        r: dataToExport.length,
-                        c: Object.keys(dataToExport[0]).length - 1
-                    }
-                })
-            };
-        }
+    const barisAwalTabel = ringkasan.length + 1;
 
+    worksheet['!autofilter'] = {
+        ref: XLSX.utils.encode_range({
+            s: {
+                r: barisAwalTabel,
+                c: 0
+            },
+            e: {
+                r: barisAwalTabel + dataToExport.length,
+                c: Object.keys(dataToExport[0]).length - 1
+            }
+        })
+    };
+}
         XLSX.utils.book_append_sheet(
             workbook,
             worksheet,
@@ -2891,9 +2956,16 @@ tr:nth-child(even){background:#f3f4f6}
 <h1>Kanwil Kemenag Banten — Sijawara Banten</h1>
 <div class="info">Jenis laporan: ${aman(activeTab)}</div>
 <div class="info">Filter sumber: ${aman(activeSumber)}</div>
+<div class="info">Filter status: ${aman(keteranganStatus)}</div>
 <div class="info">Pencarian: ${aman(infoCari || 'Tidak ada')}</div>
 <div class="info">Tanggal cetak: ${aman(tanggalCetak)}</div>
-<div class="info">Jumlah temuan: ${dataToExport.length}</div>
+<div class="info"><strong>Jumlah Temuan:</strong> ${jumlahTemuan} data</div>
+
+${activeTab === 'Keuangan' ? `
+<div class="info"><strong>Total Nilai Temuan:</strong> Rp ${totalNominal.toLocaleString('id-ID')}</div>
+<div class="info"><strong>Total Disetor:</strong> Rp ${totalDisetor.toLocaleString('id-ID')}</div>
+<div class="info"><strong>Sisa Belum Disetor:</strong> Rp ${sisaBelumDisetor.toLocaleString('id-ID')}</div>
+` : ''}
 <div class="actions">
 <a href="${excelUrl}" download="${aman(filename)}">Unduh Excel (.xlsx)</a>
 </div>
