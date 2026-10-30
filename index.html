@@ -2021,6 +2021,8 @@ if (document.getElementById('statusDalamProses')?.checked) {
 if (document.getElementById('statusLunas')?.checked) {
     statusTerpilih.push('Lunas');
 }
+            // Simpan status yang sedang dipilih untuk kebutuhan ekspor
+window.statusTerpilihEkspor = [...statusTerpilih];
 
 displayedData = displayedData.filter(d => {
     const totalNominal = Number(d.Nominal_Rp || 0);
@@ -2926,10 +2928,17 @@ function exportToPDF() {
 
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
-    doc.text(
-        `Filter Sumber: ${activeSumber} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`,
-        14, 22
-    );
+    // Ambil status yang sedang dipilih
+const statusEkspor = window.statusTerpilihEkspor || [];
+
+const keteranganStatus = statusEkspor.length > 0
+    ? statusEkspor.join(' + ')
+    : 'Semua';
+
+doc.text(
+    `Filter Sumber: ${activeSumber} | Status: ${keteranganStatus} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`,
+    14, 22
+);
 
     let headers = [];
     let rows = [];
