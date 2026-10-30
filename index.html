@@ -1687,9 +1687,7 @@ async function handleLogout() {
     // Muat ulang halaman agar kembali ke login
     location.reload();
 }
-
-
-      
+     
 async function fetchData() {
     const loadingDashboard = document.getElementById('loading-dashboard');
     const areaDashboard = document.getElementById('area-dashboard');
@@ -1772,10 +1770,15 @@ currentData = hasil;
             [...new Set(currentData.map(d => d.Jenis))]
         );
 
-        // Sembunyikan loading setelah data berhasil dimuat
-        if (loadingDashboard) loadingDashboard.style.display = 'none';
+       // Sembunyikan loading setelah data berhasil dimuat
+if (loadingDashboard) loadingDashboard.style.display = 'none';
 
-        tampilkanDashboard();
+// Pertahankan menu yang sedang aktif
+if (activeTab === 'Keuangan' || activeTab === 'Dokumen') {
+    switchTab(activeTab);
+} else {
+    tampilkanDashboard();
+}
 
     
     } catch (e) {
