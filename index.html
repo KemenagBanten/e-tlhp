@@ -1210,7 +1210,7 @@ body:has(#login-overlay:not(.hidden)) #sijawara-sidebar-overlay {
         <div class="bg-white rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 id="modal-bayar-title" class="text-lg font-bold text-emerald-900 border-b pb-2">➕ Tambah Bukti Bayar / Dokumen</h3>
             <input type="hidden" id="bayar-id-temuan">
-            
+            <input type="hidden" id="bayar-id-bayar">
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">No. Bukti / NTPN / No. Surat</label>
                 <input type="text" id="bayar-nobukti" placeholder="Contoh: 1111" class="w-full border p-2 rounded-lg text-sm">
@@ -2875,6 +2875,57 @@ function openModalRiwayat(id) {
     }
 
     const modal = document.getElementById("modal-riwayat");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+}
+
+        
+function editRiwayatBayar(idBayar, idTemuan) {
+    const item = currentData.find(d => String(d.ID) === String(idTemuan));
+
+    if (!item || !item.Riwayat_Bayar) {
+        alert("Data temuan tidak ditemukan.");
+        return;
+    }
+
+    const riwayat = item.Riwayat_Bayar.find(
+        r => String(r.ID_Bayar) === String(idBayar)
+    );
+
+    if (!riwayat) {
+        alert("Riwayat pembayaran tidak ditemukan.");
+        return;
+    }
+
+    // Isi identitas
+    document.getElementById("bayar-id-temuan").value = idTemuan;
+    document.getElementById("bayar-id-bayar").value = idBayar;
+
+    // Isi data lama
+    document.getElementById("bayar-nobukti").value = riwayat.No_Bukti || "";
+    document.getElementById("bayar-tanggal").value =
+        riwayat.Tanggal ? String(riwayat.Tanggal).split("T")[0] : "";
+
+    document.getElementById("bayar-nominal").value =
+        Number(riwayat.Nominal_Setor || 0);
+
+    document.getElementById("bayar-keterangan").value =
+        riwayat.Keterangan || "";
+
+    // File tidak wajib diganti saat edit
+    document.getElementById("bayar-file").value = "";
+
+    // Ubah judul dan tombol
+    document.getElementById("modal-bayar-title").innerText =
+        "✏️ Edit Bukti Bayar / Dokumen";
+
+    document.getElementById("btn-save-bayar").innerText =
+        "Simpan Perubahan";
+
+    // Tutup modal riwayat, lalu buka modal edit
+    closeModal("modal-riwayat");
+
+    const modal = document.getElementById("modal-bayar");
     modal.classList.remove("hidden");
     modal.classList.add("flex");
 }
