@@ -2447,35 +2447,72 @@ function ambilTahunTemuan(nilaiTanggal) {
         });
     }
 
-    const canvasStatus = document.getElementById('grafik-status-nominal');
+    
+const canvasStatus = document.getElementById('grafik-status-nominal');
 
-    if (canvasStatus && typeof Chart !== 'undefined') {
-        if (grafikStatusNominal) grafikStatusNominal.destroy();
+if (canvasStatus && typeof Chart !== 'undefined') {
+    if (grafikStatusNominal) grafikStatusNominal.destroy();
 
-        grafikStatusNominal = new Chart(canvasStatus, {
-    type: 'doughnut',
-            data: {
-                labels: ['Sudah Disetor', 'Belum Disetor'],
-                datasets: [{
-                    data: [totalDisetor, sisaNominal],
-                    backgroundColor: ['#eab308', '#9ca3af'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: context =>
-                                `${context.label}: ${formatRupiah(context.raw)}`
-                        }
+    grafikStatusNominal = new Chart(canvasStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Sudah Disetor', 'Belum Disetor'],
+            datasets: [
+                {
+                    label: 'BPK',
+                    data: [
+                        komposisiPerSumber.BPK.disetor,
+                        komposisiPerSumber.BPK.belum
+                    ],
+                    backgroundColor: ['#0f766e', '#d1d5db'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    weight: 1
+                },
+                {
+                    label: 'BPKP',
+                    data: [
+                        komposisiPerSumber.BPKP.disetor,
+                        komposisiPerSumber.BPKP.belum
+                    ],
+                    backgroundColor: ['#d97706', '#d1d5db'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    weight: 1
+                },
+                {
+                    label: 'Inspektorat',
+                    data: [
+                        komposisiPerSumber.INSPEKTORAT.disetor,
+                        komposisiPerSumber.INSPEKTORAT.belum
+                    ],
+                    backgroundColor: ['#6366f1', '#d1d5db'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    weight: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '45%',
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: context =>
+                            context.dataset.label + ' - ' +
+                            context.label + ': ' +
+                            formatRupiah(context.raw)
                     }
                 }
             }
-        });
-    }
+        }
+    });
 }
 
 
