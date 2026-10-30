@@ -2499,17 +2499,59 @@ if (canvasStatus && typeof Chart !== 'undefined') {
             cutout: '45%',
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'bottom'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: context =>
-                            context.dataset.label + ' - ' +
-                            context.label + ': ' +
-                            formatRupiah(context.raw)
-                    }
-                }
+    display: true,
+    position: 'bottom',
+    labels: {
+        generateLabels: chart => [
+            {
+                text: 'BPK',
+                fillStyle: '#0f766e',
+                strokeStyle: '#0f766e',
+                lineWidth: 0,
+                hidden: false,
+                index: 0
+            },
+            {
+                text: 'BPKP',
+                fillStyle: '#d97706',
+                strokeStyle: '#d97706',
+                lineWidth: 0,
+                hidden: false,
+                index: 1
+            },
+            {
+                text: 'Inspektorat',
+                fillStyle: '#6366f1',
+                strokeStyle: '#6366f1',
+                lineWidth: 0,
+                hidden: false,
+                index: 2
+            }
+        ]
+    }
+},
+               
+tooltip: {
+    callbacks: {
+        label: context => {
+            const nilai = Number(context.raw) || 0;
+            const total = context.dataset.data.reduce(
+                (sum, item) => sum + (Number(item) || 0),
+                0
+            );
+
+            const persen = total > 0
+                ? (nilai / total * 100).toFixed(1)
+                : '0.0';
+
+            return context.dataset.label + ' - ' +
+                context.label + ': ' +
+                formatRupiah(nilai) +
+                ' (' + persen + '%)';
+        }
+    }
+}
+
             }
         }
     });
