@@ -2801,7 +2801,7 @@ const keteranganStatus = statusEkspor.length > 0
     : 'Semua';
         
         // Siapkan workbook dan pengaturan lebar kolom
-const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+const worksheet = XLSX.utils.aoa_to_sheet([]);
 const workbook = XLSX.utils.book_new();
 
 // Tambahkan ringkasan di bagian atas lembar Excel
