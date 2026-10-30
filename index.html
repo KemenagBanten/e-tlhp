@@ -3985,6 +3985,52 @@ window.resetFilterStatus = function() {
     renderTab();
 };
 
+    async function ujiArsipTemuan() {
+    const idTemuan = prompt("Masukkan ID Temuan uji yang akan diarsipkan:");
+
+    if (!idTemuan) return;
+
+    const alasan = prompt("Masukkan alasan pengarsipan:");
+
+    if (!alasan) return;
+
+    const konfirmasi = confirm(
+        "Apakah Anda yakin ingin mengarsipkan " + idTemuan + "?"
+    );
+
+    if (!konfirmasi) return;
+
+    const payload = {
+        action: "archive_finding",
+        token: sessionStorage.getItem("sijawaraToken"),
+        ID_Temuan: idTemuan,
+        Alasan_Arsip: alasan
+    };
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const hasil = await response.json();
+
+        if (hasil.status !== "success") {
+            throw new Error(hasil.message || "Pengarsipan gagal.");
+        }
+
+        alert("Temuan berhasil diarsipkan: " + hasil.ID_Temuan);
+
+        await fetchData();
+
+    } catch (error) {
+        alert("Gagal mengarsipkan: " + error.message);
+    }
+}
+    
 </script>
 
 </body>
