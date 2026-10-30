@@ -2949,79 +2949,107 @@ function editRiwayatBayar(idBayar, idTemuan) {
             });
         }
 
-        async function submitPembayaran() {
-            const noBukti = document.getElementById("bayar-nobukti").value.trim();
-            const tanggal = document.getElementById("bayar-tanggal").value;
-            const nominal = document.getElementById("bayar-nominal").value;
-            const keterangan = document.getElementById("bayar-keterangan").value.trim();
-            const fileInput = document.getElementById("bayar-file");
+       
+async function submitPembayaran() {
+    const noBukti = document.getElementById("bayar-nobukti").value.trim();
+    const tanggal = document.getElementById("bayar-tanggal").value;
+    const nominal = document.getElementById("bayar-nominal").value;
+    const keterangan = document.getElementById("bayar-keterangan").value.trim();
+    const fileInput = document.getElementById("bayar-file");
 
-            if (!noBukti || !tanggal || !keterangan || fileInput.files.length === 0) {
-                alert("⚠️ Semua kolom inputan dan unggahan file wajib diisi!");
-                return;
-            }
+    const idBayar = document.getElementById("bayar-id-bayar").value.trim();
+    const idTemuan = document.getElementById("bayar-id-temuan").value;
 
-            if (activeTab === 'Keuangan' && nominal === "") {
-                alert("⚠️ Nominal setoran wajib diisi!");
-                return;
-            }
+    // Jika ID_Bayar terisi, berarti mode edit
+    const modeEdit = idBayar !== "";
 
-            const file = fileInput.files[0];
-            if (file.size > 5 * 1024 * 1024) {
-                alert("⚠️ Ukuran file terlalu besar! Maksimal ukuran file adalah 5 MB.");
-                return;
-            }
+    if (!noBukti || !tanggal || !keterangan) {
+        alert("⚠️ No. Bukti, tanggal, dan keterangan wajib diisi!");
+        return;
+    }
 
-            const btn = document.getElementById("btn-save-bayar");
-            btn.innerText = "Mengunggah...";
-            btn.disabled = true;
+    // File wajib hanya untuk penambahan data baru
+    if (!modeEdit && fileInput.files.length === 0) {
+        alert("⚠️ File bukti wajib diunggah!");
+        return;
+    }
 
-            try {
-                const base64Data = await toBase64(file);
+    if (activeTab === 'Keuangan' && nominal === "") {
+        alert("⚠️ Nominal setoran wajib diisi!");
+        return;
+    }
 
-                const payload = {
-                    action: "add_payment",
-                    token: sessionStorage.getItem("sijawaraToken"),
-                    ID_Temuan: document.getElementById("bayar-id-temuan").value,
-                    No_Bukti: noBukti,
-                    Tanggal: tanggal,
-                    Nominal_Setor: Number(nominal) || 0,
-                    Keterangan: keterangan,
-                    fileData: base64Data,
-                    fileName: file.name,
-                    fileMimeType: file.type
-                };
+    const file = fileInput.files[0];
 
-               
-const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify(payload)
-});
+    if (file && file.size > 5 * 1024 * 1024) {
+        alert("⚠️ Ukuran file terlalu besar! Maksimal 5 MB.");
+        return;
+    }
 
-const hasil = await response.json();
+    const btn = document.getElementById("btn-save-bayar");
+    btn.innerText = "Menyimpan...";
+    btn.disabled = true;
 
-if (hasil.status !== "success") {
-    throw new Error(
-        hasil.message || "Pembayaran gagal disimpan."
-    );
-}
+    try {
+        let base64Data = "";
 
-closeModal("modal-bayar");
-await fetchData();
-alert("✅ Bukti berhasil diunggah!");
-
-
-            } catch (error) {
-                alert("Gagal menyimpan bukti: " + error.message);
-            } finally {
-                btn.innerText = "Simpan Bukti";
-                btn.disabled = false;
-            }
+        // Konversi file hanya jika pengguna memilih file baru
+        if (file) {
+            base64Data = await toBase64(file);
         }
 
+        const payload = {
+            action: modeEdit ? "edit_payment" : "add_payment",
+            token: sessionStorage.getItem("sijawaraToken"),
+            ID_Temuan: idTemuan,
+            ID_Bayar: idBayar,
+            No_Bukti: noBukti,
+            Tanggal: tanggal,
+            Nominal_Setor: Number(nominal) || 0,
+            Keterangan: keterangan,
+            fileData: base64Data,
+            fileName: file ? file.name : "",
+            fileMimeType: file ? file.type : ""
+        };
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const hasil = await response.json();
+
+        if (hasil.status !== "success") {
+            throw new Error(hasil.message || "Data gagal disimpan.");
+        }
+
+        closeModal("modal-bayar");
+
+        // Bersihkan status edit setelah berhasil
+        document.getElementById("bayar-id-bayar").value = "";
+
+        document.getElementById("modal-bayar-title").innerText =
+            "➕ Tambah Bukti Bayar / Dokumen";
+
+        await fetchData();
+
+        alert(
+            modeEdit
+                ? "✅ Perubahan bukti berhasil disimpan!"
+                : "✅ Bukti berhasil diunggah!"
+        );
+
+    } catch (error) {
+        alert("Gagal menyimpan bukti: " + error.message);
+
+    } finally {
+        btn.innerText = "Simpan Bukti";
+        btn.disabled = false;
+    }
+}
        
 
 async function submitTemuanBaru() {
