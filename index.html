@@ -2923,6 +2923,14 @@ tr:nth-child(even){background:#f3f4f6}
             doc.setFontSize(10);
             doc.text(`Filter Sumber: ${activeSumber} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 22);
 
+            // Ringkasan jumlah data yang diekspor
+const jumlahTemuan = displayedData.length;
+
+doc.setFontSize(10);
+doc.setFont(undefined, 'bold');
+doc.text(`Jumlah Temuan: ${jumlahTemuan} data`, 14, 28);
+doc.setFont(undefined, 'normal');
+            
             let headers = [];
             let rows = [];
 
@@ -2963,7 +2971,7 @@ tr:nth-child(even){background:#f3f4f6}
             doc.autoTable({
                 head: headers,
                 body: rows,
-                startY: 28,
+                startY: 35,
                 theme: 'grid',
                 styles: { fontSize: 7.5 },
                 headStyles: { fillColor: activeTab === 'Keuangan' ? [0, 104, 55] : [217, 119, 6] }
@@ -2974,6 +2982,7 @@ const pdfUrl = URL.createObjectURL(pdfBlob);
 
 window.open(pdfUrl, '_blank');
         }
+        
         // BUKA DAN TUTUP MODAL
         function openModalTambahTemuan() {
             const modal = document.getElementById("modal-tambah-temuan");
