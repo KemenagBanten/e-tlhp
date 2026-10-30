@@ -3096,9 +3096,25 @@ function openModalSPTJM(id) {
     modal.classList.add("flex");
 }
         
+// FORMAT TANGGAL SPTJM
+function formatTanggalSPTJM(tanggal) {
+    if (!tanggal) return "-";
 
+    const tgl = new Date(tanggal);
+
+    if (isNaN(tgl.getTime())) return "-";
+
+    return tgl.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+
+// LIHAT DETAIL SPTJM
 function lihatSPTJM(id) {
-    const dataTemuan = currentData.find(
+   const dataTemuan = currentData.find(
         item => String(item.ID).trim() === String(id).trim()
     );
 
@@ -3111,15 +3127,15 @@ function lihatSPTJM(id) {
         "ID Temuan: " + id;
 
     document.getElementById("lihat-sptjm-tanggal").innerText =
-        dataTemuan.Tanggal_SPTJM || "-";
+    formatTanggalSPTJM(dataTemuan.Tanggal_SPTJM);
 
     document.getElementById("lihat-sptjm-masa").innerText =
         dataTemuan.Masa_Kesanggupan_Bulan
             ? dataTemuan.Masa_Kesanggupan_Bulan + " Bulan"
             : "-";
 
-    document.getElementById("lihat-sptjm-batas").innerText =
-        dataTemuan.Batas_Akhir_Pelunasan || "-";
+   document.getElementById("lihat-sptjm-batas").innerText =
+    formatTanggalSPTJM(dataTemuan.Batas_Akhir_Pelunasan);
 
     document.getElementById("lihat-sptjm-link").href =
         dataTemuan.Link_SPTJM;
