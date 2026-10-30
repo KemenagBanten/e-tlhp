@@ -2498,12 +2498,18 @@ if (canvasStatus && typeof Chart !== 'undefined') {
             maintainAspectRatio: false,
             cutout: '30%',
             layout: {
-        padding: 25
-    },
+    padding: {
+        top: 10,
+        bottom: 10,
+        left: 25,
+        right: 25
+    }
+},
             plugins: {
                 legend: {
     display: true,
     position: 'bottom',
+                    align: 'center',
     labels: {
         generateLabels: chart => [
             {
