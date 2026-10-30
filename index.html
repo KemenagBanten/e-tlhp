@@ -3058,6 +3058,21 @@ if (jamDashboard) jamDashboard.textContent = jam + ' WIB';
 
 perbaruiTanggalJam();
 setInterval(perbaruiTanggalJam, 1000);
+
+    
+window.toggleFilterStatus = function() {
+    document.getElementById('panelFilterStatus')
+        .classList.toggle('hidden');
+};
+
+window.resetFilterStatus = function() {
+    document.getElementById('statusBelumDibayar').checked = true;
+    document.getElementById('statusDalamProses').checked = true;
+    document.getElementById('statusLunas').checked = true;
+
+    renderTab();
+};
+
 </script>
 
 </body>
