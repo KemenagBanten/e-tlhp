@@ -2243,7 +2243,28 @@ function renderDashboard(data) {
     const persentase = totalNominal > 0
         ? (totalDisetor / totalNominal) * 100
         : 0;
+// Komposisi penyelesaian berdasarkan sumber audit
+const komposisiPerSumber = {
+    BPK: { disetor: 0, belum: 0 },
+    BPKP: { disetor: 0, belum: 0 },
+    INSPEKTORAT: { disetor: 0, belum: 0 }
+};
 
+dataKeuangan.forEach(d => {
+    const sumber = String(d.Sumber || '').trim().toUpperCase();
+
+    if (!komposisiPerSumber[sumber]) return;
+
+    const nominal = Number(d.Nominal_Rp) || 0;
+    const disetor = Math.min(
+        nominal,
+        Number(d.Total_Disetor) || 0
+    );
+
+    komposisiPerSumber[sumber].disetor += disetor;
+    komposisiPerSumber[sumber].belum += Math.max(0, nominal - disetor);
+});
+    
     document.getElementById('dash-total-nominal').textContent =
         `Rp ${totalNominal.toLocaleString('id-ID')}`;
 
