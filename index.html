@@ -3637,11 +3637,30 @@ async function hapusRiwayatBayar(idBayar, idTemuan) {
 }
 
 
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
+       
+function closeModal(id) {
+    const modal = document.getElementById(id);
+
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+
+    // Bersihkan URL sementara PDF SPTJM
+    if (
+        id === "modal-lihat-sptjm" &&
+        window.urlSPTJMAktif
+    ) {
+        URL.revokeObjectURL(window.urlSPTJMAktif);
+        window.urlSPTJMAktif = null;
+
+        const linkDokumen = document.getElementById("lihat-sptjm-link");
+
+        if (linkDokumen) {
+            linkDokumen.removeAttribute("href");
+            linkDokumen.innerText = "Buka Dokumen SPTJM";
         }
+    }
+}
+
 
         function toBase64(file) {
             return new Promise((resolve, reject) => {
