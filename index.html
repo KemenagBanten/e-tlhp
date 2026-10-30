@@ -2260,7 +2260,7 @@ function renderDashboard(data) {
 
    
     // Kelompokkan nominal per tahun dan sumber audit
-    const sumberAudit = ['BPK', 'BPKP', 'Inspektorat'];
+    const sumberAudit = ['BPK', 'BPKP', 'INSPEKTORAT'];
 
     const nominalPerTahunSumber = {
         BPK: {},
@@ -2329,16 +2329,6 @@ function ambilTahunTemuan(nilaiTanggal) {
         if (!tahun) return;
 
         const sumber = String(d.Sumber || '').trim().toUpperCase();
-if (String(d.Sumber || '').toUpperCase().includes('INSPEKTORAT')) {
-    console.log('CEK DATA INSPEKTORAT:', {
-        sumberAsli: d.Sumber,
-        tanggal: d.Tanggal_Temuan,
-        tahunTerbaca: tahun,
-        nominalAsli: d.Nominal_Rp,
-        nominalAngka: Number(d.Nominal_Rp),
-        id: d.ID
-    });
-}
         if (!sumberAudit.includes(sumber)) return;
 
         const nominal = Number(d.Nominal_Rp) || 0;
