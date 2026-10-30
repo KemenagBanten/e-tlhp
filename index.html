@@ -2282,39 +2282,47 @@ function resetFilterStatus() {
     renderTab();
 }
 
-    function ambilTahunTemuan(nilaiTanggal) {
-        if (
-            nilaiTanggal === null ||
-            nilaiTanggal === undefined ||
-            String(nilaiTanggal).trim() === ''
-        ) {
-            return null;
-        }
+  
+function ambilTahunTemuan(nilaiTanggal) {
 
-        const teks = String(nilaiTanggal).trim();
-        let tahun = null;
+    if (
+        nilaiTanggal === null ||
+        nilaiTanggal === undefined ||
+        String(nilaiTanggal).trim() === ''
+    ) {
+        return null;
+    }
 
-        // Kolom berisi tahun saja, misalnya 2008
-        if (/^\d{4}$/.test(teks)) {
-            tahun = Number(teks);
-        } else {
-            // Format YYYY-MM-DD
-            const iso = teks.match(/^(\d{4})[-/]\d{1,2}[-/]\d{1,2}/);
-
-// Format DD/MM/YYYY
-const indonesia = teks.match(
-    /^(\d{1,2})[/-]\d{1,2}[/-](\d{4})$/
-);
-            
-            if (iso) {
-                tahun = Number(iso[1]);
-           } else if (indonesia) {
-    tahun = Number(indonesia[2]);
-}
-        }
-
+    // Jika tanggal diterima sebagai objek Date
+    if (nilaiTanggal instanceof Date) {
+        const tahun = nilaiTanggal.getFullYear();
         return tahun >= 1900 && tahun <= 2100 ? tahun : null;
     }
+
+    const teks = String(nilaiTanggal).trim();
+    let tahun = null;
+
+    // Format tahun saja: 2024
+    if (/^\d{4}$/.test(teks)) {
+        tahun = Number(teks);
+    } else {
+
+        // Format YYYY-MM-DD atau YYYY/MM/DD
+        const iso = teks.match(/^(\d{4})[-/]\d{1,2}[-/]\d{1,2}/);
+
+        // Format DD/MM/YYYY atau DD-MM-YYYY
+        const indonesia = teks.match(/^\d{1,2}[/-]\d{1,2}[/-](\d{4})$/);
+
+        if (iso) {
+            tahun = Number(iso[1]);
+        } else if (indonesia) {
+            tahun = Number(indonesia[1]);
+        }
+    }
+
+    return tahun >= 1900 && tahun <= 2100 ? tahun : null;
+}
+
 
     dataKeuangan.forEach(d => {
         const tahun = ambilTahunTemuan(d.Tanggal_Temuan);
