@@ -2505,6 +2505,11 @@ const pageData = data.slice(startIndex, startIndex + rowsPerPage);
 pageData.forEach((item, index) => {
     index = startIndex + index;
         const idTemuan = item.ID || "";
+    console.log("CEK SPTJM:", {
+    id: item.ID,
+    link: item.Link_SPTJM,
+    seluruhData: item
+});
         const totalNominal = Number(item.Nominal_Rp || 0);
         const totalDisetor = Number(item.Total_Disetor || 0);
         const sisaKurang = Math.max(0, totalNominal - totalDisetor);
