@@ -1276,6 +1276,112 @@ body:has(#login-overlay:not(.hidden)) #sijawara-sidebar-overlay {
         </div>
     </div>
 
+<!-- MODAL 3: SPTJM -->
+<div id="modal-sptjm" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl p-6 max-w-lg w-full space-y-4 shadow-xl">
+
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-lg font-bold text-emerald-900">
+                📄 Dokumen SPTJM
+            </h3>
+            <span id="sptjm-id-label"
+                class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2 py-1 rounded">
+                ID Temuan: -
+            </span>
+        </div>
+
+        <input type="hidden" id="sptjm-id-temuan">
+
+        <!-- Tampilan dokumen lama -->
+        <div id="sptjm-dokumen-lama" class="hidden">
+            <label class="block text-xs font-semibold text-slate-600 mb-2">
+                Dokumen SPTJM Saat Ini
+            </label>
+            <a id="sptjm-link-lama"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block text-sm text-emerald-700 underline">
+                Buka Dokumen SPTJM
+            </a>
+        </div>
+
+        <!-- Upload PDF -->
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">
+                Upload PDF SPTJM (Maks. 5 MB)
+            </label>
+            <input
+                type="file"
+                id="sptjm-file"
+                accept="application/pdf,.pdf"
+                class="w-full text-sm border p-2 rounded-lg"
+            >
+            <p class="text-xs text-slate-500 mt-1">
+                Unggah surat SPTJM yang sudah ditandatangani.
+                Upload ulang akan mengganti dokumen aktif.
+            </p>
+        </div>
+
+        <!-- Tanggal surat -->
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">
+                Tanggal Surat Ditandatangani
+            </label>
+            <input
+                type="date"
+                id="sptjm-tanggal"
+                class="w-full border p-2 rounded-lg text-sm"
+            >
+        </div>
+
+        <!-- Masa kesanggupan -->
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">
+                Masa Kesanggupan Pelunasan
+            </label>
+            <select
+                id="sptjm-masa"
+                class="w-full border p-2 rounded-lg text-sm"
+            >
+                <option value="">Pilih masa kesanggupan</option>
+                <option value="6">6 Bulan</option>
+                <option value="12">12 Bulan</option>
+                <option value="18">18 Bulan</option>
+                <option value="24">24 Bulan</option>
+                <option value="36">36 Bulan</option>
+            </select>
+        </div>
+
+        <!-- Batas akhir -->
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <label class="block text-xs font-semibold text-amber-800 mb-1">
+                Batas Akhir Pelunasan
+            </label>
+            <div id="sptjm-batas"
+                class="text-base font-bold text-amber-900">
+                Belum dihitung
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+            <button
+                onclick="closeModal('modal-sptjm')"
+                class="px-4 py-2 border rounded-lg text-sm">
+                Batal
+            </button>
+
+            <button
+                onclick="submitSPTJM()"
+                id="btn-save-sptjm"
+                class="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">
+                Simpan SPTJM
+            </button>
+        </div>
+
+    </div>
+</div>
+
    
 <!-- MODAL 3: Tambah Temuan -->
 <div id="modal-tambah-temuan"
@@ -1630,8 +1736,6 @@ currentData = hasil;
         }
     }
 }
-
-
 
 function tampilkanDashboard() {
     activeTab = 'Dashboard';
@@ -2804,9 +2908,7 @@ function ubahFormJenisTemuan() {
     pesan.classList.toggle("hidden", isKeuangan);
     tombolSimpan.classList.toggle("hidden", !isKeuangan);
 }
-
-
-       
+      
 function openModalBayar(id) {
     // Pastikan kembali ke mode tambah
     document.getElementById("bayar-id-bayar").value = "";
@@ -2838,7 +2940,118 @@ function openModalBayar(id) {
     modal.classList.add("flex");
 }
 
-       
+        
+function openModalSPTJM(id) {
+    const dataTemuan = currentData.find(
+        item => String(item.ID).trim() === String(id).trim()
+    );
+
+    if (!dataTemuan) {
+        alert("Data temuan tidak ditemukan.");
+        return;
+    }
+
+    // Simpan ID Temuan
+    document.getElementById("sptjm-id-temuan").value = id;
+    document.getElementById("sptjm-id-label").innerText =
+        `ID Temuan: ${id}`;
+
+    // Reset input
+    document.getElementById("sptjm-file").value = "";
+    document.getElementById("sptjm-tanggal").value = "";
+    document.getElementById("sptjm-masa").value = "";
+    document.getElementById("sptjm-batas").innerText = "Belum dihitung";
+
+    // Reset tombol
+    const btn = document.getElementById("btn-save-sptjm");
+    btn.innerText = "Simpan SPTJM";
+    btn.disabled = false;
+
+    // Periksa dokumen SPTJM yang sudah tersimpan
+    const linkSPTJM = dataTemuan.Link_SPTJM || "";
+    const areaDokumen = document.getElementById("sptjm-dokumen-lama");
+    const linkDokumen = document.getElementById("sptjm-link-lama");
+
+    if (linkSPTJM) {
+        areaDokumen.classList.remove("hidden");
+        linkDokumen.href = linkSPTJM;
+    } else {
+        areaDokumen.classList.add("hidden");
+        linkDokumen.href = "#";
+    }
+
+    // Isi kembali data SPTJM jika sudah ada
+    if (dataTemuan.Tanggal_SPTJM) {
+        const tanggal = String(dataTemuan.Tanggal_SPTJM).trim();
+
+        if (/^\d{4}-\d{2}-\d{2}/.test(tanggal)) {
+            document.getElementById("sptjm-tanggal").value =
+                tanggal.substring(0, 10);
+        }
+    }
+
+    if (dataTemuan.Masa_Kesanggupan_Bulan) {
+        document.getElementById("sptjm-masa").value =
+            dataTemuan.Masa_Kesanggupan_Bulan;
+    }
+
+    if (dataTemuan.Batas_Akhir_Pelunasan) {
+        document.getElementById("sptjm-batas").innerText =
+            formatTanggal(dataTemuan.Batas_Akhir_Pelunasan);
+    }
+
+    // Buka modal
+    const modal = document.getElementById("modal-sptjm");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+}
+
+
+function hitungBatasSPTJM() {
+    const tanggalInput = document.getElementById("sptjm-tanggal").value;
+    const masaBulan = Number(document.getElementById("sptjm-masa").value);
+    const hasil = document.getElementById("sptjm-batas");
+
+    if (!tanggalInput || !masaBulan) {
+        hasil.innerText = "Belum dihitung";
+        return;
+    }
+
+    const [tahun, bulan, hari] = tanggalInput.split("-").map(Number);
+
+    // Hitung bulan dan tahun tujuan
+    const totalBulan = bulan - 1 + masaBulan;
+    const tahunTujuan = tahun + Math.floor(totalBulan / 12);
+    const bulanTujuan = totalBulan % 12;
+
+    // Sesuaikan dengan jumlah hari pada bulan tujuan
+    const hariTerakhir = new Date(
+        tahunTujuan,
+        bulanTujuan + 1,
+        0
+    ).getDate();
+
+    const tanggalAkhir = new Date(
+        tahunTujuan,
+        bulanTujuan,
+        Math.min(hari, hariTerakhir)
+    );
+
+    const format = tanggalAkhir.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+
+    hasil.innerText = format;
+}
+        
+document.getElementById("sptjm-tanggal")
+    .addEventListener("change", hitungBatasSPTJM);
+
+document.getElementById("sptjm-masa")
+    .addEventListener("change", hitungBatasSPTJM);
+        
 function openModalRiwayat(id) {
     const item = currentData.find(d => String(d.ID) === String(id));
     const container = document.getElementById("riwayat-content");
@@ -3013,7 +3226,6 @@ async function hapusRiwayatBayar(idBayar, idTemuan) {
                 reader.onerror = error => reject(error);
             });
         }
-
        
 async function submitPembayaran() {
     const noBukti = document.getElementById("bayar-nobukti").value.trim();
@@ -3116,6 +3328,89 @@ async function submitPembayaran() {
     }
 }
        
+
+async function submitSPTJM() {
+    const idTemuan = document.getElementById("sptjm-id-temuan").value;
+    const tanggal = document.getElementById("sptjm-tanggal").value;
+    const masaBulan = document.getElementById("sptjm-masa").value;
+    const fileInput = document.getElementById("sptjm-file");
+    const file = fileInput.files[0];
+
+    // Validasi input
+    if (!idTemuan || !tanggal || !masaBulan) {
+        alert("Tanggal surat dan masa kesanggupan wajib diisi!");
+        return;
+    }
+
+    if (!file) {
+        alert("Silakan pilih file PDF SPTJM terlebih dahulu.");
+        return;
+    }
+
+    // Validasi format PDF
+    if (
+        file.type !== "application/pdf" ||
+        !file.name.toLowerCase().endsWith(".pdf")
+    ) {
+        alert("Dokumen SPTJM harus berformat PDF.");
+        return;
+    }
+
+    // Validasi ukuran file
+    if (file.size > 5 * 1024 * 1024) {
+        alert("Ukuran PDF terlalu besar. Maksimal 5 MB.");
+        return;
+    }
+
+    const btn = document.getElementById("btn-save-sptjm");
+    btn.innerText = "Mengunggah...";
+    btn.disabled = true;
+
+    try {
+        // Konversi PDF menjadi Base64
+        const base64Data = await toBase64(file);
+
+        const payload = {
+            action: "save_sptjm",
+            token: sessionStorage.getItem("sijawaraToken"),
+            ID_Temuan: idTemuan,
+            Tanggal_SPTJM: tanggal,
+            Masa_Kesanggupan_Bulan: Number(masaBulan),
+            fileData: base64Data,
+            fileName: file.name,
+            fileMimeType: file.type
+        };
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const hasil = await response.json();
+
+        if (hasil.status !== "success") {
+            throw new Error(
+                hasil.message || "SPTJM gagal disimpan."
+            );
+        }
+
+        closeModal("modal-sptjm");
+
+        await fetchData();
+
+        alert("SPTJM berhasil diunggah dan disimpan!");
+
+    } catch (error) {
+        alert("Gagal menyimpan SPTJM: " + error.message);
+
+    } finally {
+        btn.innerText = "Simpan SPTJM";
+        btn.disabled = false;
+    }
+}
 
 async function submitTemuanBaru() {
     const tanggal = document.getElementById("tanggal-temuan-baru").value;
