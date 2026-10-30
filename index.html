@@ -3279,8 +3279,8 @@ function formatTanggalSPTJM(tanggal) {
 
 
 // LIHAT DETAIL SPTJM
-function lihatSPTJM(id) {
-   const dataTemuan = currentData.find(
+async function lihatSPTJM(id) {
+    const dataTemuan = currentData.find(
         item => String(item.ID).trim() === String(id).trim()
     );
 
@@ -3293,18 +3293,15 @@ function lihatSPTJM(id) {
         "ID Temuan: " + id;
 
     document.getElementById("lihat-sptjm-tanggal").innerText =
-    formatTanggalSPTJM(dataTemuan.Tanggal_SPTJM);
+        formatTanggalSPTJM(dataTemuan.Tanggal_SPTJM);
 
     document.getElementById("lihat-sptjm-masa").innerText =
         dataTemuan.Masa_Kesanggupan_Bulan
             ? dataTemuan.Masa_Kesanggupan_Bulan + " Bulan"
             : "-";
 
-   document.getElementById("lihat-sptjm-batas").innerText =
-    formatTanggalSPTJM(dataTemuan.Batas_Akhir_Pelunasan);
-
-    document.getElementById("lihat-sptjm-link").href =
-        dataTemuan.Link_SPTJM;
+    document.getElementById("lihat-sptjm-batas").innerText =
+        formatTanggalSPTJM(dataTemuan.Batas_Akhir_Pelunasan);
 
     // Simpan ID untuk fungsi Edit dan Hapus
     window.idSPTJMAktif = id;
@@ -3312,6 +3309,61 @@ function lihatSPTJM(id) {
     const modal = document.getElementById("modal-lihat-sptjm");
     modal.classList.remove("hidden");
     modal.classList.add("flex");
+
+    // Ambil dokumen privat dari Apps Script
+    const linkDokumen = document.getElementById("lihat-sptjm-link");
+    linkDokumen.innerText = "Mengambil dokumen...";
+    linkDokumen.removeAttribute("href");
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "get_sptjm",
+                token: sessionStorage.getItem("sijawaraToken"),
+                ID_Temuan: id
+            })
+        });
+
+        const hasil = await response.json();
+
+        if (hasil.status !== "success") {
+            throw new Error(
+                hasil.message || "Dokumen gagal diambil."
+            );
+        }
+
+        const byteCharacters = atob(hasil.fileData);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], {
+            type: hasil.mimeType || "application/pdf"
+        });
+
+        // Bersihkan URL dokumen sebelumnya
+        if (window.urlSPTJMAktif) {
+            URL.revokeObjectURL(window.urlSPTJMAktif);
+        }
+
+        window.urlSPTJMAktif = URL.createObjectURL(blob);
+
+        linkDokumen.href = window.urlSPTJMAktif;
+        linkDokumen.target = "_blank";
+        linkDokumen.innerText = "Buka Dokumen SPTJM";
+
+    } catch (error) {
+        linkDokumen.innerText = "Gagal mengambil dokumen";
+        alert("Gagal membuka SPTJM: " + error.message);
+    }
 }
 
         
