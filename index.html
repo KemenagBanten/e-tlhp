@@ -1169,7 +1169,8 @@ body:has(#login-overlay:not(.hidden)) #sijawara-sidebar-overlay {
             <th class="px-3 py-3 text-right">Sudah Dibayar</th>
             <th class="px-3 py-3 text-right">Sisa Belum Dibayar</th>
             <th class="px-3 py-3">Status</th>
-            <th class="px-3 py-3 text-center action-col">Aksi</th>
+<th class="px-3 py-3 text-center">SPTJM</th>
+<th class="px-3 py-3 text-center action-col">Aksi</th>
         </tr>
     </thead>
 
@@ -2285,7 +2286,7 @@ function renderTable(data) {
     if (!isKeuangan) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="12" class="text-center p-6 text-slate-400">
+                <td colspan="13" class="text-center p-6 text-slate-400">
                     Tabel untuk jenis temuan ini belum tersedia.
                 </td>
             </tr>`;
@@ -2295,7 +2296,7 @@ function renderTable(data) {
     if (!data || data.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="12" class="text-center p-6 text-slate-400">
+                <td colspan="13" class="text-center p-6 text-slate-400">
                     Tidak ada data yang sesuai dengan pencarian/filter.
                 </td>
             </tr>`;
@@ -2419,7 +2420,15 @@ pageData.forEach((item, index) => {
                         ${status}
                     </span>
                 </td>
-
+                <td class="px-3 py-2 whitespace-nowrap text-center">
+                    <button
+                        onclick="openModalSPTJM('${idTemuan}')"
+                        class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded"
+                        style="font-size:12px; font-weight:normal;">
+                        ${item.Link_SPTJM ? "Lihat SPTJM" : "Upload SPTJM"}
+                    </button>
+                </td>
+                
                 <td class="px-3 py-2 whitespace-nowrap text-center action-col">
                     <button
                         onclick="openModalBayar('${idTemuan}')"
