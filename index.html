@@ -4038,6 +4038,56 @@ window.resetFilterStatus = function() {
         alert("Gagal mengarsipkan: " + error.message);
     }
 }
+    async function arsipkanTemuan(idTemuan) {
+
+    const alasan = prompt(
+        "Masukkan alasan pengarsipan temuan " + idTemuan + ":"
+    );
+
+    if (!alasan || !alasan.trim()) {
+        alert("Alasan pengarsipan wajib diisi.");
+        return;
+    }
+
+    const konfirmasi = confirm(
+        "Apakah Anda yakin ingin mengarsipkan temuan " +
+        idTemuan + "?\n\nAlasan: " + alasan
+    );
+
+    if (!konfirmasi) return;
+
+    const payload = {
+        action: "archive_finding",
+        token: sessionStorage.getItem("sijawaraToken"),
+        ID_Temuan: idTemuan,
+        Alasan_Arsip: alasan.trim()
+    };
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const hasil = await response.json();
+
+        if (hasil.status !== "success") {
+            throw new Error(
+                hasil.message || "Temuan gagal diarsipkan."
+            );
+        }
+
+        alert("Temuan berhasil diarsipkan: " + idTemuan);
+
+        await fetchData();
+
+    } catch (error) {
+        alert("Gagal mengarsipkan temuan: " + error.message);
+    }
+}
     
 </script>
 
