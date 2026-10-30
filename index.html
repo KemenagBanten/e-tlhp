@@ -2913,75 +2913,148 @@ tr:nth-child(even){background:#f3f4f6}
 }
 
 
-        // EXPORT PDF
-        function exportToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+  
+// EXPORT PDF
+function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-            doc.setFontSize(14);
-            doc.text(`Kanwil Kemenag Banten - Laporan e-TLHP (${activeTab})`, 14, 15);
-            doc.setFontSize(10);
-            doc.text(`Filter Sumber: ${activeSumber} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 22);
+    // Judul laporan
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Kanwil Kemenag Banten - Laporan e-TLHP (${activeTab})`, 14, 15);
 
-            // Ringkasan jumlah data yang diekspor
-const jumlahTemuan = displayedData.length;
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text(
+        `Filter Sumber: ${activeSumber} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`,
+        14, 22
+    );
 
-doc.setFontSize(10);
-doc.setFont(undefined, 'bold');
-doc.text(`Jumlah Temuan: ${jumlahTemuan} data`, 14, 28);
-doc.setFont(undefined, 'normal');
-            
-            let headers = [];
-            let rows = [];
+    let headers = [];
+    let rows = [];
 
-            if (activeTab === 'Keuangan') {
-                headers = [["ID", "Sumber", "Judul Temuan", "Penanggung Jawab", "Nilai Temuan", "Total Disetor", "Status"]];
-                rows = displayedData.map(item => {
-                    const totalDisetor = Number(item.Total_Disetor || 0);
-                    const totalNominal = Number(item.Nominal_Rp || 0);
-                    const isSelesai = totalNominal > 0 && totalDisetor >= totalNominal;
-                    
-                    return [
-                        `#${item.ID}`,
-                        item.Sumber,
-                        item.Judul_Temuan,
-                        item.Penanggung_Jawab || '-',
-                        `Rp ${totalNominal.toLocaleString('id-ID')}`,
-                        `Rp ${totalDisetor.toLocaleString('id-ID')}`,
-                        isSelesai ? "Selesai" : "On Progress"
-                    ];
-                });
-            } else {
-                headers = [["ID", "Sumber", "Judul Temuan", "Penanggung Jawab", "Kelengkapan Berkas", "Status"]];
-                rows = displayedData.map(item => {
-                    const hasFile = item.Riwayat_Bayar && item.Riwayat_Bayar.length > 0;
-                    const isSelesai = hasFile || item.Status === "Selesai" || parseInt(item.Progress_Percent) === 100;
-                    
-                    return [
-                        `#${item.ID}`,
-                        item.Sumber,
-                        item.Judul_Temuan,
-                        item.Penanggung_Jawab || '-',
-                        hasFile ? "Sudah Diunggah" : "Belum Ada Berkas",
-                        isSelesai ? "Selesai" : "On Progress"
-                    ];
-                });
-            }
+    // Menyiapkan tabel berdasarkan tab aktif
+    if (activeTab === 'Keuangan') {
 
-            doc.autoTable({
-                head: headers,
-                body: rows,
-                startY: 35,
-                theme: 'grid',
-                styles: { fontSize: 7.5 },
-                headStyles: { fillColor: activeTab === 'Keuangan' ? [0, 104, 55] : [217, 119, 6] }
-            });
+        headers = [[
+            "ID",
+            "Sumber",
+            "Judul Temuan",
+            "Penanggung Jawab",
+            "Nilai Temuan",
+            "Total Disetor",
+            "Status"
+        ]];
 
-            const pdfBlob = doc.output('blob');
-const pdfUrl = URL.createObjectURL(pdfBlob);
+        rows = displayedData.map(item => {
+            const totalDisetorItem = Number(item.Total_Disetor || 0);
+            const totalNominalItem = Number(item.Nominal_Rp || 0);
+            const isSelesai = totalNominalItem > 0 &&
+                              totalDisetorItem >= totalNominalItem;
 
-window.open(pdfUrl, '_blank');
+            return [
+                `#${item.ID}`,
+                item.Sumber,
+                item.Judul_Temuan,
+                item.Penanggung_Jawab || '-',
+                `Rp ${totalNominalItem.toLocaleString('id-ID')}`,
+                `Rp ${totalDisetorItem.toLocaleString('id-ID')}`,
+                isSelesai ? "Selesai" : "On Progress"
+            ];
+        });
+
+    } else {
+
+        headers = [[
+            "ID",
+            "Sumber",
+            "Judul Temuan",
+            "Penanggung Jawab",
+            "Kelengkapan Berkas",
+            "Status"
+        ]];
+
+        rows = displayedData.map(item => {
+            const hasFile = item.Riwayat_Bayar &&
+                            item.Riwayat_Bayar.length > 0;
+
+            const isSelesai = hasFile ||
+                              item.Status === "Selesai" ||
+                              parseInt(item.Progress_Percent) === 100;
+
+            return [
+                `#${item.ID}`,
+                item.Sumber,
+                item.Judul_Temuan,
+                item.Penanggung_Jawab || '-',
+                hasFile ? "Sudah Diunggah" : "Belum Ada Berkas",
+                isSelesai ? "Selesai" : "On Progress"
+            ];
+        });
+    }
+
+    // Ringkasan data yang diekspor
+    const jumlahTemuan = displayedData.length;
+
+    const totalNominal = displayedData.reduce(
+        (total, item) => total + Number(item.Nominal_Rp || 0), 0
+    );
+
+    const totalDisetor = displayedData.reduce(
+        (total, item) => total + Number(item.Total_Disetor || 0), 0
+    );
+
+    const sisaBelumDisetor = totalNominal - totalDisetor;
+
+    // Menampilkan ringkasan
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+
+    doc.text(`Jumlah Temuan: ${jumlahTemuan} data`, 14, 28);
+
+    if (activeTab === 'Keuangan') {
+        doc.text(
+            `Total Nilai Temuan: Rp ${totalNominal.toLocaleString('id-ID')}`,
+            14, 34
+        );
+
+        doc.text(
+            `Total Disetor: Rp ${totalDisetor.toLocaleString('id-ID')}`,
+            14, 40
+        );
+
+        doc.text(
+            `Sisa Belum Disetor: Rp ${sisaBelumDisetor.toLocaleString('id-ID')}`,
+            14, 46
+        );
+    }
+
+    doc.setFont(undefined, 'normal');
+
+    // Membuat tabel PDF
+    doc.autoTable({
+        head: headers,
+        body: rows,
+        startY: activeTab === 'Keuangan' ? 53 : 35,
+        theme: 'grid',
+        styles: {
+            fontSize: 7.5
+        },
+        headStyles: {
+            fillColor: activeTab === 'Keuangan'
+                ? [0, 104, 55]
+                : [217, 119, 6]
         }
+    });
+
+    // Membuka hasil PDF
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    window.open(pdfUrl, '_blank');
+}
+
         
         // BUKA DAN TUTUP MODAL
         function openModalTambahTemuan() {
