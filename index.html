@@ -2996,10 +2996,18 @@ function openModalSPTJM(id) {
             dataTemuan.Masa_Kesanggupan_Bulan;
     }
 
-    if (dataTemuan.Batas_Akhir_Pelunasan) {
-        document.getElementById("sptjm-batas").innerText =
-            formatTanggal(dataTemuan.Batas_Akhir_Pelunasan);
-    }
+   if (dataTemuan.Batas_Akhir_Pelunasan) {
+    const tanggalBatas = new Date(
+        dataTemuan.Batas_Akhir_Pelunasan
+    );
+
+    document.getElementById("sptjm-batas").innerText =
+        tanggalBatas.toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        });
+}
 
     // Buka modal
     const modal = document.getElementById("modal-sptjm");
